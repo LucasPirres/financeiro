@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard GTA 6 Vibes</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            /* TEMA GTA 6 / MIAMI VICE */
+            --bg-body: #0a0b10;
+            --bg-sidebar: #06070a;
+            --bg-card: #12141d;
+            --text-main: #ffffff;
+            --text-muted: #8b92a5;
+            
+            --gta-cyan: #00e5ff;
+            --gta-pink: #ff007a;
+            --gta-purple: #7000ff;
+            --gta-yellow: #ffb300;
+            
+            --border-color: #1e2235;
+            --danger: #ff3366;
+            --success: #00e5ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gta-pink); }
+
+        /* SIDEBAR */
+        aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
+        .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .logo-icon { width: 30px; height: 30px; background: linear-gradient(45deg, var(--gta-cyan), var(--gta-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        .nav-section { padding: 10px 20px; color: var(--gta-yellow); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+        .nav-item { padding: 10px 20px; cursor: pointer; color: var(--text-muted); font-size: 14px; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .nav-item:hover { color: var(--text-main); background: rgba(255, 0, 122, 0.1); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(112, 0, 255, 0.3) 0%, transparent 100%); color: var(--gta-cyan); font-weight: 600; border-left: 3px solid var(--gta-cyan); }
+        
+        .btn-del-year { background: transparent; border: none; color: var(--text-muted); cursor: pointer; opacity: 0.3; transition: 0.2s; }
+        .nav-item:hover .btn-del-year { opacity: 1; color: var(--danger); }
+
+        /* HEADER */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; }
+        .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--gta-pink); text-shadow: 0 0 8px rgba(255, 0, 122, 0.5); }
+
+        /* MAIN */
+        main { flex: 1; padding: 25px 30px; overflow-y: auto; }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DASHBOARD GRID */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
+        .card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .card-title { color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-value { font-size: 28px; font-weight: 700; }
+        
+        .card-kpi { grid-column: span 1; }
+        .card-donut { grid-column: span 1; grid-row: span 2; align-items: center; }
+        .card-horizontal { grid-column: span 2; grid-row: span 2; }
+        .card-bar-full { grid-column: span 4; grid-row: span 2; }
+
+        /* LANÇAMENTOS */
+        .entry-section { background: var(--bg-card); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+        .entry-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { color: var(--text-muted); font-weight: 600; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase; }
+        td { padding: 12px 5px; border-bottom: 1px solid #1a1d2d; }
+        
+        .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-family: 'Inter', sans-serif; padding: 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
+        .custom-input:focus { border-bottom: 1px solid var(--gta-cyan); background: #1a1d2d; border-radius: 4px 4px 0 0; }
+        .custom-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .btn-add { background: linear-gradient(45deg, var(--gta-purple), var(--gta-pink)); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-add:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(255, 0, 122, 0.4); }
+        .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn-remove:hover { color: var(--danger); text-shadow: 0 0 10px var(--danger); }
+
+        #sync-status { position: fixed; bottom: 15px; right: 20px; font-size: 11px; color: var(--text-main); background: var(--bg-card); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--gta-cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="logo-area">
+            <div class="logo-icon">🌴</div>
+            <div>Dashboard<br><span style="color: var(--gta-cyan);">Viçosa Vice</span></div>
+        </div>
+
+        <div class="nav-section">Anos</div>
+        <div id="years-list"></div>
+        <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%; background: #1a1d2d; border: 1px solid var(--border-color); box-shadow: none;" onclick="addYear()">+ Novo Ano</button></div>
+
+        <div class="nav-section" style="margin-top: 30px;">Meses</div>
+        <div id="months-list"></div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header>
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📈 Dashboard Visual</button>
+            <button class="tab-btn" onclick="switchTab('lancamentos')">✏️ Lançamentos (Valores)</button>
+        </header>
+
+        <main>
+            <div id="dashboard" class="view active">
+                <div class="dashboard-grid">
+                    
+                    <div class="card card-kpi">
+                        <div class="card-title">Saldo do mês</div>
+                        <div class="card-value" id="kpi-saldo">R$ 0,00</div>
+                    </div>
+
+                    <div class="card card-kpi">
+                        <div class="card-title">Despesas do mês</div>
+                        <div class="card-value" id="kpi-despesas" style="color: var(--gta-pink); text-shadow: 0 0 10px rgba(255,0,122,0.3);">R$ 0,00</div>
+                    </div>
+
+                    <div class="card card-donut">
+                        <div class="card-title">Despesas no Mês</div>
+                        <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
+                            <canvas id="chartDonutMes"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card card-donut">
+                        <div class="card-title">Despesas no Ano</div>
+                        <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
+                            <canvas id="chartDonutAno"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card card-horizontal">
+                        <div class="card-title">Detalhamento de Despesas (Mês)</div>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartHorizontalMes"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card card-horizontal">
+                        <div class="card-title" style="color: var(--gta-cyan);">Detalhamento de Ganhos (Mês)</div>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartHorizontalGanhos"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card card-bar-full">
+                        <div class="card-title">Evolução Anual (Ganhos vs Despesas)</div>
+                        <div style="position: relative; height: 280px; width: 100%;">
+                            <canvas id="chartBarAnual"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="lancamentos" class="view">
+                <h2 style="margin-bottom: 20px; font-weight: 600;">Lançamentos de <span id="lbl-mes-ano" style="color: var(--gta-cyan);"></span></h2>
+
+                <div class="entry-section">
+                    <div class="entry-title" style="color: var(--gta-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.4);">💰 Ganhos e Receitas</div>
+                    <table>
+                        <thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
+                        <tbody id="tbody-ganhos"></tbody>
+                    </table>
+                    <button class="btn-add" style="background: var(--gta-cyan); color: #000;" onclick="addRow('inc')">+ Novo Ganho</button>
+                </div>
+
+                <div class="entry-section">
+                    <div class="entry-title" style="color: var(--gta-purple); text-shadow: 0 0 8px rgba(112,0,255,0.4);">📌 Despesas Fixas (Base x Real)</div>
+                    <table>
+                        <thead><tr><th>Descrição / Categoria</th><th>Valor Base Projetado</th><th>Valor Real Pago</th><th style="width: 40px;"></th></tr></thead>
+                        <tbody id="tbody-fixos"></tbody>
+                    </table>
+                    <button class="btn-add" onclick="addRow('fix')">+ Nova Despesa Fixa</button>
+                </div>
+
+                <div class="entry-section">
+                    <div class="entry-title" style="color: var(--gta-pink); text-shadow: 0 0 8px rgba(255,0,122,0.4);">💸 Despesas Variáveis</div>
+                    <table>
+                        <thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
+                        <tbody id="tbody-variaveis"></tbody>
+                    </table>
+                    <button class="btn-add" style="background: var(--gta-pink);" onclick="addRow('exp')">+ Nova Despesa Variável</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="sync-status">Conectando...</div>
+
+    <script>
+        // === CREDENCIAIS SUPABASE ===
+        const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ============================
+
+        // Registrando o plugin de DataLabels para os valores aparecerem nas barras
+        Chart.register(ChartDataLabels);
+
+        const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        const GTA_COLORS = ['#00e5ff', '#ff007a', '#7000ff', '#ffb300', '#00ffaa', '#ff3366', '#a600ff'];
+        
+        let db = { years: {} };
+        let selectedYear = new Date().getFullYear().toString();
+        let selectedMonth = MONTHS[new Date().getMonth()];
+        let charts = {};
+        let syncTimeout;
+
+        Chart.defaults.color = '#8b92a5';
+        Chart.defaults.borderColor = '#1e2235';
+        Chart.defaults.font.family = 'Inter';
+
+        async function loadData() {
+            try {
+                const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
+                if (data && data.dados && data.dados.years) { db = data.dados; } 
+                else { if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure(); await saveDataNow(); }
+                if(!db.years[selectedYear]) { db.years[selectedYear] = createYearStructure(); }
+                
+                document.getElementById('sync-status').innerText = "✅ Nuvem Sincronizada";
+                renderSidebar(); updateUI();
+            } catch (e) { 
+                console.error(e); 
+                document.getElementById('sync-status').innerText = "❌ Offline. Usando dados locais.";
+                if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+                renderSidebar(); updateUI();
+            }
+        }
+
+        function scheduleSave() {
+            document.getElementById('sync-status').innerText = "⏳ Salvando...";
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(saveDataNow, 1000);
+        }
+
+        async function saveDataNow() {
+            try {
+                const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
+                if (!error) document.getElementById('sync-status').innerText = "✅ Salvo na Nuvem";
+            } catch (e) { document.getElementById('sync-status').innerText = "❌ Erro ao salvar"; }
+        }
+
+        function createYearStructure() {
+            let struct = {};
+            MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; });
+            return struct;
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            updateUI();
+        }
+
+        function selectYear(y) { selectedYear = y; renderSidebar(); updateUI(); }
+        function selectMonth(m) { selectedMonth = m; renderSidebar(); updateUI(); }
+        
+        function addYear() {
+            let y = prompt("Digite o novo ano (ex: 2025):");
+            if(y && !db.years[y]) { db.years[y] = createYearStructure(); selectYear(y); scheduleSave(); }
+        }
+
+        function deleteYear(y, event) {
+            event.stopPropagation();
+            if(confirm(`⚠️ Atenção: Deseja realmente excluir TODOS os dados de ${y}?`)) {
+                delete db.years[y];
+                let keys = Object.keys(db.years);
+                if(keys.length === 0) {
+                    let curY = new Date().getFullYear().toString();
+                    db.years[curY] = createYearStructure();
+                    selectedYear = curY;
+                } else if(selectedYear === y) {
+                    selectedYear = keys[0];
+                }
+                scheduleSave(); renderSidebar(); updateUI();
+            }
+        }
+
+        function renderSidebar() {
+            document.getElementById('years-list').innerHTML = Object.keys(db.years).sort().map(y => 
+                `<div class="nav-item ${y === selectedYear ? 'active' : ''}" onclick="selectYear('${y}')">
+                    ${y} <button class="btn-del-year" onclick="deleteYear('${y}', event)">🗑️</button>
+                </div>`
+            ).join('');
+
+            document.getElementById('months-list').innerHTML = MONTHS.map(m => 
+                `<div class="nav-item ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${m}</div>`
+            ).join('');
+        }
+
+        function addRow(type) {
+            let newItem = { d: '', v: 0 };
+            if(type === 'fix') newItem.vr = 0;
+            db.years[selectedYear][selectedMonth][type].push(newItem);
+            renderTables(); scheduleSave(); updateDashboard();
+        }
+
+        function removeRow(type, index) {
+            db.years[selectedYear][selectedMonth][type].splice(index, 1);
+            renderTables(); scheduleSave(); updateDashboard();
+        }
+
+        function updateVal(type, index, field, value) {
+            let val = field === 'd' ? value : (parseFloat(value) || 0);
+            db.years[selectedYear][selectedMonth][type][index][field] = val;
+            scheduleSave(); updateDashboard();
+        }
+
+        function renderTables() {
+            document.getElementById('lbl-mes-ano').innerText = `${selectedMonth} / ${selectedYear}`;
+            let data = db.years[selectedYear][selectedMonth];
+
+            const placeholders = {
+                'inc': 'Ex: Mesada dos pais, Bolsa Agronomia, Salário...',
+                'fix': 'Ex: Aluguel (dividido), Internet...',
+                'exp': 'Ex: Restaurante RU, Mercado, MXRF11...'
+            };
+
+            const createRows = (type, items) => items.map((item, i) => `
+                <tr>
+                    <td><input type="text" class="custom-input" value="${item.d}" oninput="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td>
+                    <td><input type="number" class="custom-input" value="${item.v}" oninput="updateVal('${type}', ${i}, 'v', this.value)" placeholder="0.00"></td>
+                    ${type === 'fix' ? `<td><input type="number" class="custom-input" value="${item.vr}" oninput="updateVal('${type}', ${i}, 'vr', this.value)" placeholder="0.00"></td>` : ''}
+                    <td style="text-align: right;"><button class="btn-remove" onclick="removeRow('${type}', ${i})">🗑️</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc);
+            document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix);
+            document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
+        }
+
+        function updateUI() { renderTables(); updateDashboard(); }
+
+        function updateDashboard() {
+            let data = db.years[selectedYear][selectedMonth];
+            
+            let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0);
+            let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0);
+            let varMes = data.exp.reduce((a, c) => a + c.v, 0);
+            let despesasMes = fixosMes + varMes;
+            let saldoMes = ganhosMes - despesasMes;
+
+            let elSaldo = document.getElementById('kpi-saldo');
+            elSaldo.innerText = saldoMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            elSaldo.style.color = saldoMes >= 0 ? 'var(--gta-cyan)' : 'var(--danger)';
+            elSaldo.style.textShadow = saldoMes >= 0 ? '0 0 10px rgba(0,229,255,0.3)' : '0 0 10px rgba(255,51,102,0.3)';
+            
+            document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+
+            renderCharts(data);
+        }
+
+        function renderCharts(monthData) {
+            // Configuração global para os labels de valor nos gráficos de barra
+            const datalabelsConfig = {
+                color: '#fff', align: 'right', anchor: 'end',
+                font: { weight: 'bold', size: 11 },
+                formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : ''
+            };
+
+            // 1. Donut Mês
+            let catDespesas = {};
+            monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; });
+            monthData.exp.forEach(i => { if(i.v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + i.v; });
+            
+            destroyChart('chartDonutMes');
+            charts['chartDonutMes'] = new Chart(document.getElementById('chartDonutMes'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(catDespesas), datasets: [{ data: Object.values(catDespesas), backgroundColor: GTA_COLORS, borderWidth: 0, cutout: '70%' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#8b92a5', boxWidth: 10, font: {size: 10} } } } }
+            });
+
+            // 2. Detalhamento Despesas (Barras Horizontais)
+            destroyChart('chartHorizontalMes');
+            let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val);
+            charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), {
+                type: 'bar',
+                data: { labels: dataDespesasArr.map(d=>d.label), datasets: [{ data: dataDespesasArr.map(d=>d.val), backgroundColor: '#ff007a', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
+            });
+
+            // 3. Detalhamento Ganhos (Barras Horizontais)
+            let catGanhos = {};
+            monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; });
+            let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
+
+            destroyChart('chartHorizontalGanhos');
+            charts['chartHorizontalGanhos'] = new Chart(document.getElementById('chartHorizontalGanhos'), {
+                type: 'bar',
+                data: { labels: dataGanhosArr.map(d=>d.label), datasets: [{ data: dataGanhosArr.map(d=>d.val), backgroundColor: '#00e5ff', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
+            });
+
+            // Cálculos Anuais
+            let ganhosAno = []; let despesasAno = []; let catAno = {};
+            MONTHS.forEach(m => {
+                let md = db.years[selectedYear][m];
+                ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0));
+                despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0));
+
+                md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; });
+                md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; });
+            });
+
+            // 4. Donut Ano
+            destroyChart('chartDonutAno');
+            charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(catAno), datasets: [{ data: Object.values(catAno), backgroundColor: GTA_COLORS, borderWidth: 0, cutout: '70%' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#8b92a5', boxWidth: 10, font: {size: 10} } } } }
+            });
+
+            // 5. Evolução Anual
+            destroyChart('chartBarAnual');
+            charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), {
+                type: 'bar',
+                data: {
+                    labels: MONTHS.map(m => m.substring(0,3)),
+                    datasets: [
+                        { label: 'Ganhos', data: ganhosAno, backgroundColor: '#00e5ff', borderRadius: 4 },
+                        { label: 'Despesas', data: despesasAno, backgroundColor: '#ff007a', borderRadius: 4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#8b92a5', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] } } } }
+            });
+        }
+
+        function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
