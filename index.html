@@ -352,14 +352,13 @@
                 <div style="display: flex; flex-direction: column; gap: 20px; width: 340px;">
                     <div class="editor-sidebar" style="width: 100%;">
                         <h4 id="gerenciar-alocacao-title" style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (R$)</h4>
+                        
                         <div id="editor-items-list"></div>
                         
                         <div id="total-investido-box" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
                             <span>TOTAL INVESTIDO:</span>
                             <span id="label-total-investido" style="color: var(--color-gain);">R$ 0,00</span>
                         </div>
-                        
-                        <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple); margin-top: 15px;" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
                     </div>
 
                     <div id="patrimonio-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px 20px; text-align: center; display: none;">
@@ -381,7 +380,7 @@
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Qtd.</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Preço Médio (R$)</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Cotação Atual (R$)</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Total (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Total Investido (R$)</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">% da Carteira</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ação</th>
                         </tr>
@@ -389,7 +388,7 @@
                     <tbody id="tbody-acoes-brasil">
                     </tbody>
                 </table>
-                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);" onclick="addAcaoBrasil()">+ Adicionar Ativo</button>
+                <button id="btn-add-acao-generic" class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);">+ Adicionar Ativo</button>
             </div>
         </div>
     </div>
@@ -458,7 +457,7 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // Função Global de Patrimônio Total baseada na Raiz
+        // Função Global de Patrimônio Total baseada na Raiz auto-calculada
         function getPatrimonioTotal() {
             if (!db.investimentos || !db.investimentos.carteiraIdeal) return 0;
             return db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
@@ -485,23 +484,56 @@
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
 
+        // ATUALIZAÇÃO DA ESTRUTURA PARA INCLUIR A NOVA LÓGICA DE TABELAS NOS 3 MACROS (AÇÕES, FIXA E EXT)
         function getDefaultInvestStructure() {
             return {
                 carteiraIdeal: [
-                    { label: "Renda Fixa", val: 0, sub: [] },
+                    { label: "Renda Fixa", val: 0, sub: [], assets: [] },
                     { label: "Ações do Brasil", val: 0, sub: [], assets: [] },
-                    { label: "Ativos no Exterior", val: 0, sub: [] },
+                    { label: "Ativos no Exterior", val: 0, sub: [], assets: [] },
                     { label: "Imóveis", val: 0, sub: [
                         { label: "PAPEL", val: 0, assets: [
-                            { ticker: "KNCR11", tipo: "PAPEL", preco_cota: "105.50", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
-                            { ticker: "MXRF11", tipo: "PAPEL", preco_cota: "10.20", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
+                            { ticker: "KNCR11", tipo: "PAPEL", preco_cota: "105.50", preco_cota_atual: "106.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
+                            { ticker: "MXRF11", tipo: "PAPEL", preco_cota: "10.20", preco_cota_atual: "10.40", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
                         ]},
                         { label: "TIJOLO", val: 0, assets: [
-                            { ticker: "HGLG11", tipo: "TIJOLO", preco_cota: "162.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
+                            { ticker: "HGLG11", tipo: "TIJOLO", preco_cota: "162.00", preco_cota_atual: "163.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
                         ]}
                     ]}
                 ]
             };
+        }
+
+        // MOTOR QUE CALCULA TUDO AUTOMATICAMENTE E SOBRESCREVE VALORES
+        function calcularValorCategoria(categoria) {
+            let total = 0;
+            if (categoria.assets && categoria.assets.length > 0) {
+                categoria.assets.forEach(asset => {
+                    // TABELAS: Ações, Renda Fixa, Exterior -> QTD x PREÇO MEDIO (Comprado)
+                    if (asset.qtd !== undefined && asset.pm !== undefined) {
+                        total += (parseFloat(asset.qtd) || 0) * (parseFloat(asset.pm) || 0);
+                    }
+                    // CARDS: Imóveis -> NUM_COTAS x PRECO_COTA (Comprado)
+                    else if (asset.num_cotas !== undefined && asset.preco_cota !== undefined) {
+                        total += (parseFloat(asset.num_cotas) || 0) * (parseFloat(asset.preco_cota) || 0);
+                    }
+                });
+            }
+            if (categoria.sub && categoria.sub.length > 0) {
+                categoria.sub.forEach(sub => {
+                    sub.val = calcularValorCategoria(sub); // O nível abaixo herda a soma primeiro
+                    total += sub.val;
+                });
+            }
+            return total;
+        }
+
+        function recalcularTodaCarteira() {
+            if (db.investimentos && db.investimentos.carteiraIdeal) {
+                db.investimentos.carteiraIdeal.forEach(cat => {
+                    cat.val = calcularValorCategoria(cat); // A raiz herda a soma final
+                });
+            }
         }
 
         async function loadData() {
@@ -515,6 +547,9 @@
                     db.investimentos = getDefaultInvestStructure();
                     await saveDataNow(); 
                 }
+                
+                recalcularTodaCarteira(); // Garante que tudo estará magicamente calculado na inicialização
+                
                 document.getElementById('sync-status').innerText = "Online";
                 renderSidebar(); updateUI();
             } catch (e) { 
@@ -522,6 +557,9 @@
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                 if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
+                
+                recalcularTodaCarteira(); // Garante que tudo estará magicamente calculado na inicialização
+                
                 renderSidebar(); updateUI();
             }
         }
@@ -545,7 +583,6 @@
             return struct;
         }
 
-        /* ================= ENGINE DA CARTEIRA IDEAL ================= */
         function getTargetStructure(path) {
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
@@ -556,6 +593,7 @@
         }
 
         function atualizarSimulacao() {
+            // O Total agora vem EXCLUSIVAMENTE da soma da raiz, calculado recursivamente antes
             let total = getPatrimonioTotal();
             
             // 1. Atualizar Tabela Macro
@@ -564,6 +602,7 @@
                 db.investimentos.carteiraIdeal.forEach(item => {
                     let valCalc = parseFloat(item.val) || 0;
                     let pct = total > 0 ? ((valCalc / total) * 100).toFixed(1) : 0;
+                    
                     htmlResumo += `
                         <tr style="border-bottom: 1px solid var(--border-color);">
                             <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${item.label}</td>
@@ -573,6 +612,7 @@
                     `;
                 });
             }
+
             const tbody = document.getElementById('tbody-resumo-readonly');
             if(tbody) tbody.innerHTML = htmlResumo;
             
@@ -617,27 +657,17 @@
             }
             const tbodyCotas = document.getElementById('tbody-resumo-cotas');
             if(tbodyCotas) tbodyCotas.innerHTML = htmlCotas;
-
-            // 3. Atualizar Tooltip da Pizza
-            if (charts['chartInvestPie'] && currentPath.length === 0) {
-                charts['chartInvestPie'].options.plugins.tooltip.callbacks.label = function(context) {
-                    let val = context.raw;
-                    let pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
-                };
-                charts['chartInvestPie'].update();
-            }
         }
 
         function navigateToPath(path) {
             currentPath = path;
             
-            // Esconde todas as zonas
+            // Esconde todas as zonas ao navegar
             document.getElementById('invest-chart-zone').style.display = 'none';
             document.getElementById('invest-assets-zone').style.display = 'none';
             document.getElementById('invest-acoes-zone').style.display = 'none';
             
-            // Navegação Específica para Ativos (Imóveis -> Papel/Tijolo)
+            // LÓGICA 1: O Usuário clicou em "Papel" ou "Tijolo" dentro de Imóveis (Cards View)
             if (path.length === 2 && path[0] === 'Imóveis') {
                 document.getElementById('invest-assets-zone').style.display = 'block';
                 
@@ -648,17 +678,18 @@
                 document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
                 renderAssetCards(subGroup.assets);
                 
-            // Navegação Específica para Ações do Brasil (Tabela Editável)
-            } else if (path.length === 1 && path[0] === 'Ações do Brasil') {
+            // LÓGICA 2: O Usuário clicou nas Categorias Genéricas (Ações, Renda Fixa ou Exterior - Table View)
+            } else if (path.length === 1 && (path[0] === 'Ações do Brasil' || path[0] === 'Ativos no Exterior' || path[0] === 'Renda Fixa')) {
                 document.getElementById('invest-acoes-zone').style.display = 'block';
-                document.getElementById('invest-main-title').innerText = `Ações do Brasil`;
+                document.getElementById('invest-main-title').innerText = path[0];
                 
                 let group = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
+                // Fallback para usuários velhos que não tinham assets
                 if(!group.assets) group.assets = [];
                 
-                renderAcoesTable(group.assets);
+                renderAcoesTable(group.assets, path[0]);
                 
-            // Navegação Padrão para Pizza (Raiz e Renda Fixa)
+            // LÓGICA 3: O Usuário está vendo uma Pizza (Raiz Geral ou SubPizza de Imóveis)
             } else {
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 
@@ -667,38 +698,34 @@
                 } else {
                     document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
                 }
+                
+                // Força o cálculo mestre para atualizar valores da tela
+                recalcularTodaCarteira();
                 renderPieChartZone();
             }
         }
 
         function renderPieChartZone() {
             let list = getTargetStructure(currentPath);
-            
             let isRoot = currentPath.length === 0;
-            // As áreas de Raiz e filhos diretos de Imóveis são intocáveis (nomes fixos)
-            let isFixedLevel = isRoot || (currentPath.length === 1 && currentPath[0] === 'Imóveis');
-            let isRendaFixa = currentPath.length === 1 && currentPath[0] === 'Renda Fixa';
             
+            // TODAS AS PIZZAS AGORA SÃO BLOQUEADAS!
             let htmlList = list.map((item, idx) => `
                 <div class="editor-row">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixedLevel ? 'var(--text-muted)' : 'var(--text-main)'};" value="${item.label}" ${isFixedLevel ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
-                    <input type="number" step="0.01" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)" placeholder="R$ 0,00">
-                    ${!isFixedLevel ? `<button class="btn-remove" onclick="removePieSlice(${idx})">✕</button>` : `<div style="width: 24px;"></div>`}
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: var(--text-muted);" value="${item.label}" readonly>
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px; color: var(--text-muted); font-weight:bold;" value="${formatMoney(item.val)}" readonly placeholder="R$ 0,00">
+                    <div style="width: 24px;"></div>
                 </div>
             `).join('');
             
             document.getElementById('editor-items-list').innerHTML = htmlList;
 
-            let btnAdd = document.getElementById('btn-add-pie');
-            if(btnAdd) {
-                btnAdd.style.display = isFixedLevel ? 'none' : 'block';
-            }
-
-            // PATRIMÔNIO TOTAL NO ROOT E SOMAS
+            // PATRIMÔNIO TOTAL E SOMA
             let patBox = document.getElementById('patrimonio-box');
             let patLabel = document.getElementById('label-patrimonio-total');
             let totInvLabel = document.getElementById('label-total-investido');
             
+            // Soma da pizza sendo visualizada
             let totalVal = list.reduce((a, b) => a + (parseFloat(b.val) || 0), 0);
             
             if(totInvLabel) totInvLabel.innerText = formatMoney(totalVal);
@@ -736,9 +763,8 @@
                             color: '#ffffff',
                             font: { weight: '700', size: 14 },
                             formatter: (val, ctx) => {
-                                if(totalVal === 0) return isRendaFixa ? 'R$ 0,00' : '0%';
-                                // Se for Renda Fixa, mostra só R$, se não, mostra %
-                                return isRendaFixa ? formatMoney(val) : ((val / totalVal) * 100).toFixed(0) + '%';
+                                if(totalVal === 0) return '0%';
+                                return ((val / totalVal) * 100).toFixed(0) + '%';
                             }
                         },
                         tooltip: {
@@ -746,10 +772,7 @@
                                 label: function(context) {
                                     let val = context.raw;
                                     let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0;
-                                    // Se for Renda Fixa, o tooltip foca só no dinheiro
-                                    return isRendaFixa 
-                                        ? ` ${context.label}: ${formatMoney(val)}` 
-                                        : ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
+                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
                                 }
                             }
                         }
@@ -760,8 +783,8 @@
                             let clickedIdx = elements[0].index;
                             let targetItem = list[clickedIdx];
                             
-                            // BLOQUEIO EXATO DA RAIZ
-                            if (isRoot && targetItem.label !== "Imóveis" && targetItem.label !== "Renda Fixa" && targetItem.label !== "Ações do Brasil") {
+                            // BLOQUEIO PARA EXATAMENTE AS FATIAS PADRÃO DE RAIZ - Nada além disso pode ser clicado
+                            if (isRoot && targetItem.label !== "Imóveis" && targetItem.label !== "Renda Fixa" && targetItem.label !== "Ações do Brasil" && targetItem.label !== "Ativos no Exterior") {
                                 return; 
                             }
                             
@@ -776,31 +799,6 @@
             if(isRoot) atualizarSimulacao();
         }
 
-        function updatePieItem(idx, field, value) {
-            let list = getTargetStructure(currentPath);
-            if(field === 'val') {
-                list[idx][field] = parseFloat(value) || 0;
-            } else {
-                list[idx][field] = value;
-            }
-            scheduleSave();
-            renderPieChartZone();
-        }
-
-        function addPieSlice() {
-            let list = getTargetStructure(currentPath);
-            list.push({ label: "Novo Alvo", val: 0, sub: [] });
-            scheduleSave();
-            renderPieChartZone();
-        }
-
-        function removePieSlice(idx) {
-            let list = getTargetStructure(currentPath);
-            list.splice(idx, 1);
-            scheduleSave();
-            renderPieChartZone();
-        }
-
         /* ================= CARDS DE CRITÉRIOS DE ATIVOS (IMÓVEIS) ================= */
         function renderAssetCards(assetsList) {
             let container = document.getElementById('asset-cards-container');
@@ -813,7 +811,9 @@
                     <div class="asset-meta-row" style="margin-bottom: 8px;">
                         <b>TIPO DE FUNDO</b>
                         <span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.tipo}" onchange="updateAssetField(${idx}, 'tipo', this.value)"></span>
-                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota || 0}" onchange="updateAssetField(${idx}, 'preco_cota', this.value)"></span>
+                        
+                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA COMPRADO: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota || 0}" onchange="updateAssetField(${idx}, 'preco_cota', this.value)"></span>
+                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA ATUAL: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota_atual || 0}" onchange="updateAssetField(${idx}, 'preco_cota_atual', this.value)"></span>
                     </div>
 
                     <div class="asset-meta-row"><b>VALOR PATRIMONIAL</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vp}" onchange="updateAssetField(${idx}, 'vp', this.value)"></span></div>
@@ -844,6 +844,7 @@
             let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             subGroup.assets[idx][field] = value;
+            recalcularTodaCarteira(); // A Mágica Acontece Aqui
             scheduleSave();
         }
 
@@ -858,6 +859,7 @@
                 if(novaQtd < 0) novaQtd = 0;
 
                 subGroup.assets[idx].num_cotas = novaQtd;
+                recalcularTodaCarteira(); // A Mágica Acontece Aqui
                 scheduleSave();
                 renderAssetCards(subGroup.assets);
             }
@@ -868,7 +870,7 @@
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             
             subGroup.assets.push({
-                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", num_cotas: 0, vp: "-", liq: "-", pvp: "-", hist: "-", hist_div: "-", dy: "-", num_imoveis: "-", vacancia: "-", pl_max: "-"
+                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", preco_cota_atual: "0.00", num_cotas: 0, vp: "-", liq: "-", pvp: "-", hist: "-", hist_div: "-", dy: "-", num_imoveis: "-", vacancia: "-", pl_max: "-"
             });
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
@@ -877,11 +879,12 @@
             let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             subGroup.assets.splice(idx, 1);
+            recalcularTodaCarteira();
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
 
-        /* ================= AÇÕES DO BRASIL (TABELA) ================= */
-        function renderAcoesTable(assetsList) {
+        /* ================= TABELAS GENÉRICAS (AÇÕES, FIXA, EXTERIOR) ================= */
+        function renderAcoesTable(assetsList, groupName) {
             const tbody = document.getElementById('tbody-acoes-brasil');
             let html = '';
             let patTotal = getPatrimonioTotal(); // Pega a soma da Carteira Ideal
@@ -891,45 +894,52 @@
                 let cotacao = parseFloat(asset.cotacao) || 0;
                 let pm = parseFloat(asset.pm) || 0;
                 
-                // Cálculos da linha
-                let total = qtd * cotacao;
+                // O Total agora é a Qtd x Preço Médio Comprado
+                let total = qtd * pm;
                 let perc = patTotal > 0 ? (total / patTotal) * 100 : 0;
                 
                 html += `
                     <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td><input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Ex: PETR4" onchange="updateAcaoField(${idx}, 'ticker', this.value)"></td>
-                        <td><input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;"></td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${asset.pm || 0}" onchange="updateAcaoField(${idx}, 'pm', this.value)" style="text-align: center;"></td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;"></td>
+                        <td><input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Ex: Ativo" onchange="updateAcaoField(${idx}, '${groupName}', 'ticker', this.value)"></td>
+                        <td><input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'qtd', this.value)" min="0" style="text-align: center;"></td>
+                        <td><input type="number" step="0.01" class="custom-input" value="${asset.pm || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'pm', this.value)" style="text-align: center;"></td>
+                        <td><input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'cotacao', this.value)" style="text-align: center;"></td>
                         <td style="font-weight: bold; color: var(--text-main); text-align: center;">${formatMoney(total)}</td>
                         <td style="color: var(--color-highlight); font-weight: bold; text-align: center;">${perc.toFixed(2)}%</td>
-                        <td style="text-align: center;"><button class="btn-remove" onclick="removeAcao(${idx})">✕</button></td>
+                        <td style="text-align: center;"><button class="btn-remove" onclick="removeAcao(${idx}, '${groupName}')">✕</button></td>
                     </tr>
                 `;
             });
             tbody.innerHTML = html;
+            
+            // Botão Adicionar usa a categoria em que estamos
+            document.getElementById('btn-add-acao-generic').onclick = function() {
+                addAcaoBrasil(groupName);
+            };
         }
 
-        window.updateAcaoField = function(idx, field, value) {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+        window.updateAcaoField = function(idx, groupName, field, value) {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
             group.assets[idx][field] = value;
+            recalcularTodaCarteira(); // A Mágica Acontece Aqui
             scheduleSave();
-            renderAcoesTable(group.assets);
+            renderAcoesTable(group.assets, groupName);
         };
 
-        window.addAcaoBrasil = function() {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+        window.addAcaoBrasil = function(groupName) {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
             if(!group.assets) group.assets = [];
             group.assets.push({ ticker: '', qtd: 0, pm: 0, cotacao: 0 });
             scheduleSave();
-            renderAcoesTable(group.assets);
+            renderAcoesTable(group.assets, groupName);
         };
 
-        window.removeAcao = function(idx) {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+        window.removeAcao = function(idx, groupName) {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
             group.assets.splice(idx, 1);
+            recalcularTodaCarteira();
             scheduleSave();
-            renderAcoesTable(group.assets);
+            renderAcoesTable(group.assets, groupName);
         };
 
         /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
