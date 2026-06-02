@@ -665,7 +665,6 @@
 
         function updatePieItem(idx, field, value) {
             let list = getTargetStructure(currentPath);
-            if(currentPath.length===0 && field==='label'){ renderPieChartZone(); return; }
             if(field === 'val') {
                 list[idx][field] = parseFloat(value) || 0;
             } else {
@@ -676,7 +675,6 @@
         }
 
         function addPieSlice() {
-            if(currentPath.length===0){ alert('Categorias principais fixas.'); return; }
             let list = getTargetStructure(currentPath);
             list.push({ label: "Novo Alvo", val: 10, sub: [] });
             scheduleSave();
@@ -684,7 +682,6 @@
         }
 
         function removePieSlice(idx) {
-            if(currentPath.length===0){ alert('Categorias principais fixas.'); return; }
             let list = getTargetStructure(currentPath);
             list.splice(idx, 1);
             scheduleSave();
