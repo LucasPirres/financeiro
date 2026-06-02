@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard GTA 6 Vibes</title>
+    <title>Plano Financeiro e Investimentos</title>
+    <!-- Supabase, Chart.js e Plugin para textos nas barras -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
@@ -11,7 +12,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
         :root {
-            /* TEMA GTA 6 / MIAMI VICE */
             --bg-body: #0a0b10;
             --bg-sidebar: #06070a;
             --bg-card: #12141d;
@@ -29,15 +29,79 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        body { background-color: var(--bg-body); color: var(--text-main); overflow: hidden; height: 100vh; width: 100vw; }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gta-pink); }
 
-        /* SIDEBAR */
+        /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
+        #home-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('image_b8763a.jpg') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; gap: 50px;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Máscara escura sobre o fundo principal para dar destaque aos cartões */
+        #home-screen::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4); z-index: 0;
+        }
+
+        .home-card {
+            width: 400px; height: 500px;
+            position: relative; z-index: 1;
+            border-radius: 20px; overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .home-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+            border-color: var(--gta-cyan);
+        }
+
+        .home-card .card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            filter: brightness(0.5);
+            transition: filter 0.3s ease, transform 0.5s ease;
+            z-index: 1;
+        }
+
+        .home-card:hover .card-bg {
+            filter: brightness(0.7);
+            transform: scale(1.1);
+        }
+
+        .home-card h2 {
+            position: relative; z-index: 2;
+            color: #ffffff; font-size: 2.5rem; font-weight: 700;
+            text-shadow: 2px 4px 15px rgba(0,0,0,1);
+            text-align: center; pointer-events: none;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 900px) {
+            #home-screen { flex-direction: column; gap: 20px; padding: 20px; }
+            .home-card { width: 100%; height: 250px; }
+        }
+
+        /* ================= CONTAINER DO APP (Dashboard Existente) ================= */
+        #app-container {
+            display: none; /* Escondido por padrão até o clique */
+            width: 100vw; height: 100vh;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+
+        /* ================= CÓDIGO ORIGINAL DO DASHBOARD MANTIDO ================= */
         aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
         .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
         .logo-icon { width: 30px; height: 30px; background: linear-gradient(45deg, var(--gta-cyan), var(--gta-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
@@ -50,19 +114,19 @@
         .btn-del-year { background: transparent; border: none; color: var(--text-muted); cursor: pointer; opacity: 0.3; transition: 0.2s; }
         .nav-item:hover .btn-del-year { opacity: 1; color: var(--danger); }
 
-        /* HEADER */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); }
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; }
         .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--gta-pink); text-shadow: 0 0 8px rgba(255, 0, 122, 0.5); }
+        
+        .btn-back-home { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; margin-right: auto; font-weight: 600; }
+        .btn-back-home:hover { background: rgba(0, 229, 255, 0.1); border-color: var(--gta-cyan); }
 
-        /* MAIN */
         main { flex: 1; padding: 25px 30px; overflow-y: auto; }
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* DASHBOARD GRID */
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
         .card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .card-title { color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -73,7 +137,6 @@
         .card-horizontal { grid-column: span 2; grid-row: span 2; }
         .card-bar-full { grid-column: span 4; grid-row: span 2; }
 
-        /* LANÇAMENTOS */
         .entry-section { background: var(--bg-card); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); }
         .entry-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         
@@ -90,126 +153,189 @@
         .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
         .btn-remove:hover { color: var(--danger); text-shadow: 0 0 10px var(--danger); }
 
-        #sync-status { position: fixed; bottom: 15px; right: 20px; font-size: 11px; color: var(--text-main); background: var(--bg-card); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--gta-cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+        #sync-status { position: fixed; bottom: 15px; right: 20px; font-size: 11px; color: var(--text-main); background: var(--bg-card); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--gta-cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <aside>
-        <div class="logo-area">
-            <div class="logo-icon">🌴</div>
-            <div>Dashboard<br><span style="color: var(--gta-cyan);">Viçosa Vice</span></div>
+    <!-- ================= TELA INICIAL ================= -->
+    <div id="home-screen">
+        <div class="home-card" onclick="openApp('plano')">
+            <div class="card-bg" style="background-image: url('image_b86e95.jpg');"></div>
+            <h2>Plano Financeiro</h2>
         </div>
+        
+        <div class="home-card" onclick="openApp('investimentos')">
+            <div class="card-bg" style="background-image: url('image_b86af3.jpg');"></div>
+            <h2>Investimentos</h2>
+        </div>
+    </div>
 
-        <div class="nav-section">Anos</div>
-        <div id="years-list"></div>
-        <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%; background: #1a1d2d; border: 1px solid var(--border-color); box-shadow: none;" onclick="addYear()">+ Novo Ano</button></div>
-
-        <div class="nav-section" style="margin-top: 30px;">Meses</div>
-        <div id="months-list"></div>
-    </aside>
-
-    <div class="main-wrapper">
-        <header>
-            <button class="tab-btn active" onclick="switchTab('dashboard')">📈 Dashboard Visual</button>
-            <button class="tab-btn" onclick="switchTab('lancamentos')">✏️ Lançamentos (Valores)</button>
-        </header>
-
-        <main>
-            <div id="dashboard" class="view active">
-                <div class="dashboard-grid">
-                    
-                    <div class="card card-kpi">
-                        <div class="card-title">Saldo do mês</div>
-                        <div class="card-value" id="kpi-saldo">R$ 0,00</div>
-                    </div>
-
-                    <div class="card card-kpi">
-                        <div class="card-title">Despesas do mês</div>
-                        <div class="card-value" id="kpi-despesas" style="color: var(--gta-pink); text-shadow: 0 0 10px rgba(255,0,122,0.3);">R$ 0,00</div>
-                    </div>
-
-                    <div class="card card-donut">
-                        <div class="card-title">Despesas no Mês</div>
-                        <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
-                            <canvas id="chartDonutMes"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card card-donut">
-                        <div class="card-title">Despesas no Ano</div>
-                        <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
-                            <canvas id="chartDonutAno"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card card-horizontal">
-                        <div class="card-title">Detalhamento de Despesas (Mês)</div>
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="chartHorizontalMes"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card card-horizontal">
-                        <div class="card-title" style="color: var(--gta-cyan);">Detalhamento de Ganhos (Mês)</div>
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="chartHorizontalGanhos"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card card-bar-full">
-                        <div class="card-title">Evolução Anual (Ganhos vs Despesas)</div>
-                        <div style="position: relative; height: 280px; width: 100%;">
-                            <canvas id="chartBarAnual"></canvas>
-                        </div>
-                    </div>
-
-                </div>
+    <!-- ================= SISTEMA (Dashboard Antigo Envelopado) ================= -->
+    <div id="app-container">
+        <aside>
+            <div class="logo-area">
+                <div class="logo-icon">☕</div>
+                <!-- Nome alterado conforme solicitado -->
+                <div style="font-size: 15px;">Dashboard<br><span style="color: var(--gta-cyan);">Plano Financeiro</span></div>
             </div>
 
-            <div id="lancamentos" class="view">
-                <h2 style="margin-bottom: 20px; font-weight: 600;">Lançamentos de <span id="lbl-mes-ano" style="color: var(--gta-cyan);"></span></h2>
+            <div class="nav-section">Anos</div>
+            <div id="years-list"></div>
+            <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%; background: #1a1d2d; border: 1px solid var(--border-color); box-shadow: none;" onclick="addYear()">+ Novo Ano</button></div>
 
-                <div class="entry-section">
-                    <div class="entry-title" style="color: var(--gta-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.4);">💰 Ganhos e Receitas</div>
-                    <table>
-                        <thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody id="tbody-ganhos"></tbody>
-                    </table>
-                    <button class="btn-add" style="background: var(--gta-cyan); color: #000;" onclick="addRow('inc')">+ Novo Ganho</button>
+            <div class="nav-section" style="margin-top: 30px;">Meses</div>
+            <div id="months-list"></div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header>
+                <!-- Botão Voltar para a Tela Inicial -->
+                <button class="btn-back-home" onclick="goHome()">⬅️ Voltar ao Início</button>
+
+                <button class="tab-btn active" onclick="switchTab('dashboard')">📈 Dashboard Visual</button>
+                <button class="tab-btn" onclick="switchTab('lancamentos')">✏️ Lançamentos (Valores)</button>
+            </header>
+
+            <main>
+                <!-- ABA 1: DASHBOARD VISUAL -->
+                <div id="dashboard" class="view active">
+                    <div class="dashboard-grid">
+                        
+                        <div class="card card-kpi">
+                            <div class="card-title">Saldo do mês</div>
+                            <div class="card-value" id="kpi-saldo">R$ 0,00</div>
+                        </div>
+
+                        <div class="card card-kpi">
+                            <div class="card-title">Despesas do mês</div>
+                            <div class="card-value" id="kpi-despesas" style="color: var(--gta-pink); text-shadow: 0 0 10px rgba(255,0,122,0.3);">R$ 0,00</div>
+                        </div>
+
+                        <div class="card card-donut">
+                            <div class="card-title">Despesas no Mês</div>
+                            <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
+                                <canvas id="chartDonutMes"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card card-donut">
+                            <div class="card-title">Despesas no Ano</div>
+                            <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
+                                <canvas id="chartDonutAno"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card card-horizontal">
+                            <div class="card-title">Detalhamento de Despesas (Mês)</div>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartHorizontalMes"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card card-horizontal">
+                            <div class="card-title" style="color: var(--gta-cyan);">Detalhamento de Ganhos (Mês)</div>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartHorizontalGanhos"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card card-bar-full">
+                            <div class="card-title">Evolução Anual (Ganhos vs Despesas)</div>
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="chartBarAnual"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="entry-section">
-                    <div class="entry-title" style="color: var(--gta-purple); text-shadow: 0 0 8px rgba(112,0,255,0.4);">📌 Despesas Fixas (Base x Real)</div>
-                    <table>
-                        <thead><tr><th>Descrição / Categoria</th><th>Valor Base Projetado</th><th>Valor Real Pago</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody id="tbody-fixos"></tbody>
-                    </table>
-                    <button class="btn-add" onclick="addRow('fix')">+ Nova Despesa Fixa</button>
-                </div>
+                <!-- ABA 2: LANÇAMENTOS -->
+                <div id="lancamentos" class="view">
+                    <h2 style="margin-bottom: 20px; font-weight: 600;">Lançamentos de <span id="lbl-mes-ano" style="color: var(--gta-cyan);"></span></h2>
 
-                <div class="entry-section">
-                    <div class="entry-title" style="color: var(--gta-pink); text-shadow: 0 0 8px rgba(255,0,122,0.4);">💸 Despesas Variáveis</div>
-                    <table>
-                        <thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody id="tbody-variaveis"></tbody>
-                    </table>
-                    <button class="btn-add" style="background: var(--gta-pink);" onclick="addRow('exp')">+ Nova Despesa Variável</button>
+                    <div class="entry-section">
+                        <div class="entry-title" style="color: var(--gta-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.4);">💰 Ganhos e Receitas</div>
+                        <table>
+                            <thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
+                            <tbody id="tbody-ganhos"></tbody>
+                        </table>
+                        <button class="btn-add" style="background: var(--gta-cyan); color: #000;" onclick="addRow('inc')">+ Novo Ganho</button>
+                    </div>
+
+                    <div class="entry-section">
+                        <div class="entry-title" style="color: var(--gta-purple); text-shadow: 0 0 8px rgba(112,0,255,0.4);">📌 Despesas Fixas (Base x Real)</div>
+                        <table>
+                            <thead><tr><th>Descrição / Categoria</th><th>Valor Base Projetado</th><th>Valor Real Pago</th><th style="width: 40px;"></th></tr></thead>
+                            <tbody id="tbody-fixos"></tbody>
+                        </table>
+                        <button class="btn-add" onclick="addRow('fix')">+ Nova Despesa Fixa</button>
+                    </div>
+
+                    <div class="entry-section">
+                        <div class="entry-title" style="color: var(--gta-pink); text-shadow: 0 0 8px rgba(255,0,122,0.4);">💸 Despesas Variáveis</div>
+                        <table>
+                            <thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
+                            <tbody id="tbody-variaveis"></tbody>
+                        </table>
+                        <button class="btn-add" style="background: var(--gta-pink);" onclick="addRow('exp')">+ Nova Despesa Variável</button>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 
     <div id="sync-status">Conectando...</div>
 
     <script>
-        // === CREDENCIAIS SUPABASE ===
+        // === CONTROLE DA TELA INICIAL (NOVO) ===
+        function openApp(appName) {
+            if (appName === 'plano') {
+                const home = document.getElementById('home-screen');
+                const app = document.getElementById('app-container');
+                
+                // Animação de saída da Home
+                home.style.opacity = '0';
+                
+                setTimeout(() => {
+                    home.style.display = 'none';
+                    app.style.display = 'flex'; // Mostra o dashboard
+                    
+                    // Força a atualização do Chart.js para ele não ficar com tamanho zero
+                    app.offsetHeight; 
+                    app.style.opacity = '1';
+                    
+                    // Re-renderiza os gráficos com o tamanho de tela correto
+                    if (db.years[selectedYear]) {
+                        updateDashboard();
+                    }
+                }, 500); // 500ms é o tempo da transição no CSS
+                
+            } else if (appName === 'investimentos') {
+                alert("Em breve! Você mandará os dados para a aba de Investimentos depois.");
+            }
+        }
+
+        function goHome() {
+            const home = document.getElementById('home-screen');
+            const app = document.getElementById('app-container');
+            
+            app.style.opacity = '0';
+            setTimeout(() => {
+                app.style.display = 'none';
+                home.style.display = 'flex';
+                
+                home.offsetHeight;
+                home.style.opacity = '1';
+            }, 500);
+        }
+
+        // === CREDENCIAIS SUPABASE (MANTIDO) ===
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         // ============================
 
-        // Registrando o plugin de DataLabels para os valores aparecerem nas barras
         Chart.register(ChartDataLabels);
 
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -350,6 +476,9 @@
         function updateUI() { renderTables(); updateDashboard(); }
 
         function updateDashboard() {
+            // Se o app estiver invisível, os gráficos não renderizam bem. Retorna silenciosamente.
+            if(document.getElementById('app-container').style.display === 'none') return;
+
             let data = db.years[selectedYear][selectedMonth];
             
             let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0);
@@ -369,7 +498,6 @@
         }
 
         function renderCharts(monthData) {
-            // Configuração global para os labels de valor nos gráficos de barra
             const datalabelsConfig = {
                 color: '#fff', align: 'right', anchor: 'end',
                 font: { weight: 'bold', size: 11 },
@@ -388,7 +516,7 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#8b92a5', boxWidth: 10, font: {size: 10} } } } }
             });
 
-            // 2. Detalhamento Despesas (Barras Horizontais)
+            // 2. Detalhamento Despesas
             destroyChart('chartHorizontalMes');
             let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val);
             charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), {
@@ -397,7 +525,7 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
             });
 
-            // 3. Detalhamento Ganhos (Barras Horizontais)
+            // 3. Detalhamento Ganhos
             let catGanhos = {};
             monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; });
             let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
