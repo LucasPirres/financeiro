@@ -39,16 +39,10 @@
         /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: url('image_b8763a.jpg') no-repeat center center/cover;
+            background: #06070a;
             display: flex; align-items: center; justify-content: center; gap: 50px;
             z-index: 9999;
             transition: opacity 0.5s ease;
-        }
-
-        /* Máscara escura sobre o fundo principal para dar destaque aos cartões */
-        #home-screen::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4); z-index: 0;
         }
 
         .home-card {
@@ -71,14 +65,14 @@
         .home-card .card-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            filter: brightness(0.5);
+            filter: brightness(0.4);
             transition: filter 0.3s ease, transform 0.5s ease;
             z-index: 1;
         }
 
         .home-card:hover .card-bg {
-            filter: brightness(0.7);
-            transform: scale(1.1);
+            filter: brightness(0.6);
+            transform: scale(1.05);
         }
 
         .home-card h2 {
@@ -94,14 +88,13 @@
             .home-card { width: 100%; height: 250px; }
         }
 
-        /* ================= CONTAINER DO APP (Dashboard Existente) ================= */
+        /* ================= CONTAINER DO APP ================= */
         #app-container {
-            display: none; /* Escondido por padrão até o clique */
+            display: none;
             width: 100vw; height: 100vh;
             opacity: 0; transition: opacity 0.5s ease;
         }
 
-        /* ================= CÓDIGO ORIGINAL DO DASHBOARD MANTIDO ================= */
         aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
         .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
         .logo-icon { width: 30px; height: 30px; background: linear-gradient(45deg, var(--gta-cyan), var(--gta-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
@@ -161,22 +154,23 @@
     <!-- ================= TELA INICIAL ================= -->
     <div id="home-screen">
         <div class="home-card" onclick="openApp('plano')">
-            <div class="card-bg" style="background-image: url('image_b86e95.jpg');"></div>
+            <!-- Atualizado com image_39c4e9.jpg centralizado -->
+            <div class="card-bg" style="background-image: url('image_39c4e9.jpg'); background-position: center center;"></div>
             <h2>Plano Financeiro</h2>
         </div>
         
         <div class="home-card" onclick="openApp('investimentos')">
-            <div class="card-bg" style="background-image: url('image_b86af3.jpg');"></div>
+            <!-- Atualizado com image_39c485.jpg -->
+            <div class="card-bg" style="background-image: url('image_39c485.jpg'); background-position: center center;"></div>
             <h2>Investimentos</h2>
         </div>
     </div>
 
-    <!-- ================= SISTEMA (Dashboard Antigo Envelopado) ================= -->
+    <!-- ================= SISTEMA ================= -->
     <div id="app-container">
         <aside>
             <div class="logo-area">
-                <div class="logo-icon">☕</div>
-                <!-- Nome alterado conforme solicitado -->
+                <div class="logo-icon">💰</div>
                 <div style="font-size: 15px;">Dashboard<br><span style="color: var(--gta-cyan);">Plano Financeiro</span></div>
             </div>
 
@@ -190,9 +184,7 @@
 
         <div class="main-wrapper">
             <header>
-                <!-- Botão Voltar para a Tela Inicial -->
                 <button class="btn-back-home" onclick="goHome()">⬅️ Voltar ao Início</button>
-
                 <button class="tab-btn active" onclick="switchTab('dashboard')">📈 Dashboard Visual</button>
                 <button class="tab-btn" onclick="switchTab('lancamentos')">✏️ Lançamentos (Valores)</button>
             </header>
@@ -288,29 +280,18 @@
     <div id="sync-status">Conectando...</div>
 
     <script>
-        // === CONTROLE DA TELA INICIAL (NOVO) ===
         function openApp(appName) {
             if (appName === 'plano') {
                 const home = document.getElementById('home-screen');
                 const app = document.getElementById('app-container');
-                
-                // Animação de saída da Home
                 home.style.opacity = '0';
-                
                 setTimeout(() => {
                     home.style.display = 'none';
-                    app.style.display = 'flex'; // Mostra o dashboard
-                    
-                    // Força a atualização do Chart.js para ele não ficar com tamanho zero
+                    app.style.display = 'flex';
                     app.offsetHeight; 
                     app.style.opacity = '1';
-                    
-                    // Re-renderiza os gráficos com o tamanho de tela correto
-                    if (db.years[selectedYear]) {
-                        updateDashboard();
-                    }
-                }, 500); // 500ms é o tempo da transição no CSS
-                
+                    if (db.years[selectedYear]) { updateDashboard(); }
+                }, 500);
             } else if (appName === 'investimentos') {
                 alert("Em breve! Você mandará os dados para a aba de Investimentos depois.");
             }
@@ -319,22 +300,18 @@
         function goHome() {
             const home = document.getElementById('home-screen');
             const app = document.getElementById('app-container');
-            
             app.style.opacity = '0';
             setTimeout(() => {
                 app.style.display = 'none';
                 home.style.display = 'flex';
-                
                 home.offsetHeight;
                 home.style.opacity = '1';
             }, 500);
         }
 
-        // === CREDENCIAIS SUPABASE (MANTIDO) ===
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        // ============================
 
         Chart.register(ChartDataLabels);
 
@@ -454,9 +431,9 @@
             let data = db.years[selectedYear][selectedMonth];
 
             const placeholders = {
-                'inc': 'Ex: Mesada dos pais, Bolsa Agronomia, Salário...',
-                'fix': 'Ex: Aluguel (dividido), Internet...',
-                'exp': 'Ex: Restaurante RU, Mercado, MXRF11...'
+                'inc': 'Ex: Mesada, Bolsa, Salário...',
+                'fix': 'Ex: Aluguel, Internet...',
+                'exp': 'Ex: Alimentação, Mercado, Investimentos...'
             };
 
             const createRows = (type, items) => items.map((item, i) => `
@@ -476,7 +453,6 @@
         function updateUI() { renderTables(); updateDashboard(); }
 
         function updateDashboard() {
-            // Se o app estiver invisível, os gráficos não renderizam bem. Retorna silenciosamente.
             if(document.getElementById('app-container').style.display === 'none') return;
 
             let data = db.years[selectedYear][selectedMonth];
@@ -504,7 +480,6 @@
                 formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : ''
             };
 
-            // 1. Donut Mês
             let catDespesas = {};
             monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; });
             monthData.exp.forEach(i => { if(i.v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + i.v; });
@@ -516,7 +491,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#8b92a5', boxWidth: 10, font: {size: 10} } } } }
             });
 
-            // 2. Detalhamento Despesas
             destroyChart('chartHorizontalMes');
             let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val);
             charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), {
@@ -525,7 +499,6 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
             });
 
-            // 3. Detalhamento Ganhos
             let catGanhos = {};
             monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; });
             let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
@@ -537,7 +510,6 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
             });
 
-            // Cálculos Anuais
             let ganhosAno = []; let despesasAno = []; let catAno = {};
             MONTHS.forEach(m => {
                 let md = db.years[selectedYear][m];
@@ -548,7 +520,6 @@
                 md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; });
             });
 
-            // 4. Donut Ano
             destroyChart('chartDonutAno');
             charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), {
                 type: 'doughnut',
@@ -556,7 +527,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#8b92a5', boxWidth: 10, font: {size: 10} } } } }
             });
 
-            // 5. Evolução Anual
             destroyChart('chartBarAnual');
             charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), {
                 type: 'bar',
