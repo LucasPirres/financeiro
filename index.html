@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano Financeiro e Investimentos</title>
+    <!-- Supabase, Chart.js e Plugin para textos nas barras -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
@@ -23,6 +24,7 @@
             --color-expense: #ff5252; 
             --color-neutral: #b0bec5; 
             --color-highlight: #ffb300; 
+            --color-purple: #7b1fa2;
             
             --border-color: #222222;
         }
@@ -40,7 +42,6 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.4)), url('330cd61c3377c1a6aec04293dedaa18a.gif') no-repeat center center;
             background-size: cover;
-            /* Separa os cards: um na esquerda, um na direita, deixando o centro livre */
             display: flex; align-items: center; justify-content: space-between; padding: 0 8%;
             z-index: 9999;
             transition: opacity 0.5s ease;
@@ -90,7 +91,7 @@
             .home-card { width: 100%; height: 250px; }
         }
 
-        /* ================= CONTAINER DO APP ================= */
+        /* ================= CONTAINER DO APP (PLANO FINANCEIRO) ================= */
         #app-container {
             display: none;
             width: 100vw; height: 100vh;
@@ -120,7 +121,6 @@
         main { flex: 1; padding: 25px 30px; overflow-y: auto; }
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
         .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
@@ -141,48 +141,101 @@
         
         .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-family: 'Inter', sans-serif; padding: 8px 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
         .custom-input:focus { border-bottom: 1px solid var(--text-muted); background: #1a1a1a; border-radius: 4px 4px 0 0; }
-        .custom-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
         
         .btn-add { background: #1a1a1a; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
         .btn-add:hover { background: var(--border-color); }
         
         .btn-add-gain { border-color: var(--color-gain); color: var(--color-gain); }
         .btn-add-gain:hover { background: rgba(0, 230, 118, 0.1); }
-        
         .btn-add-exp { border-color: var(--color-expense); color: var(--color-expense); }
         .btn-add-exp:hover { background: rgba(255, 82, 82, 0.1); }
-
         .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
         .btn-remove:hover { color: var(--color-expense); }
 
-        #sync-status { position: fixed; bottom: 15px; right: 20px; font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 5px 15px; border-radius: 4px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 1000; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
+        #invest-container {
+            display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease;
+            flex-direction: column; background-color: var(--bg-body);
+        }
+        .invest-menu-screen {
+            display: flex; flex: 1; align-items: center; justify-content: center; gap: 50px; padding: 40px;
+        }
+        .invest-menu-card {
+            width: 380px; height: 280px; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px;
+        }
+        .invest-menu-card:hover {
+            transform: translateY(-5px); border-color: var(--color-purple);
+            box-shadow: 0 20px 40px rgba(123, 31, 162, 0.2);
+        }
+        .invest-menu-card .icon { font-size: 40px; color: var(--color-purple); }
+        .invest-menu-card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .invest-content-area { display: none; flex: 1; padding: 30px; overflow-y: auto; flex-direction: column; }
+        .center-title { text-align: center; font-size: 2rem; font-weight: 700; color: #ffb300; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 20px; }
+        .chart-holder { width: 450px; height: 450px; position: relative; }
+        
+        .editor-sidebar { width: 320px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+        .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        
+        /* Grid Limite 4 por Linha para Ativos */
+        .asset-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; margin-top: 25px;
+        }
+        .asset-card {
+            background: #ffffff; color: #000000; border-radius: 8px; padding: 20px; position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; border: 1px solid #e0e0e0;
+        }
+        .asset-card h4 { font-size: 1.4rem; font-weight: 700; text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; }
+        .asset-meta-row { display: flex; flex-direction: column; gap: 6px; font-size: 11px; border-bottom: 1px solid #eeeeee; padding: 4px 0; }
+        .asset-meta-row span { font-size: 12px; }
+        .asset-card .btn-card-del { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #cc0000; font-weight: 700; cursor: pointer; }
+
+        .add-asset-dashed {
+            border: 2px dashed #444444; border-radius: 8px; height: 100%; min-height: 350px; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; color: var(--text-muted);
+        }
+        .add-asset-dashed:hover { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.02); }
+        .add-asset-dashed .plus { font-size: 45px; font-weight: 300; }
+
+        .breadcrumbs { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 8px; align-items: center; }
+        .breadcrumbs span { cursor: pointer; }
+        .breadcrumbs span:hover { color: var(--text-main); }
+
+        .textarea-resumo { width: 100%; height: 500px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; padding: 25px; font-family: monospace; font-size: 14px; line-height: 1.6; resize: none; outline: none; }
+        .textarea-resumo:focus { border-color: var(--color-purple); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <!-- ================= TELA INICIAL DE SELEÇÃO DO SITE ================= -->
     <div id="home-screen">
         <div class="home-card" onclick="openApp('plano')">
-            <div class="card-bg" style="background-image: url('image_39c4e9.jpg'); background-position: center center;"></div>
+            <div class="card-bg" style="background-image: url('image_39c4e9.jpg');"></div>
             <h2>Plano Financeiro</h2>
         </div>
         
         <div class="home-card" onclick="openApp('investimentos')">
-            <div class="card-bg" style="background-image: url('image_39c485.jpg'); background-position: center center;"></div>
+            <div class="card-bg" style="background-image: url('image_39c485.jpg');"></div>
             <h2>Investimentos</h2>
         </div>
     </div>
 
+    <!-- ================= SISTEMA 1: PLANO FINANCEIRO ================= -->
     <div id="app-container">
         <aside>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
                 <div style="font-size: 15px;">Dashboard<br><span style="color: var(--text-muted); font-weight: 400; font-size: 12px;">Plano Financeiro</span></div>
             </div>
-
             <div class="nav-section">Anos</div>
             <div id="years-list"></div>
             <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%;" onclick="addYear()">+ Novo Ano</button></div>
-
             <div class="nav-section" style="margin-top: 30px;">Meses</div>
             <div id="months-list"></div>
         </aside>
@@ -193,86 +246,33 @@
                 <button class="tab-btn active" onclick="switchTab('dashboard')">Visão Geral</button>
                 <button class="tab-btn" onclick="switchTab('lancamentos')">Lançamentos</button>
             </header>
-
             <main>
                 <div id="dashboard" class="view active">
                     <div class="dashboard-grid">
-                        
-                        <div class="card card-kpi">
-                            <div class="card-title">Fluxo de Caixa (Líquido)</div>
-                            <div class="card-value" id="kpi-saldo">R$ 0,00</div>
-                        </div>
-
-                        <div class="card card-kpi">
-                            <div class="card-title">Saídas do Mês</div>
-                            <div class="card-value" id="kpi-despesas" style="color: var(--color-expense);">R$ 0,00</div>
-                        </div>
-
-                        <div class="card card-donut">
-                            <div class="card-title">Distribuição de Saídas (Mês)</div>
-                            <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
-                                <canvas id="chartDonutMes"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="card card-donut">
-                            <div class="card-title">Distribuição de Saídas (Ano)</div>
-                            <div style="position: relative; height: 180px; width: 100%; margin-top: 20px;">
-                                <canvas id="chartDonutAno"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="card card-horizontal">
-                            <div class="card-title">Maiores Saídas (Mês)</div>
-                            <div style="position: relative; height: 250px; width: 100%;">
-                                <canvas id="chartHorizontalMes"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="card card-horizontal">
-                            <div class="card-title">Maiores Entradas (Mês)</div>
-                            <div style="position: relative; height: 250px; width: 100%;">
-                                <canvas id="chartHorizontalGanhos"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="card card-bar-full">
-                            <div class="card-title">Histórico de Entradas e Saídas Anual</div>
-                            <div style="position: relative; height: 280px; width: 100%;">
-                                <canvas id="chartBarAnual"></canvas>
-                            </div>
-                        </div>
-
+                        <div class="card card-kpi"><div class="card-title">Fluxo de Caixa (Líquido)</div><div class="card-value" id="kpi-saldo">R$ 0,00</div></div>
+                        <div class="card card-kpi"><div class="card-title">Saídas do Mês</div><div class="card-value" id="kpi-despesas" style="color: var(--color-expense);">R$ 0,00</div></div>
+                        <div class="card card-donut"><div class="card-title">Distribuição de Saídas (Mês)</div><div class="chart-holder" style="height:180px; width:100%; margin-top:20px;"><canvas id="chartDonutMes"></canvas></div></div>
+                        <div class="card card-donut"><div class="card-title">Distribuição de Saídas (Ano)</div><div class="chart-holder" style="height:180px; width:100%; margin-top:20px;"><canvas id="chartDonutAno"></canvas></div></div>
+                        <div class="card card-horizontal"><div class="card-title">Maiores Saídas (Mês)</div><div class="chart-holder" style="height:250px; width:100%;"><canvas id="chartHorizontalMes"></canvas></div></div>
+                        <div class="card card-horizontal"><div class="card-title">Maiores Entradas (Mês)</div><div class="chart-holder" style="height:250px; width:100%;"><canvas id="chartHorizontalGanhos"></canvas></div></div>
+                        <div class="card card-bar-full"><div class="card-title">Histórico de Entradas e Saídas Anual</div><div class="chart-holder" style="height:280px; width:100%;"><canvas id="chartBarAnual"></canvas></div></div>
                     </div>
                 </div>
-
                 <div id="lancamentos" class="view">
                     <h2 style="margin-bottom: 25px; font-weight: 600; font-size: 20px; color: var(--text-main);">Lançamentos de <span id="lbl-mes-ano" style="color: var(--color-neutral);"></span></h2>
-
                     <div class="entry-section" style="border-left: 3px solid var(--color-gain);">
                         <div class="entry-title" style="color: var(--color-gain);">Entradas / Receitas</div>
-                        <table>
-                            <thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
-                            <tbody id="tbody-ganhos"></tbody>
-                        </table>
+                        <table><thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-ganhos"></tbody></table>
                         <button class="btn-add btn-add-gain" onclick="addRow('inc')">+ Adicionar Entrada</button>
                     </div>
-
                     <div class="entry-section" style="border-left: 3px solid var(--text-muted);">
                         <div class="entry-title" style="color: var(--text-muted);">Saídas Fixas (Projetado x Real)</div>
-                        <table>
-                            <thead><tr><th>Descrição / Categoria</th><th>Valor Base</th><th>Valor Real</th><th style="width: 40px;"></th></tr></thead>
-                            <tbody id="tbody-fixos"></tbody>
-                        </table>
+                        <table><thead><tr><th>Descrição / Categoria</th><th>Valor Base</th><th>Valor Real</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-fixos"></tbody></table>
                         <button class="btn-add" onclick="addRow('fix')">+ Adicionar Saída Fixa</button>
                     </div>
-
                     <div class="entry-section" style="border-left: 3px solid var(--color-expense);">
                         <div class="entry-title" style="color: var(--color-expense);">Saídas Variáveis</div>
-                        <table>
-                            <thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead>
-                            <tbody id="tbody-variaveis"></tbody>
-                        </table>
+                        <table><thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-variaveis"></tbody></table>
                         <button class="btn-add btn-add-exp" onclick="addRow('exp')">+ Adicionar Saída Variável</button>
                     </div>
                 </div>
@@ -280,38 +280,111 @@
         </div>
     </div>
 
+    <!-- ================= SISTEMA 2: INVESTIMENTOS (NOVA ESTRUTURA) ================= -->
+    <div id="invest-container">
+        <header>
+            <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
+            <div style="font-weight: 700; color: var(--color-purple); font-size: 16px; letter-spacing: 1px; text-transform: uppercase;">Módulo de Investimentos</div>
+        </header>
+
+        <!-- Menu interno de Investimentos -->
+        <div id="invest-menu-view" class="invest-menu-screen">
+            <div class="invest-menu-card" onclick="openInvestSub('carteira')">
+                <div class="icon">📊</div>
+                <h3>Carteira Ideal</h3>
+            </div>
+            <div class="invest-menu-card" onclick="openInvestSub('resumo')">
+                <div class="icon">📝</div>
+                <h3>Resumo da Carteira</h3>
+            </div>
+        </div>
+
+        <!-- Conteúdo do Resumo da Carteira -->
+        <div id="invest-resumo-view" class="invest-content-area">
+            <div class="breadcrumbs"><span onclick="backToInvestMenu()">Investimentos</span> ➡ <span>Resumo da Carteira</span></div>
+            <h2 class="center-title" style="color: var(--color-purple);">Resumo Geral da Carteira</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px; text-align: center;">Todos os dados digitados abaixo salvam automaticamente no Supabase.</p>
+            <textarea class="textarea-resumo" id="txt-resumo-invest" oninput="saveResumoText()"></textarea>
+        </div>
+
+        <!-- Conteúdo da Carteira Ideal -->
+        <div id="invest-carteira-view" class="invest-content-area">
+            <div id="invest-breadcrumbs" class="breadcrumbs"></div>
+            <h2 id="invest-main-title" class="center-title">Carteira Ideal</h2>
+
+            <!-- Tela de Gráfico (Nível 1 e Nível 2) -->
+            <div id="invest-chart-zone" class="pie-box-wrapper">
+                <div class="chart-holder">
+                    <canvas id="chartInvestPie"></canvas>
+                </div>
+
+                <div class="editor-sidebar">
+                    <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (%)</h4>
+                    <div id="editor-items-list"></div>
+                    <button class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple);" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
+                </div>
+            </div>
+
+            <!-- Tela de Ativos (Nível 3 - Lista de Cartões Grid Limite 4) -->
+            <div id="invest-assets-zone" style="display: none; width: 100%;">
+                <div class="asset-grid" id="asset-cards-container"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="sync-status">Conectando...</div>
 
     <script>
+        // Inicialização global de rotas e janelas
         function openApp(appName) {
-            if (appName === 'plano') {
-                const home = document.getElementById('home-screen');
-                const app = document.getElementById('app-container');
-                home.style.opacity = '0';
-                setTimeout(() => {
-                    home.style.display = 'none';
-                    app.style.display = 'flex';
-                    app.offsetHeight; 
-                    app.style.opacity = '1';
-                    if (db.years[selectedYear]) { updateDashboard(); }
-                }, 500);
-            } else if (appName === 'investimentos') {
-                alert("Em breve! Você mandará os dados para a aba de Investimentos depois.");
-            }
-        }
-
-        function goHome() {
-            const home = document.getElementById('home-screen');
-            const app = document.getElementById('app-container');
-            app.style.opacity = '0';
+            document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
-                app.style.display = 'none';
-                home.style.display = 'flex';
-                home.offsetHeight;
-                home.style.opacity = '1';
+                document.getElementById('home-screen').style.display = 'none';
+                if (appName === 'plano') {
+                    const app = document.getElementById('app-container');
+                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
+                    if (db.years[selectedYear]) { updateDashboard(); }
+                } else if (appName === 'investimentos') {
+                    const app = document.getElementById('invest-container');
+                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
+                    backToInvestMenu();
+                }
             }, 500);
         }
 
+        function goHome() {
+            const appPlano = document.getElementById('app-container');
+            const appInvest = document.getElementById('invest-container');
+            appPlano.style.opacity = '0'; appInvest.style.opacity = '0';
+            setTimeout(() => {
+                appPlano.style.display = 'none';
+                appInvest.style.display = 'none';
+                const home = document.getElementById('home-screen');
+                home.style.display = 'flex'; home.offsetHeight; home.style.opacity = '1';
+            }, 500);
+        }
+
+        function openInvestSub(subView) {
+            document.getElementById('invest-menu-view').style.display = 'none';
+            document.getElementById('invest-resumo-view').style.display = 'none';
+            document.getElementById('invest-carteira-view').style.display = 'none';
+
+            if (subView === 'resumo') {
+                document.getElementById('invest-resumo-view').style.display = 'flex';
+                document.getElementById('txt-resumo-invest').value = db.investimentos.resumo;
+            } else if (subView === 'carteira') {
+                document.getElementById('invest-carteira-view').style.display = 'flex';
+                navigateToPath([]); // Começa na raiz da pizza
+            }
+        }
+
+        function backToInvestMenu() {
+            document.getElementById('invest-menu-view').style.display = 'flex';
+            document.getElementById('invest-resumo-view').style.display = 'none';
+            document.getElementById('invest-carteira-view').style.display = 'none';
+        }
+
+        // Configuração de Conexão Supabase
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -320,30 +393,58 @@
 
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const CHART_COLORS_EXPENSES = ['#ff5252', '#c62828', '#d84315', '#ef6c00', '#546e7a', '#37474f', '#212121'];
+        const PIE_PALETTE = ['#29b6f6', '#66bb6a', '#ffa726', '#ab47bc', '#ec407a', '#26a69a', '#78909c'];
         
-        let db = { years: {} };
+        let db = { years: {}, investimentos: {} };
         let selectedYear = new Date().getFullYear().toString();
         let selectedMonth = MONTHS[new Date().getMonth()];
         let charts = {};
         let syncTimeout;
+        let currentPath = []; // Controla a navegação da Carteira Ideal (Ex: [] ou ['Imóveis'])
 
         Chart.defaults.color = '#888888';
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
 
+        // Carregamento de Estruturas Padrão Baseadas nos Vídeos e Discord
+        function getDefaultInvestStructure() {
+            return {
+                resumo: `-CARTEIRA DE INVESTIMENTO-\n\n• Aportes Mensais de R$300,00\n\nDiversificação (Renda Variável):\n• Ações no Brasil\nSanepar (SAPR11)\nBanco Itaú (ITUB4)\n\n• Fundo Imobiliarios\nPAPEL:\nKNCR11 -> 105,70\nMXRF11 -> 9,86\nVGHF11 -> 6,00\nBTCI11 -> 9,23\n\nTIJOLO:\nHGLG11 -> 154,36\nXPML11 -> 106,61\nKNRI11 -> 157,24\nXPLG11 -> 95,51\nGARE11 -> 8,24\n\n• Ações no Exterior\n• Biticoin\n\nEmergência (Renda Fixa):`,
+                carteiraIdeal: [
+                    { label: "Renda Fixa", val: 25, sub: [] },
+                    { label: "Ações do Brasil", val: 25, sub: [] },
+                    { label: "Ativos no Exterior", val: 25, sub: [] },
+                    { label: "Imóveis", val: 25, sub: [
+                        { label: "PAPEL", val: 50, assets: [
+                            { ticker: "KNCR11", tipo: "PAPEL", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
+                            { ticker: "MXRF11", tipo: "PAPEL", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
+                        ]},
+                        { label: "TIJOLO", val: 50, assets: [
+                            { ticker: "HGLG11", tipo: "TIJOLO", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
+                        ]}
+                    ]}
+                ]
+            };
+        }
+
         async function loadData() {
             try {
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
-                if (data && data.dados && data.dados.years) { db = data.dados; } 
-                else { if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure(); await saveDataNow(); }
-                if(!db.years[selectedYear]) { db.years[selectedYear] = createYearStructure(); }
-                
+                if (data && data.dados) { 
+                    db = data.dados;
+                    if (!db.investimentos) { db.investimentos = getDefaultInvestStructure(); }
+                } else { 
+                    db.years[selectedYear] = createYearStructure(); 
+                    db.investimentos = getDefaultInvestStructure();
+                    await saveDataNow(); 
+                }
                 document.getElementById('sync-status').innerText = "Online";
                 renderSidebar(); updateUI();
             } catch (e) { 
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+                if(!db.investimentos) db.investimentos = getDefaultInvestStructure();
                 renderSidebar(); updateUI();
             }
         }
@@ -367,6 +468,216 @@
             return struct;
         }
 
+        function saveResumoText() {
+            db.investimentos.resumo = document.getElementById('txt-resumo-invest').value;
+            scheduleSave();
+        }
+
+        /* ================= ENGINE DA CARTEIRA IDEAL INTERATIVA ================= */
+        function getTargetStructure(path) {
+            let current = db.investimentos.carteiraIdeal;
+            for(let i=0; i<path.length; i++) {
+                let found = current.find(item => item.label === path[i]);
+                if (found) { current = found.sub; }
+            }
+            return current;
+        }
+
+        function navigateToPath(path) {
+            currentPath = path;
+            renderBreadcrumbs();
+            
+            // Determina se estamos vendo uma lista de ativos finais (FIIs por exemplo) ou sub-pizzas
+            if (path.length === 2) {
+                // Chegamos ao nível final de ativos (Ex: Imóveis -> PAPEL)
+                document.getElementById('invest-chart-zone').style.display = 'none';
+                document.getElementById('invest-assets-zone').style.display = 'block';
+                
+                let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
+                let subGroup = parentPizza.sub.find(item => item.label === path[1]);
+                if(!subGroup.assets) subGroup.assets = [];
+                
+                document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
+                renderAssetCards(subGroup.assets);
+            } else {
+                // Nível de Gráfico de Pizza normal
+                document.getElementById('invest-chart-zone').style.display = 'flex';
+                document.getElementById('invest-assets-zone').style.display = 'none';
+                
+                if (path.length === 0) {
+                    document.getElementById('invest-main-title').innerText = "Carteira Ideal";
+                } else {
+                    document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
+                }
+                renderPieChartZone();
+            }
+        }
+
+        function renderBreadcrumbs() {
+            let html = `<span onclick="backToInvestMenu()">Investimentos</span>`;
+            let accum = [];
+            for(let i=0; i<currentPath.length; i++) {
+                accum.push(currentPath[i]);
+                let stringPath = JSON.stringify(accum);
+                html += ` ➡ <span onclick='navigateToPath(${stringPath})'>${currentPath[i]}</span>`;
+            }
+            document.getElementById('invest-breadcrumbs').innerHTML = html;
+        }
+
+        function renderPieChartZone() {
+            let list = getTargetStructure(currentPath);
+            
+            // Renderiza lista de edição da barra lateral
+            let htmlList = list.map((item, idx) => `
+                <div class="editor-row">
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px;" value="${item.label}" onchange="updatePieItem(${idx}, 'label', this.value)">
+                    <input type="number" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:70px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)">
+                    <button class="btn-remove" onclick="removePieSlice(${idx})">✕</button>
+                </div>
+            `).join('');
+            document.getElementById('editor-items-list').innerHTML = htmlList;
+
+            // Renderiza o gráfico via Chart.js
+            destroyChart('chartInvestPie');
+            
+            let labels = list.map(i => i.label);
+            let dataVals = list.map(i => i.val);
+
+            charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataVals,
+                        backgroundColor: PIE_PALETTE.slice(0, list.length),
+                        borderWidth: 2,
+                        borderColor: 'var(--bg-card)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 600, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 12 } } },
+                        datalabels: {
+                            color: '#ffffff',
+                            font: { weight: '700', size: 14 },
+                            formatter: (val) => val + '%'
+                        }
+                    },
+                    // Ao passar o mouse, gera animação padrão do Chart.js de destaque (hover radius)
+                    hover: { mode: 'nearest', intersect: true },
+                    onClick: (evt, elements) => {
+                        if (elements.length > 0) {
+                            let clickedIdx = elements[0].index;
+                            let targetItem = list[clickedIdx];
+                            
+                            // Cria a sub-estrutura caso não exista
+                            if (!targetItem.sub && currentPath.length === 0) { targetItem.sub = []; }
+                            
+                            // Navega para dentro
+                            let newPath = [...currentPath, targetItem.label];
+                            navigateToPath(newPath);
+                        }
+                    }
+                }
+            });
+        }
+
+        function updatePieItem(idx, field, value) {
+            let list = getTargetStructure(currentPath);
+            if(field === 'val') {
+                list[idx][field] = parseFloat(value) || 0;
+            } else {
+                list[idx][field] = value;
+            }
+            scheduleSave();
+            renderPieChartZone();
+        }
+
+        function addPieSlice() {
+            let list = getTargetStructure(currentPath);
+            list.push({ label: "Novo Alvo", val: 10, sub: [] });
+            scheduleSave();
+            renderPieChartZone();
+        }
+
+        function removePieSlice(idx) {
+            let list = getTargetStructure(currentPath);
+            list.splice(idx, 1);
+            scheduleSave();
+            renderPieChartZone();
+        }
+
+        /* ================= CARDS DE CRITÉRIOS DE ATIVOS (LIMITE DE 4 POR LINHA) ================= */
+        function renderAssetCards(assetsList) {
+            let container = document.getElementById('asset-cards-container');
+            
+            let html = assetsList.map((asset, idx) => `
+                <div class="asset-card">
+                    <button class="btn-card-del" onclick="removeAssetCard(${idx})">✕</button>
+                    <h4><input type="text" style="color:#000; font-weight:700; text-align:center; border:none; width:100%; font-size:1.3rem; outline:none;" value="${asset.ticker}" onchange="updateAssetField(${idx}, 'ticker', this.value)"></h4>
+                    
+                    <div class="asset-meta-row"><b>TIPO DE FUNDO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.tipo}" onchange="updateAssetField(${idx}, 'tipo', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>VALOR PATRIMONIAL</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vp}" onchange="updateAssetField(${idx}, 'vp', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>LIQUIDEZ DIÁRIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.liq}" onchange="updateAssetField(${idx}, 'liq', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>P/VP</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pvp}" onchange="updateAssetField(${idx}, 'pvp', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>HISTÓRICO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.hist}" onchange="updateAssetField(${idx}, 'hist', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>HISTÓRICO DE DIVIDENDOS</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.hist_div}" onchange="updateAssetField(${idx}, 'hist_div', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>DIVIDEND YIELD</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.dy}" onchange="updateAssetField(${idx}, 'dy', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>NÚMERO DE IMÓVEIS</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.num_imoveis}" onchange="updateAssetField(${idx}, 'num_imoveis', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>VACÂNCIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vacancia}" onchange="updateAssetField(${idx}, 'vacancia', this.value)"></span></div>
+                    <div class="asset-meta-row"><b>% PL MÁXIMO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pl_max}" onchange="updateAssetField(${idx}, 'pl_max', this.value)"></span></div>
+                </div>
+            `).join('');
+
+            // Adiciona o retângulo pontilhado de "+" no final da lista
+            html += `
+                <div class="add-asset-dashed" onclick="addAssetCard()">
+                    <div class="plus">+</div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function updateAssetField(idx, field, value) {
+            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
+            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
+            subGroup.assets[idx][field] = value;
+            scheduleSave();
+        }
+
+        function addAssetCard() {
+            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
+            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
+            
+            subGroup.assets.push({
+                ticker: "NOVO11",
+                tipo: currentPath[1],
+                vp: "Mais de 500 MILHÕES",
+                liq: "Mais de 1 MILHÃO",
+                pvp: "1,00",
+                hist: "4 ANOS OU MAIS",
+                hist_div: "ESTÁVEL OU CRESCENTE",
+                dy: "ACIMA DE 8%",
+                num_imoveis: "8 OU MAIS",
+                vacancia: "10% OU MENOS",
+                pl_max: "6% OU MENOS"
+            });
+            scheduleSave();
+            renderAssetCards(subGroup.assets);
+        }
+
+        function removeAssetCard(idx) {
+            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
+            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
+            subGroup.assets.splice(idx, 1);
+            scheduleSave();
+            renderAssetCards(subGroup.assets);
+        }
+
+        /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -392,9 +703,7 @@
                     let curY = new Date().getFullYear().toString();
                     db.years[curY] = createYearStructure();
                     selectedYear = curY;
-                } else if(selectedYear === y) {
-                    selectedYear = keys[0];
-                }
+                } else if(selectedYear === y) { selectedYear = keys[0]; }
                 scheduleSave(); renderSidebar(); updateUI();
             }
         }
@@ -459,7 +768,6 @@
             if(document.getElementById('app-container').style.display === 'none') return;
 
             let data = db.years[selectedYear][selectedMonth];
-            
             let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0);
             let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0);
             let varMes = data.exp.reduce((a, c) => a + c.v, 0);
@@ -471,7 +779,6 @@
             elSaldo.style.color = saldoMes >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
             
             document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-
             renderCharts(data);
         }
 
@@ -517,7 +824,6 @@
                 let md = db.years[selectedYear][m];
                 ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0));
                 despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0));
-
                 md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; });
                 md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; });
             });
