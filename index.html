@@ -181,7 +181,7 @@
         .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
         .chart-holder { width: 400px; height: 400px; position: relative; }
         
-        .editor-sidebar { width: 340px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+        .editor-sidebar { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
         .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 
         .btn-back-invest {
@@ -226,7 +226,6 @@
     </div>
 
     <div id="app-container">
-        <!-- O Menu Lateral do Plano Financeiro fica intocado aqui -->
         <aside>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
@@ -248,7 +247,6 @@
                 <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
             </header>
             <main>
-                <!-- O HTML do Dashboard e dos Lançamentos continua igual -->
                 <div id="dashboard" class="view active">
                     <div class="dashboard-grid">
                         <div class="card card-kpi"><div class="card-title">Fluxo de Caixa (Líquido)</div><div class="card-value" id="kpi-saldo">R$ 0,00</div></div>
@@ -299,45 +297,46 @@
             </div>
         </div>
 
-        <div id="invest-resumo-view" class="invest-content-area">
+        <div id="invest-resumo-view" class="invest-content-area" style="flex-direction: column;">
             <div><button onclick="backToInvestMenu()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar para Investimentos</button></div>
-            <h2 class="center-title">Resumo Geral da Carteira</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px; text-align: center;">Visualização consolidada baseada nos valores aportados na sua Carteira Ideal.</p>
             
-            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 800px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead style="background: rgba(255,255,255,0.02);">
-                        <tr>
-                            <th style="padding: 15px 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
-                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
-                            <th style="padding: 15px 20px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Calculado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-resumo-readonly">
-                    </tbody>
-                    <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
-                        <tr>
-                            <td style="padding: 15px 20px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
-                            <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
-                            <td style="padding: 15px 20px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+            <div style="display: flex; gap: 20px; height: calc(100vh - 120px); width: 100%; max-width: 1100px; margin: 0 auto; padding-bottom: 20px;">
+                <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo de Cotas (Imóveis)</h3>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 15px;">
+                        <thead style="background: rgba(255,255,255,0.02);">
+                            <tr>
+                                <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
+                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade de Cotas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-resumo-cotas">
+                        </tbody>
+                    </table>
+                </div>
 
-            <!-- Tabela Extra: Resumo de Cotas Compradas -->
-            <h3 class="center-title" style="font-size: 1.2rem; margin-top: 40px; color: var(--text-main);">Resumo de Cotas (Imóveis)</h3>
-            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 800px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead style="background: rgba(255,255,255,0.02);">
-                        <tr>
-                            <th style="padding: 15px 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
-                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade de Cotas</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-resumo-cotas">
-                    </tbody>
-                </table>
+                <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo Geral da Carteira</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Valores consolidados baseados nos valores aportados na sua Carteira Ideal.</p>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background: rgba(255,255,255,0.02);">
+                            <tr>
+                                <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
+                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
+                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Calculado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-resumo-readonly">
+                        </tbody>
+                        <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+                            <tr>
+                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
+                                <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
+                                <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -345,22 +344,52 @@
             <div><button onclick="navigateBack()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar</button></div>
             <h2 id="invest-main-title" class="center-title" style="color: var(--color-highlight);">Carteira Ideal</h2>
 
-            <!-- Removido o Box de Input do Valor Total, pois agora o cálculo é derivado dos valores diretos -->
-
             <div id="invest-chart-zone" class="pie-box-wrapper">
                 <div class="chart-holder">
                     <canvas id="chartInvestPie"></canvas>
                 </div>
 
-                <div class="editor-sidebar">
-                    <h4 id="gerenciar-alocacao-title" style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (R$)</h4>
-                    <div id="editor-items-list"></div>
-                    <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple);" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
+                <div style="display: flex; flex-direction: column; gap: 20px; width: 340px;">
+                    <div class="editor-sidebar" style="width: 100%;">
+                        <h4 id="gerenciar-alocacao-title" style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (R$)</h4>
+                        <div id="editor-items-list"></div>
+                        
+                        <div id="total-investido-box" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
+                            <span>TOTAL INVESTIDO:</span>
+                            <span id="label-total-investido" style="color: var(--color-gain);">R$ 0,00</span>
+                        </div>
+                        
+                        <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple); margin-top: 15px;" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
+                    </div>
+
+                    <div id="patrimonio-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px 20px; text-align: center; display: none;">
+                        <h3 style="color: var(--text-muted); font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">Patrimônio Total</h3>
+                        <h1 id="label-patrimonio-total" style="color: var(--color-gain); font-size: 26px; margin: 0;">R$ 0,00</h1>
+                    </div>
                 </div>
             </div>
 
             <div id="invest-assets-zone" style="display: none; width: 100%;">
                 <div class="asset-grid" id="asset-cards-container"></div>
+            </div>
+
+            <div id="invest-acoes-zone" style="display: none; width: 100%; max-width: 950px; margin: 0 auto; background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="background: rgba(255,255,255,0.02);">
+                        <tr>
+                            <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Qtd.</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Preço Médio (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Cotação Atual (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Total (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">% da Carteira</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-acoes-brasil">
+                    </tbody>
+                </table>
+                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);" onclick="addAcaoBrasil()">+ Adicionar Ativo</button>
             </div>
         </div>
     </div>
@@ -429,6 +458,12 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
+        // Função Global de Patrimônio Total baseada na Raiz
+        function getPatrimonioTotal() {
+            if (!db.investimentos || !db.investimentos.carteiraIdeal) return 0;
+            return db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
+        }
+
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -450,12 +485,11 @@
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
 
-        // ESTRUTURA PADRÃO FIXADA COM AS PROPRIEDADES NOVAS (preco_cota e num_cotas)
         function getDefaultInvestStructure() {
             return {
                 carteiraIdeal: [
                     { label: "Renda Fixa", val: 0, sub: [] },
-                    { label: "Ações do Brasil", val: 0, sub: [] },
+                    { label: "Ações do Brasil", val: 0, sub: [], assets: [] },
                     { label: "Ativos no Exterior", val: 0, sub: [] },
                     { label: "Imóveis", val: 0, sub: [
                         { label: "PAPEL", val: 0, assets: [
@@ -522,30 +556,23 @@
         }
 
         function atualizarSimulacao() {
-            // O Total agora vem da soma dos valores adicionados, e não de um input
-            let total = 0;
-            if (db.investimentos && db.investimentos.carteiraIdeal) {
-                total = db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
-            }
+            let total = getPatrimonioTotal();
             
             // 1. Atualizar Tabela Macro
             let htmlResumo = '';
-            
             if (db.investimentos && db.investimentos.carteiraIdeal) {
                 db.investimentos.carteiraIdeal.forEach(item => {
                     let valCalc = parseFloat(item.val) || 0;
                     let pct = total > 0 ? ((valCalc / total) * 100).toFixed(1) : 0;
-                    
                     htmlResumo += `
                         <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 15px 20px; font-weight: 600; color: var(--text-main);">${item.label}</td>
-                            <td style="padding: 15px 20px; text-align: center; color: var(--text-muted);">${pct}%</td>
-                            <td style="padding: 15px 20px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(valCalc)}</td>
+                            <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${item.label}</td>
+                            <td style="padding: 15px 10px; text-align: center; color: var(--text-muted);">${pct}%</td>
+                            <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(valCalc)}</td>
                         </tr>
                     `;
                 });
             }
-
             const tbody = document.getElementById('tbody-resumo-readonly');
             if(tbody) tbody.innerHTML = htmlResumo;
             
@@ -570,8 +597,8 @@
                             totalCotasGeral += qtd;
                             htmlCotas += `
                                 <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 15px 20px; font-weight: 600; color: var(--text-main);">${asset.ticker}</td>
-                                    <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--color-highlight);">${qtd}</td>
+                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker}</td>
+                                    <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-highlight);">${qtd}</td>
                                 </tr>
                             `;
                         });
@@ -583,8 +610,8 @@
             } else {
                 htmlCotas += `
                     <tr style="background: rgba(0,0,0,0.2);">
-                        <td style="padding: 15px 20px; font-weight: bold; color: var(--text-main); text-align: right;">TOTAL DE COTAS:</td>
-                        <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--color-gain);">${totalCotasGeral}</td>
+                        <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: left;">TOTAL DE COTAS:</td>
+                        <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-gain);">${totalCotasGeral}</td>
                     </tr>
                 `;
             }
@@ -605,8 +632,13 @@
         function navigateToPath(path) {
             currentPath = path;
             
-            if (path.length === 2) {
-                document.getElementById('invest-chart-zone').style.display = 'none';
+            // Esconde todas as zonas
+            document.getElementById('invest-chart-zone').style.display = 'none';
+            document.getElementById('invest-assets-zone').style.display = 'none';
+            document.getElementById('invest-acoes-zone').style.display = 'none';
+            
+            // Navegação Específica para Ativos (Imóveis -> Papel/Tijolo)
+            if (path.length === 2 && path[0] === 'Imóveis') {
                 document.getElementById('invest-assets-zone').style.display = 'block';
                 
                 let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
@@ -615,9 +647,20 @@
                 
                 document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
                 renderAssetCards(subGroup.assets);
+                
+            // Navegação Específica para Ações do Brasil (Tabela Editável)
+            } else if (path.length === 1 && path[0] === 'Ações do Brasil') {
+                document.getElementById('invest-acoes-zone').style.display = 'block';
+                document.getElementById('invest-main-title').innerText = `Ações do Brasil`;
+                
+                let group = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
+                if(!group.assets) group.assets = [];
+                
+                renderAcoesTable(group.assets);
+                
+            // Navegação Padrão para Pizza (Raiz e Renda Fixa)
             } else {
                 document.getElementById('invest-chart-zone').style.display = 'flex';
-                document.getElementById('invest-assets-zone').style.display = 'none';
                 
                 if (path.length === 0) {
                     document.getElementById('invest-main-title').innerText = "Carteira Ideal";
@@ -631,13 +674,15 @@
         function renderPieChartZone() {
             let list = getTargetStructure(currentPath);
             
-            // Trava as telas da Raiz e da primeira camada de Imóveis (Papel e Tijolo)
-            let isFixedLevel = currentPath.length === 0 || (currentPath.length === 1 && currentPath[0] === 'Imóveis');
+            let isRoot = currentPath.length === 0;
+            // As áreas de Raiz e filhos diretos de Imóveis são intocáveis (nomes fixos)
+            let isFixedLevel = isRoot || (currentPath.length === 1 && currentPath[0] === 'Imóveis');
+            let isRendaFixa = currentPath.length === 1 && currentPath[0] === 'Renda Fixa';
             
             let htmlList = list.map((item, idx) => `
                 <div class="editor-row">
                     <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixedLevel ? 'var(--text-muted)' : 'var(--text-main)'};" value="${item.label}" ${isFixedLevel ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
-                    <input type="number" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)" placeholder="R$ 0,00">
+                    <input type="number" step="0.01" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)" placeholder="R$ 0,00">
                     ${!isFixedLevel ? `<button class="btn-remove" onclick="removePieSlice(${idx})">✕</button>` : `<div style="width: 24px;"></div>`}
                 </div>
             `).join('');
@@ -649,11 +694,26 @@
                 btnAdd.style.display = isFixedLevel ? 'none' : 'block';
             }
 
+            // PATRIMÔNIO TOTAL NO ROOT E SOMAS
+            let patBox = document.getElementById('patrimonio-box');
+            let patLabel = document.getElementById('label-patrimonio-total');
+            let totInvLabel = document.getElementById('label-total-investido');
+            
+            let totalVal = list.reduce((a, b) => a + (parseFloat(b.val) || 0), 0);
+            
+            if(totInvLabel) totInvLabel.innerText = formatMoney(totalVal);
+            
+            if (isRoot) {
+                if(patBox) patBox.style.display = 'block';
+                if(patLabel) patLabel.innerText = formatMoney(totalVal);
+            } else {
+                if(patBox) patBox.style.display = 'none';
+            }
+
             destroyChart('chartInvestPie');
             
             let labels = list.map(i => i.label);
             let dataVals = list.map(i => parseFloat(i.val) || 0);
-            let totalVal = dataVals.reduce((a, b) => a + b, 0);
 
             charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
                 type: 'pie',
@@ -676,8 +736,9 @@
                             color: '#ffffff',
                             font: { weight: '700', size: 14 },
                             formatter: (val, ctx) => {
-                                if(totalVal === 0) return '0%';
-                                return ((val / totalVal) * 100).toFixed(0) + '%';
+                                if(totalVal === 0) return isRendaFixa ? 'R$ 0,00' : '0%';
+                                // Se for Renda Fixa, mostra só R$, se não, mostra %
+                                return isRendaFixa ? formatMoney(val) : ((val / totalVal) * 100).toFixed(0) + '%';
                             }
                         },
                         tooltip: {
@@ -685,7 +746,10 @@
                                 label: function(context) {
                                     let val = context.raw;
                                     let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0;
-                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
+                                    // Se for Renda Fixa, o tooltip foca só no dinheiro
+                                    return isRendaFixa 
+                                        ? ` ${context.label}: ${formatMoney(val)}` 
+                                        : ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
                                 }
                             }
                         }
@@ -696,12 +760,12 @@
                             let clickedIdx = elements[0].index;
                             let targetItem = list[clickedIdx];
                             
-                            // BLOQUEIO: Não deixa entrar nas outras fatias. Só em Imóveis.
-                            if (currentPath.length === 0 && targetItem.label !== "Imóveis") {
+                            // BLOQUEIO EXATO DA RAIZ
+                            if (isRoot && targetItem.label !== "Imóveis" && targetItem.label !== "Renda Fixa" && targetItem.label !== "Ações do Brasil") {
                                 return; 
                             }
                             
-                            if (!targetItem.sub && currentPath.length === 0) { targetItem.sub = []; }
+                            if (!targetItem.sub && isRoot) { targetItem.sub = []; }
                             let newPath = [...currentPath, targetItem.label];
                             navigateToPath(newPath);
                         }
@@ -709,7 +773,7 @@
                 }
             });
 
-            if(currentPath.length === 0) atualizarSimulacao();
+            if(isRoot) atualizarSimulacao();
         }
 
         function updatePieItem(idx, field, value) {
@@ -725,7 +789,7 @@
 
         function addPieSlice() {
             let list = getTargetStructure(currentPath);
-            list.push({ label: "Novo Alvo", val: 100, sub: [] });
+            list.push({ label: "Novo Alvo", val: 0, sub: [] });
             scheduleSave();
             renderPieChartZone();
         }
@@ -737,7 +801,7 @@
             renderPieChartZone();
         }
 
-        /* ================= CARDS DE CRITÉRIOS DE ATIVOS ================= */
+        /* ================= CARDS DE CRITÉRIOS DE ATIVOS (IMÓVEIS) ================= */
         function renderAssetCards(assetsList) {
             let container = document.getElementById('asset-cards-container');
             
@@ -783,7 +847,6 @@
             scheduleSave();
         }
 
-        // Função exposta no Window para o clique no botão
         window.buyCotas = function(idx) {
             let qtd = parseInt(document.getElementById('buy-qtd-' + idx).value) || 0;
             if (qtd !== 0) { 
@@ -792,7 +855,7 @@
                 let currentCotas = parseInt(subGroup.assets[idx].num_cotas) || 0;
                 
                 let novaQtd = currentCotas + qtd;
-                if(novaQtd < 0) novaQtd = 0; // Previne ficar negativo sem querer
+                if(novaQtd < 0) novaQtd = 0;
 
                 subGroup.assets[idx].num_cotas = novaQtd;
                 scheduleSave();
@@ -805,7 +868,7 @@
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             
             subGroup.assets.push({
-                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,00", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 8%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "6% OU MENOS"
+                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", num_cotas: 0, vp: "-", liq: "-", pvp: "-", hist: "-", hist_div: "-", dy: "-", num_imoveis: "-", vacancia: "-", pl_max: "-"
             });
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
@@ -816,6 +879,58 @@
             subGroup.assets.splice(idx, 1);
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
+
+        /* ================= AÇÕES DO BRASIL (TABELA) ================= */
+        function renderAcoesTable(assetsList) {
+            const tbody = document.getElementById('tbody-acoes-brasil');
+            let html = '';
+            let patTotal = getPatrimonioTotal(); // Pega a soma da Carteira Ideal
+            
+            assetsList.forEach((asset, idx) => {
+                let qtd = parseFloat(asset.qtd) || 0;
+                let cotacao = parseFloat(asset.cotacao) || 0;
+                let pm = parseFloat(asset.pm) || 0;
+                
+                // Cálculos da linha
+                let total = qtd * cotacao;
+                let perc = patTotal > 0 ? (total / patTotal) * 100 : 0;
+                
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td><input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Ex: PETR4" onchange="updateAcaoField(${idx}, 'ticker', this.value)"></td>
+                        <td><input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;"></td>
+                        <td><input type="number" step="0.01" class="custom-input" value="${asset.pm || 0}" onchange="updateAcaoField(${idx}, 'pm', this.value)" style="text-align: center;"></td>
+                        <td><input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;"></td>
+                        <td style="font-weight: bold; color: var(--text-main); text-align: center;">${formatMoney(total)}</td>
+                        <td style="color: var(--color-highlight); font-weight: bold; text-align: center;">${perc.toFixed(2)}%</td>
+                        <td style="text-align: center;"><button class="btn-remove" onclick="removeAcao(${idx})">✕</button></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        window.updateAcaoField = function(idx, field, value) {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+            group.assets[idx][field] = value;
+            scheduleSave();
+            renderAcoesTable(group.assets);
+        };
+
+        window.addAcaoBrasil = function() {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+            if(!group.assets) group.assets = [];
+            group.assets.push({ ticker: '', qtd: 0, pm: 0, cotacao: 0 });
+            scheduleSave();
+            renderAcoesTable(group.assets);
+        };
+
+        window.removeAcao = function(idx) {
+            let group = db.investimentos.carteiraIdeal.find(item => item.label === 'Ações do Brasil');
+            group.assets.splice(idx, 1);
+            scheduleSave();
+            renderAcoesTable(group.assets);
+        };
 
         /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) {
