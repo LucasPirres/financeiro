@@ -112,7 +112,9 @@
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: center; }
         
-        .header-tabs { position: absolute; left: 30px; display: flex; gap: 20px; }
+        /* LINHA CORRIGIDA AQUI: Removido o position: absolute; left: 30px; */
+        .header-tabs { display: flex; gap: 20px; }
+        
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--color-gain); text-shadow: 0 0 8px rgba(0, 230, 118, 0.2); }
         
