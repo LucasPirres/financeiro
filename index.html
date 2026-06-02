@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
         :root {
-            /* Tema Dark Financeiro - Inspirado na foto */
+            /* Tema Dark Financeiro */
             --bg-body: #0a0a0a;
             --bg-sidebar: #050505;
             --bg-card: #141414;
@@ -20,10 +20,10 @@
             --text-muted: #888888;
             
             /* Cores de Ação (Trading/Money) */
-            --color-gain: #00e676; /* Verde Dinheiro / Candle Alta */
-            --color-expense: #ff5252; /* Vermelho / Candle Baixa */
-            --color-neutral: #b0bec5; /* Prata / Metálico */
-            --color-highlight: #ffb300; /* Ouro */
+            --color-gain: #00e676; 
+            --color-expense: #ff5252; 
+            --color-neutral: #b0bec5; 
+            --color-highlight: #ffb300; 
             
             --border-color: #222222;
         }
@@ -39,8 +39,11 @@
         /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #050505;
-            display: flex; align-items: center; justify-content: center; gap: 50px;
+            /* Fundo com o GIF + Filtro escuro para manter legibilidade completa */
+            background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.4)), url('330cd61c3377c1a6aec04293dedaa18a.gif') no-repeat center center;
+            background-size: cover;
+            /* Move os cards ligeiramente para o lado esquerdo para liberar o centro */
+            display: flex; align-items: center; justify-content: flex-start; padding-left: 8%; gap: 50px;
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
@@ -50,29 +53,30 @@
             position: relative; z-index: 1;
             border-radius: 12px; overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: flex; align-items: center; justify-content: center;
             border: 2px solid var(--border-color);
+            background: var(--bg-card);
         }
 
         .home-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0,230,118,0.1);
+            box-shadow: 0 25px 50px rgba(0,230,118,0.15);
             border-color: var(--color-gain);
         }
 
         .home-card .card-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            filter: brightness(0.3);
+            filter: brightness(0.25);
             transition: filter 0.3s ease, transform 0.5s ease;
             z-index: 1;
         }
 
         .home-card:hover .card-bg {
-            filter: brightness(0.5);
-            transform: scale(1.05);
+            filter: brightness(0.45);
+            transform: scale(1.03);
         }
 
         .home-card h2 {
@@ -84,7 +88,7 @@
         }
 
         @media (max-width: 900px) {
-            #home-screen { flex-direction: column; gap: 20px; padding: 20px; }
+            #home-screen { flex-direction: column; justify-content: center; gap: 20px; padding: 20px; }
             .home-card { width: 100%; height: 250px; }
         }
 
@@ -144,7 +148,6 @@
         .btn-add { background: #1a1a1a; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
         .btn-add:hover { background: var(--border-color); }
         
-        /* Botões de adicionar específicos por categoria */
         .btn-add-gain { border-color: var(--color-gain); color: var(--color-gain); }
         .btn-add-gain:hover { background: rgba(0, 230, 118, 0.1); }
         
@@ -322,7 +325,6 @@
         Chart.register(ChartDataLabels);
 
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        // Paleta Dark Finance para gráficos (Tons de vermelho, cinza escuro, laranja mudo para despesas)
         const CHART_COLORS_EXPENSES = ['#ff5252', '#c62828', '#d84315', '#ef6c00', '#546e7a', '#37474f', '#212121'];
         
         let db = { years: {} };
