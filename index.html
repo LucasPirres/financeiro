@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano Financeiro e Investimentos</title>
-    <!-- Supabase, Chart.js e Plugin para textos nas barras -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
@@ -39,11 +38,10 @@
         /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            /* Fundo com o GIF + Filtro escuro para manter legibilidade completa */
             background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.4)), url('330cd61c3377c1a6aec04293dedaa18a.gif') no-repeat center center;
             background-size: cover;
-            /* Move os cards ligeiramente para o lado esquerdo para liberar o centro */
-            display: flex; align-items: center; justify-content: flex-start; padding-left: 8%; gap: 50px;
+            /* Separa os cards: um na esquerda, um na direita, deixando o centro livre */
+            display: flex; align-items: center; justify-content: space-between; padding: 0 8%;
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
@@ -162,7 +160,6 @@
 </head>
 <body>
 
-    <!-- ================= TELA INICIAL ================= -->
     <div id="home-screen">
         <div class="home-card" onclick="openApp('plano')">
             <div class="card-bg" style="background-image: url('image_39c4e9.jpg'); background-position: center center;"></div>
@@ -175,7 +172,6 @@
         </div>
     </div>
 
-    <!-- ================= SISTEMA ================= -->
     <div id="app-container">
         <aside>
             <div class="logo-area">
@@ -199,7 +195,6 @@
             </header>
 
             <main>
-                <!-- ABA 1: DASHBOARD VISUAL -->
                 <div id="dashboard" class="view active">
                     <div class="dashboard-grid">
                         
@@ -251,7 +246,6 @@
                     </div>
                 </div>
 
-                <!-- ABA 2: LANÇAMENTOS -->
                 <div id="lancamentos" class="view">
                     <h2 style="margin-bottom: 25px; font-weight: 600; font-size: 20px; color: var(--text-main);">Lançamentos de <span id="lbl-mes-ano" style="color: var(--color-neutral);"></span></h2>
 
