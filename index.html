@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano Financeiro e Investimentos</title>
-    <!-- Supabase, Chart.js e Plugin para textos nas barras -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
@@ -111,12 +110,15 @@
         .nav-item:hover .btn-del-year { opacity: 1; color: var(--color-expense); }
 
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); }
+        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: center; }
+        
+        .header-tabs { position: absolute; left: 30px; display: flex; gap: 20px; }
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--color-gain); text-shadow: 0 0 8px rgba(0, 230, 118, 0.2); }
         
-        .btn-back-home { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; margin-right: auto; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-back-home { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-back-home:hover { background: var(--border-color); }
+        .btn-back-home.header-left { position: absolute; left: 30px; }
 
         main { flex: 1; padding: 25px 30px; overflow-y: auto; }
         .view { display: none; }
@@ -172,14 +174,20 @@
         .invest-menu-card .icon { font-size: 40px; color: var(--color-purple); }
         .invest-menu-card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         
-        .invest-content-area { display: none; flex: 1; padding: 30px; overflow-y: auto; flex-direction: column; }
-        .center-title { text-align: center; font-size: 2rem; font-weight: 700; color: #ffb300; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+        .invest-content-area { display: none; flex: 1; padding: 30px 50px; overflow-y: auto; flex-direction: column; }
+        .center-title { text-align: center; font-size: 1.8rem; font-weight: 700; color: var(--color-purple); letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
         
-        .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 20px; }
-        .chart-holder { width: 450px; height: 450px; position: relative; }
+        .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
+        .chart-holder { width: 400px; height: 400px; position: relative; }
         
         .editor-sidebar { width: 320px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
         .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+
+        /* Botão Novo de Voltar */
+        .btn-back-invest {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 25px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-back-invest:hover { background: var(--border-color); color: var(--text-main); border-color: var(--color-purple); }
         
         /* Grid Limite 4 por Linha para Ativos */
         .asset-grid {
@@ -201,19 +209,11 @@
         .add-asset-dashed:hover { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.02); }
         .add-asset-dashed .plus { font-size: 45px; font-weight: 300; }
 
-        .breadcrumbs { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 8px; align-items: center; }
-        .breadcrumbs span { cursor: pointer; }
-        .breadcrumbs span:hover { color: var(--text-main); }
-
-        .textarea-resumo { width: 100%; height: 500px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; padding: 25px; font-family: monospace; font-size: 14px; line-height: 1.6; resize: none; outline: none; }
-        .textarea-resumo:focus { border-color: var(--color-purple); }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- ================= TELA INICIAL DE SELEÇÃO DO SITE ================= -->
     <div id="home-screen">
         <div class="home-card" onclick="openApp('plano')">
             <div class="card-bg" style="background-image: url('image_39c4e9.jpg');"></div>
@@ -226,7 +226,6 @@
         </div>
     </div>
 
-    <!-- ================= SISTEMA 1: PLANO FINANCEIRO ================= -->
     <div id="app-container">
         <aside>
             <div class="logo-area">
@@ -241,10 +240,12 @@
         </aside>
 
         <div class="main-wrapper">
-            <header>
-                <button class="btn-back-home" onclick="goHome()">⬅ Voltar</button>
-                <button class="tab-btn active" onclick="switchTab('dashboard')">Visão Geral</button>
-                <button class="tab-btn" onclick="switchTab('lancamentos')">Lançamentos</button>
+            <header style="justify-content: space-between; padding: 0 30px;">
+                <div class="header-tabs">
+                    <button class="tab-btn active" onclick="switchTab('dashboard')">Visão Geral</button>
+                    <button class="tab-btn" onclick="switchTab('lancamentos')">Lançamentos</button>
+                </div>
+                <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
             </header>
             <main>
                 <div id="dashboard" class="view active">
@@ -280,14 +281,12 @@
         </div>
     </div>
 
-    <!-- ================= SISTEMA 2: INVESTIMENTOS (NOVA ESTRUTURA) ================= -->
     <div id="invest-container">
-        <header>
-            <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
-            <div style="font-weight: 700; color: var(--color-purple); font-size: 16px; letter-spacing: 1px; text-transform: uppercase;">Módulo de Investimentos</div>
+        <header style="justify-content: center;">
+            <button class="btn-back-home header-left" onclick="goHome()">⬅ Voltar ao Menu</button>
+            <div style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
-        <!-- Menu interno de Investimentos -->
         <div id="invest-menu-view" class="invest-menu-screen">
             <div class="invest-menu-card" onclick="openInvestSub('carteira')">
                 <div class="icon">📊</div>
@@ -299,20 +298,42 @@
             </div>
         </div>
 
-        <!-- Conteúdo do Resumo da Carteira -->
         <div id="invest-resumo-view" class="invest-content-area">
-            <div class="breadcrumbs"><span onclick="backToInvestMenu()">Investimentos</span> ➡ <span>Resumo da Carteira</span></div>
-            <h2 class="center-title" style="color: var(--color-purple);">Resumo Geral da Carteira</h2>
-            <p style="color: var(--text-muted); margin-bottom: 15px; text-align: center;">Todos os dados digitados abaixo salvam automaticamente no Supabase.</p>
-            <textarea class="textarea-resumo" id="txt-resumo-invest" oninput="saveResumoText()"></textarea>
+            <div><button onclick="backToInvestMenu()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar para Investimentos</button></div>
+            <h2 class="center-title">Resumo Geral da Carteira</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; text-align: center;">Visualização consolidada baseada nas macroalocações da sua Carteira Ideal.</p>
+            
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 800px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="background: rgba(255,255,255,0.02);">
+                        <tr>
+                            <th style="padding: 15px 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
+                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Ideal</th>
+                            <th style="padding: 15px 20px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Calculado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-resumo-readonly">
+                        </tbody>
+                    <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+                        <tr>
+                            <td style="padding: 15px 20px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
+                            <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
+                            <td style="padding: 15px 20px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
-        <!-- Conteúdo da Carteira Ideal -->
         <div id="invest-carteira-view" class="invest-content-area">
-            <div id="invest-breadcrumbs" class="breadcrumbs"></div>
-            <h2 id="invest-main-title" class="center-title">Carteira Ideal</h2>
+            <div><button onclick="navigateBack()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar</button></div>
+            <h2 id="invest-main-title" class="center-title" style="color: var(--color-highlight);">Carteira Ideal</h2>
 
-            <!-- Tela de Gráfico (Nível 1 e Nível 2) -->
+            <div id="simulacao-container" style="text-align: center; margin-bottom: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 450px; margin-left: auto; margin-right: auto; display: none;">
+                <label style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; letter-spacing: 1px;">Valor Total A Investir (R$)</label>
+                <input type="number" id="input-valor-total" value="10000" oninput="atualizarSimulacao()" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-main); font-size: 20px; padding: 10px; border-radius: 8px; outline: none; text-align: center; width: 100%; font-weight: bold; font-family: monospace;">
+            </div>
+
             <div id="invest-chart-zone" class="pie-box-wrapper">
                 <div class="chart-holder">
                     <canvas id="chartInvestPie"></canvas>
@@ -325,7 +346,6 @@
                 </div>
             </div>
 
-            <!-- Tela de Ativos (Nível 3 - Lista de Cartões Grid Limite 4) -->
             <div id="invest-assets-zone" style="display: none; width: 100%;">
                 <div class="asset-grid" id="asset-cards-container"></div>
             </div>
@@ -371,7 +391,7 @@
 
             if (subView === 'resumo') {
                 document.getElementById('invest-resumo-view').style.display = 'flex';
-                document.getElementById('txt-resumo-invest').value = db.investimentos.resumo;
+                atualizarSimulacao(); // Atualiza a tabela bloqueada
             } else if (subView === 'carteira') {
                 document.getElementById('invest-carteira-view').style.display = 'flex';
                 navigateToPath([]); // Começa na raiz da pizza
@@ -382,6 +402,20 @@
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-resumo-view').style.display = 'none';
             document.getElementById('invest-carteira-view').style.display = 'none';
+        }
+
+        function navigateBack() {
+            if (currentPath.length > 0) {
+                currentPath.pop();
+                navigateToPath(currentPath);
+            } else {
+                backToInvestMenu();
+            }
+        }
+
+        // Formatação de Moeda
+        function formatMoney(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
         // Configuração de Conexão Supabase
@@ -400,16 +434,14 @@
         let selectedMonth = MONTHS[new Date().getMonth()];
         let charts = {};
         let syncTimeout;
-        let currentPath = []; // Controla a navegação da Carteira Ideal (Ex: [] ou ['Imóveis'])
+        let currentPath = []; 
 
         Chart.defaults.color = '#888888';
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
 
-        // Carregamento de Estruturas Padrão Baseadas nos Vídeos e Discord
         function getDefaultInvestStructure() {
             return {
-                resumo: `-CARTEIRA DE INVESTIMENTO-\n\n• Aportes Mensais de R$300,00\n\nDiversificação (Renda Variável):\n• Ações no Brasil\nSanepar (SAPR11)\nBanco Itaú (ITUB4)\n\n• Fundo Imobiliarios\nPAPEL:\nKNCR11 -> 105,70\nMXRF11 -> 9,86\nVGHF11 -> 6,00\nBTCI11 -> 9,23\n\nTIJOLO:\nHGLG11 -> 154,36\nXPML11 -> 106,61\nKNRI11 -> 157,24\nXPLG11 -> 95,51\nGARE11 -> 8,24\n\n• Ações no Exterior\n• Biticoin\n\nEmergência (Renda Fixa):`,
                 carteiraIdeal: [
                     { label: "Renda Fixa", val: 25, sub: [] },
                     { label: "Ações do Brasil", val: 25, sub: [] },
@@ -432,7 +464,7 @@
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
-                    if (!db.investimentos) { db.investimentos = getDefaultInvestStructure(); }
+                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { db.investimentos = getDefaultInvestStructure(); }
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.investimentos = getDefaultInvestStructure();
@@ -444,7 +476,7 @@
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                if(!db.investimentos) db.investimentos = getDefaultInvestStructure();
+                if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
                 renderSidebar(); updateUI();
             }
         }
@@ -468,12 +500,7 @@
             return struct;
         }
 
-        function saveResumoText() {
-            db.investimentos.resumo = document.getElementById('txt-resumo-invest').value;
-            scheduleSave();
-        }
-
-        /* ================= ENGINE DA CARTEIRA IDEAL INTERATIVA ================= */
+        /* ================= ENGINE DA CARTEIRA IDEAL E SIMULAÇÃO ================= */
         function getTargetStructure(path) {
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
@@ -483,13 +510,60 @@
             return current;
         }
 
+        function atualizarSimulacao() {
+            let inputTotal = document.getElementById('input-valor-total');
+            let total = parseFloat(inputTotal ? inputTotal.value : 10000) || 0;
+            
+            // 1. Atualizar Tabela de Resumo Bloqueada
+            let htmlResumo = '';
+            let somaValores = 0;
+            let somaPct = 0;
+
+            if (db.investimentos && db.investimentos.carteiraIdeal) {
+                db.investimentos.carteiraIdeal.forEach(item => {
+                    let valCalc = (total * item.val) / 100;
+                    somaValores += valCalc;
+                    somaPct += item.val;
+                    
+                    htmlResumo += `
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 15px 20px; font-weight: 600; color: var(--text-main);">${item.label}</td>
+                            <td style="padding: 15px 20px; text-align: center; color: var(--text-muted);">${item.val}%</td>
+                            <td style="padding: 15px 20px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(valCalc)}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const tbody = document.getElementById('tbody-resumo-readonly');
+            if(tbody) tbody.innerHTML = htmlResumo;
+            
+            const totCalc = document.getElementById('resumo-total-calc');
+            if(totCalc) totCalc.innerText = formatMoney(total); 
+
+            const totPct = document.getElementById('resumo-total-pct');
+            if(totPct) {
+                totPct.innerText = somaPct + '%';
+                totPct.style.color = somaPct === 100 ? 'var(--color-gain)' : 'var(--color-expense)';
+            }
+            
+            // 2. Atualizar Tooltip do Gráfico de Pizza se ele estiver ativo
+            if (charts['chartInvestPie'] && currentPath.length === 0) {
+                charts['chartInvestPie'].options.plugins.tooltip.callbacks.label = function(context) {
+                    let pct = context.parsed;
+                    let val = (total * pct) / 100;
+                    return ` ${context.label}: ${pct}% (${formatMoney(val)})`;
+                };
+                charts['chartInvestPie'].update();
+            }
+        }
+
         function navigateToPath(path) {
             currentPath = path;
-            renderBreadcrumbs();
             
-            // Determina se estamos vendo uma lista de ativos finais (FIIs por exemplo) ou sub-pizzas
             if (path.length === 2) {
-                // Chegamos ao nível final de ativos (Ex: Imóveis -> PAPEL)
+                // Nível de Ativos
+                document.getElementById('simulacao-container').style.display = 'none';
                 document.getElementById('invest-chart-zone').style.display = 'none';
                 document.getElementById('invest-assets-zone').style.display = 'block';
                 
@@ -500,28 +574,19 @@
                 document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
                 renderAssetCards(subGroup.assets);
             } else {
-                // Nível de Gráfico de Pizza normal
+                // Nível Gráfico
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 document.getElementById('invest-assets-zone').style.display = 'none';
                 
                 if (path.length === 0) {
                     document.getElementById('invest-main-title').innerText = "Carteira Ideal";
+                    document.getElementById('simulacao-container').style.display = 'block'; // Mostra simulação na raiz
                 } else {
                     document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
+                    document.getElementById('simulacao-container').style.display = 'none';
                 }
                 renderPieChartZone();
             }
-        }
-
-        function renderBreadcrumbs() {
-            let html = `<span onclick="backToInvestMenu()">Investimentos</span>`;
-            let accum = [];
-            for(let i=0; i<currentPath.length; i++) {
-                accum.push(currentPath[i]);
-                let stringPath = JSON.stringify(accum);
-                html += ` ➡ <span onclick='navigateToPath(${stringPath})'>${currentPath[i]}</span>`;
-            }
-            document.getElementById('invest-breadcrumbs').innerHTML = html;
         }
 
         function renderPieChartZone() {
@@ -537,7 +602,6 @@
             `).join('');
             document.getElementById('editor-items-list').innerHTML = htmlList;
 
-            // Renderiza o gráfico via Chart.js
             destroyChart('chartInvestPie');
             
             let labels = list.map(i => i.label);
@@ -564,25 +628,37 @@
                             color: '#ffffff',
                             font: { weight: '700', size: 14 },
                             formatter: (val) => val + '%'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let pct = context.parsed;
+                                    // Se estiver na raiz, calcula o dinheiro
+                                    if(currentPath.length === 0) {
+                                        let total = parseFloat(document.getElementById('input-valor-total')?.value) || 0;
+                                        let val = (total * pct) / 100;
+                                        return ` ${context.label}: ${pct}% (${formatMoney(val)})`;
+                                    }
+                                    return ` ${context.label}: ${pct}%`;
+                                }
+                            }
                         }
                     },
-                    // Ao passar o mouse, gera animação padrão do Chart.js de destaque (hover radius)
                     hover: { mode: 'nearest', intersect: true },
                     onClick: (evt, elements) => {
                         if (elements.length > 0) {
                             let clickedIdx = elements[0].index;
                             let targetItem = list[clickedIdx];
-                            
-                            // Cria a sub-estrutura caso não exista
                             if (!targetItem.sub && currentPath.length === 0) { targetItem.sub = []; }
-                            
-                            // Navega para dentro
                             let newPath = [...currentPath, targetItem.label];
                             navigateToPath(newPath);
                         }
                     }
                 }
             });
+
+            // Atualiza calculos sempre que renderiza a root
+            if(currentPath.length === 0) atualizarSimulacao();
         }
 
         function updatePieItem(idx, field, value) {
@@ -610,7 +686,7 @@
             renderPieChartZone();
         }
 
-        /* ================= CARDS DE CRITÉRIOS DE ATIVOS (LIMITE DE 4 POR LINHA) ================= */
+        /* ================= CARDS DE CRITÉRIOS DE ATIVOS ================= */
         function renderAssetCards(assetsList) {
             let container = document.getElementById('asset-cards-container');
             
@@ -632,12 +708,7 @@
                 </div>
             `).join('');
 
-            // Adiciona o retângulo pontilhado de "+" no final da lista
-            html += `
-                <div class="add-asset-dashed" onclick="addAssetCard()">
-                    <div class="plus">+</div>
-                </div>
-            `;
+            html += `<div class="add-asset-dashed" onclick="addAssetCard()"><div class="plus">+</div></div>`;
             container.innerHTML = html;
         }
 
@@ -653,28 +724,16 @@
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             
             subGroup.assets.push({
-                ticker: "NOVO11",
-                tipo: currentPath[1],
-                vp: "Mais de 500 MILHÕES",
-                liq: "Mais de 1 MILHÃO",
-                pvp: "1,00",
-                hist: "4 ANOS OU MAIS",
-                hist_div: "ESTÁVEL OU CRESCENTE",
-                dy: "ACIMA DE 8%",
-                num_imoveis: "8 OU MAIS",
-                vacancia: "10% OU MENOS",
-                pl_max: "6% OU MENOS"
+                ticker: "NOVO11", tipo: currentPath[1], vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,00", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 8%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "6% OU MENOS"
             });
-            scheduleSave();
-            renderAssetCards(subGroup.assets);
+            scheduleSave(); renderAssetCards(subGroup.assets);
         }
 
         function removeAssetCard(idx) {
             let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             subGroup.assets.splice(idx, 1);
-            scheduleSave();
-            renderAssetCards(subGroup.assets);
+            scheduleSave(); renderAssetCards(subGroup.assets);
         }
 
         /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
