@@ -39,9 +39,9 @@
         /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.4)), url('330cd61c3377c1a6aec04293dedaa18a.gif') no-repeat center center;
-            background-size: cover;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 8%;
+            /* Fundo alterado para gradiente para não depender de imagem local */
+            background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+            display: flex; align-items: center; justify-content: center; gap: 40px; padding: 0 8%;
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
@@ -63,18 +63,23 @@
             box-shadow: 0 25px 50px rgba(0,230,118,0.15);
             border-color: var(--color-gain);
         }
+        
+        .home-card:nth-child(2):hover {
+            box-shadow: 0 25px 50px rgba(123,31,162,0.15);
+            border-color: var(--color-purple);
+        }
 
         .home-card .card-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            filter: brightness(0.25);
-            transition: filter 0.3s ease, transform 0.5s ease;
+            opacity: 0.5;
+            transition: opacity 0.3s ease, transform 0.5s ease;
             z-index: 1;
         }
 
         .home-card:hover .card-bg {
-            filter: brightness(0.45);
-            transform: scale(1.03);
+            opacity: 0.8;
+            transform: scale(1.05);
         }
 
         .home-card h2 {
@@ -110,22 +115,21 @@
         .nav-item:hover .btn-del-year { opacity: 1; color: var(--color-expense); }
 
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: center; }
+        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: space-between; }
         
-        /* LINHA CORRIGIDA AQUI: Removido o position: absolute; left: 30px; */
         .header-tabs { display: flex; gap: 20px; }
         
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--color-gain); text-shadow: 0 0 8px rgba(0, 230, 118, 0.2); }
         
         .btn-back-home { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-back-home:hover { background: var(--border-color); }
-        .btn-back-home.header-left { position: absolute; left: 30px; }
+        .btn-back-home:hover { background: var(--border-color); color: var(--color-gain); }
 
         main { flex: 1; padding: 25px 30px; overflow-y: auto; }
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.4s; }
 
+        /* GRID RESPONSIVO */
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
         .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
         .card-title { color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
@@ -136,12 +140,24 @@
         .card-horizontal { grid-column: span 2; grid-row: span 2; }
         .card-bar-full { grid-column: span 4; grid-row: span 2; }
 
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-kpi, .card-donut, .card-horizontal { grid-column: span 1; }
+            .card-bar-full { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .card-kpi, .card-donut, .card-horizontal, .card-bar-full { grid-column: span 1; }
+            .main-wrapper header { flex-direction: column-reverse; justify-content: center; height: auto; padding: 15px; }
+        }
+
         .entry-section { background: var(--bg-card); border-radius: 8px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); }
         .entry-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
         
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { color: var(--text-muted); font-weight: 600; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 12px 5px; border-bottom: 1px solid #1a1a1a; }
+        td { padding: 12px 5px; border-bottom: 1px solid var(--border-color); }
         
         .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-family: 'Inter', sans-serif; padding: 8px 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
         .custom-input:focus { border-bottom: 1px solid var(--text-muted); background: #1a1a1a; border-radius: 4px 4px 0 0; }
@@ -161,6 +177,9 @@
             display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease;
             flex-direction: column; background-color: var(--bg-body);
         }
+        
+        #invest-container header { justify-content: space-between; }
+
         .invest-menu-screen {
             display: flex; flex: 1; align-items: center; justify-content: center; gap: 50px; padding: 40px;
         }
@@ -182,18 +201,22 @@
         .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
         .chart-holder { width: 400px; height: 400px; position: relative; }
         
-        .editor-sidebar { width: 320px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+        @media (max-width: 900px) {
+            .pie-box-wrapper { flex-direction: column; align-items: center; }
+            .invest-menu-screen { flex-direction: column; }
+            .invest-menu-card { width: 100%; max-width: 380px; }
+        }
+
+        .editor-sidebar { width: 100%; max-width: 380px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
         .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 
-        /* Botão Novo de Voltar */
         .btn-back-invest {
             background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 25px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
         }
         .btn-back-invest:hover { background: var(--border-color); color: var(--text-main); border-color: var(--color-purple); }
         
-        /* Grid Limite 4 por Linha para Ativos */
         .asset-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; margin-top: 25px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; margin-top: 25px;
         }
         .asset-card {
             background: #ffffff; color: #000000; border-radius: 8px; padding: 20px; position: relative;
@@ -218,12 +241,13 @@
 
     <div id="home-screen">
         <div class="home-card" onclick="openApp('plano')">
-            <div class="card-bg" style="background-image: url('image_39c4e9.jpg');"></div>
+            <!-- Gradiente substitui a imagem local quebrada -->
+            <div class="card-bg" style="background: linear-gradient(135deg, #004d40, #00e676);"></div>
             <h2>Plano Financeiro</h2>
         </div>
         
         <div class="home-card" onclick="openApp('investimentos')">
-            <div class="card-bg" style="background-image: url('image_39c485.jpg');"></div>
+            <div class="card-bg" style="background: linear-gradient(135deg, #311b92, #7b1fa2);"></div>
             <h2>Investimentos</h2>
         </div>
     </div>
@@ -242,7 +266,7 @@
         </aside>
 
         <div class="main-wrapper">
-            <header style="justify-content: space-between; padding: 0 30px;">
+            <header>
                 <div class="header-tabs">
                     <button class="tab-btn active" onclick="switchTab('dashboard')">Visão Geral</button>
                     <button class="tab-btn" onclick="switchTab('lancamentos')">Lançamentos</button>
@@ -284,9 +308,9 @@
     </div>
 
     <div id="invest-container">
-        <header style="justify-content: center;">
-            <button class="btn-back-home header-left" onclick="goHome()">⬅ Voltar ao Menu</button>
+        <header>
             <div style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
+            <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
         </header>
 
         <div id="invest-menu-view" class="invest-menu-screen">
@@ -354,10 +378,17 @@
         </div>
     </div>
 
-    <div id="sync-status">Conectando...</div>
+    <!-- Posição fixa para visualização do status -->
+    <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: var(--text-muted);">Conectando...</div>
 
     <script>
-        // Inicialização global de rotas e janelas
+        // ==========================================
+        // ATENÇÃO: COLOQUE SUAS CHAVES DO SUPABASE AQUI
+        // ==========================================
+        const SUPABASE_URL = 'SUA_URL_DO_SUPABASE_AQUI'; 
+        const SUPABASE_KEY = 'SUA_CHAVE_DO_SUPABASE_AQUI';
+        // ==========================================
+
         function openApp(appName) {
             document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
@@ -393,10 +424,10 @@
 
             if (subView === 'resumo') {
                 document.getElementById('invest-resumo-view').style.display = 'flex';
-                atualizarSimulacao(); // Atualiza a tabela bloqueada
+                atualizarSimulacao();
             } else if (subView === 'carteira') {
                 document.getElementById('invest-carteira-view').style.display = 'flex';
-                navigateToPath([]); // Começa na raiz da pizza
+                navigateToPath([]);
             }
         }
 
@@ -415,15 +446,15 @@
             }
         }
 
-        // Formatação de Moeda
         function formatMoney(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // Configuração de Conexão Supabase
-        const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let _supabase;
+        // Instancia o Supabase apenas se as chaves forem preenchidas
+        if (SUPABASE_URL !== 'SUA_URL_DO_SUPABASE_AQUI' && SUPABASE_KEY !== 'SUA_CHAVE_DO_SUPABASE_AQUI') {
+            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
 
         Chart.register(ChartDataLabels);
 
@@ -462,14 +493,19 @@
         }
 
         async function loadData() {
+            if (!_supabase) {
+                document.getElementById('sync-status').innerText = "Offline (Local) - Chaves não configuradas";
+                initLocalData();
+                return;
+            }
+
             try {
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
                     if (!db.investimentos || !db.investimentos.carteiraIdeal) { db.investimentos = getDefaultInvestStructure(); }
                 } else { 
-                    db.years[selectedYear] = createYearStructure(); 
-                    db.investimentos = getDefaultInvestStructure();
+                    initLocalData();
                     await saveDataNow(); 
                 }
                 document.getElementById('sync-status').innerText = "Online";
@@ -477,10 +513,14 @@
             } catch (e) { 
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
-                if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
-                renderSidebar(); updateUI();
+                initLocalData();
             }
+        }
+
+        function initLocalData() {
+            if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+            if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
+            renderSidebar(); updateUI();
         }
 
         function scheduleSave() {
@@ -490,6 +530,10 @@
         }
 
         async function saveDataNow() {
+            if (!_supabase) {
+                document.getElementById('sync-status').innerText = "Não foi salvo na nuvem (Faltam chaves)";
+                return;
+            }
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
                 if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
@@ -502,7 +546,6 @@
             return struct;
         }
 
-        /* ================= ENGINE DA CARTEIRA IDEAL E SIMULAÇÃO ================= */
         function getTargetStructure(path) {
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
@@ -516,7 +559,6 @@
             let inputTotal = document.getElementById('input-valor-total');
             let total = parseFloat(inputTotal ? inputTotal.value : 10000) || 0;
             
-            // 1. Atualizar Tabela de Resumo Bloqueada
             let htmlResumo = '';
             let somaValores = 0;
             let somaPct = 0;
@@ -549,7 +591,6 @@
                 totPct.style.color = somaPct === 100 ? 'var(--color-gain)' : 'var(--color-expense)';
             }
             
-            // 2. Atualizar Tooltip do Gráfico de Pizza se ele estiver ativo
             if (charts['chartInvestPie'] && currentPath.length === 0) {
                 charts['chartInvestPie'].options.plugins.tooltip.callbacks.label = function(context) {
                     let pct = context.parsed;
@@ -564,7 +605,6 @@
             currentPath = path;
             
             if (path.length === 2) {
-                // Nível de Ativos
                 document.getElementById('simulacao-container').style.display = 'none';
                 document.getElementById('invest-chart-zone').style.display = 'none';
                 document.getElementById('invest-assets-zone').style.display = 'block';
@@ -576,13 +616,12 @@
                 document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
                 renderAssetCards(subGroup.assets);
             } else {
-                // Nível Gráfico
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 document.getElementById('invest-assets-zone').style.display = 'none';
                 
                 if (path.length === 0) {
                     document.getElementById('invest-main-title').innerText = "Carteira Ideal";
-                    document.getElementById('simulacao-container').style.display = 'block'; // Mostra simulação na raiz
+                    document.getElementById('simulacao-container').style.display = 'block';
                 } else {
                     document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
                     document.getElementById('simulacao-container').style.display = 'none';
@@ -594,7 +633,6 @@
         function renderPieChartZone() {
             let list = getTargetStructure(currentPath);
             
-            // Renderiza lista de edição da barra lateral
             let htmlList = list.map((item, idx) => `
                 <div class="editor-row">
                     <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px;" value="${item.label}" onchange="updatePieItem(${idx}, 'label', this.value)">
@@ -635,7 +673,6 @@
                             callbacks: {
                                 label: function(context) {
                                     let pct = context.parsed;
-                                    // Se estiver na raiz, calcula o dinheiro
                                     if(currentPath.length === 0) {
                                         let total = parseFloat(document.getElementById('input-valor-total')?.value) || 0;
                                         let val = (total * pct) / 100;
@@ -659,7 +696,6 @@
                 }
             });
 
-            // Atualiza calculos sempre que renderiza a root
             if(currentPath.length === 0) atualizarSimulacao();
         }
 
@@ -688,7 +724,6 @@
             renderPieChartZone();
         }
 
-        /* ================= CARDS DE CRITÉRIOS DE ATIVOS ================= */
         function renderAssetCards(assetsList) {
             let container = document.getElementById('asset-cards-container');
             
@@ -738,7 +773,6 @@
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
 
-        /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
