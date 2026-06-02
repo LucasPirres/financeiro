@@ -112,7 +112,6 @@
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: center; }
         
-        /* LINHA CORRIGIDA AQUI: Removido o position: absolute; left: 30px; */
         .header-tabs { display: flex; gap: 20px; }
         
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -182,16 +181,14 @@
         .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
         .chart-holder { width: 400px; height: 400px; position: relative; }
         
-        .editor-sidebar { width: 320px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+        .editor-sidebar { width: 340px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
         .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 
-        /* Botão Novo de Voltar */
         .btn-back-invest {
             background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 25px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
         }
         .btn-back-invest:hover { background: var(--border-color); color: var(--text-main); border-color: var(--color-purple); }
         
-        /* Grid Limite 4 por Linha para Ativos */
         .asset-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; margin-top: 25px;
         }
@@ -229,6 +226,7 @@
     </div>
 
     <div id="app-container">
+        <!-- O Menu Lateral do Plano Financeiro fica intocado aqui -->
         <aside>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
@@ -250,6 +248,7 @@
                 <button class="btn-back-home" onclick="goHome()">⬅ Voltar ao Menu</button>
             </header>
             <main>
+                <!-- O HTML do Dashboard e dos Lançamentos continua igual -->
                 <div id="dashboard" class="view active">
                     <div class="dashboard-grid">
                         <div class="card card-kpi"><div class="card-title">Fluxo de Caixa (Líquido)</div><div class="card-value" id="kpi-saldo">R$ 0,00</div></div>
@@ -303,19 +302,19 @@
         <div id="invest-resumo-view" class="invest-content-area">
             <div><button onclick="backToInvestMenu()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar para Investimentos</button></div>
             <h2 class="center-title">Resumo Geral da Carteira</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px; text-align: center;">Visualização consolidada baseada nas macroalocações da sua Carteira Ideal.</p>
+            <p style="color: var(--text-muted); margin-bottom: 25px; text-align: center;">Visualização consolidada baseada nos valores aportados na sua Carteira Ideal.</p>
             
             <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 800px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead style="background: rgba(255,255,255,0.02);">
                         <tr>
                             <th style="padding: 15px 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
-                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Ideal</th>
+                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
                             <th style="padding: 15px 20px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Calculado</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-resumo-readonly">
-                        </tbody>
+                    </tbody>
                     <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
                         <tr>
                             <td style="padding: 15px 20px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
@@ -325,16 +324,28 @@
                     </tfoot>
                 </table>
             </div>
+
+            <!-- Tabela Extra: Resumo de Cotas Compradas -->
+            <h3 class="center-title" style="font-size: 1.2rem; margin-top: 40px; color: var(--text-main);">Resumo de Cotas (Imóveis)</h3>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 800px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="background: rgba(255,255,255,0.02);">
+                        <tr>
+                            <th style="padding: 15px 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
+                            <th style="padding: 15px 20px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade de Cotas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-resumo-cotas">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="invest-carteira-view" class="invest-content-area">
             <div><button onclick="navigateBack()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar</button></div>
             <h2 id="invest-main-title" class="center-title" style="color: var(--color-highlight);">Carteira Ideal</h2>
 
-            <div id="simulacao-container" style="text-align: center; margin-bottom: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 450px; margin-left: auto; margin-right: auto; display: none;">
-                <label style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; letter-spacing: 1px;">Valor Total A Investir (R$)</label>
-                <input type="number" id="input-valor-total" value="10000" oninput="atualizarSimulacao()" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-main); font-size: 20px; padding: 10px; border-radius: 8px; outline: none; text-align: center; width: 100%; font-weight: bold; font-family: monospace;">
-            </div>
+            <!-- Removido o Box de Input do Valor Total, pois agora o cálculo é derivado dos valores diretos -->
 
             <div id="invest-chart-zone" class="pie-box-wrapper">
                 <div class="chart-holder">
@@ -342,9 +353,9 @@
                 </div>
 
                 <div class="editor-sidebar">
-                    <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (%)</h4>
+                    <h4 id="gerenciar-alocacao-title" style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (R$)</h4>
                     <div id="editor-items-list"></div>
-                    <button class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple);" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
+                    <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple);" onclick="addPieSlice()">+ Adicionar Nova Fatia</button>
                 </div>
             </div>
 
@@ -357,7 +368,6 @@
     <div id="sync-status">Conectando...</div>
 
     <script>
-        // Inicialização global de rotas e janelas
         function openApp(appName) {
             document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
@@ -393,10 +403,10 @@
 
             if (subView === 'resumo') {
                 document.getElementById('invest-resumo-view').style.display = 'flex';
-                atualizarSimulacao(); // Atualiza a tabela bloqueada
+                atualizarSimulacao(); 
             } else if (subView === 'carteira') {
                 document.getElementById('invest-carteira-view').style.display = 'flex';
-                navigateToPath([]); // Começa na raiz da pizza
+                navigateToPath([]); 
             }
         }
 
@@ -415,12 +425,10 @@
             }
         }
 
-        // Formatação de Moeda
         function formatMoney(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // Configuração de Conexão Supabase
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -442,19 +450,20 @@
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
 
+        // ESTRUTURA PADRÃO FIXADA COM AS PROPRIEDADES NOVAS (preco_cota e num_cotas)
         function getDefaultInvestStructure() {
             return {
                 carteiraIdeal: [
-                    { label: "Renda Fixa", val: 25, sub: [] },
-                    { label: "Ações do Brasil", val: 25, sub: [] },
-                    { label: "Ativos no Exterior", val: 25, sub: [] },
-                    { label: "Imóveis", val: 25, sub: [
-                        { label: "PAPEL", val: 50, assets: [
-                            { ticker: "KNCR11", tipo: "PAPEL", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
-                            { ticker: "MXRF11", tipo: "PAPEL", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
+                    { label: "Renda Fixa", val: 0, sub: [] },
+                    { label: "Ações do Brasil", val: 0, sub: [] },
+                    { label: "Ativos no Exterior", val: 0, sub: [] },
+                    { label: "Imóveis", val: 0, sub: [
+                        { label: "PAPEL", val: 0, assets: [
+                            { ticker: "KNCR11", tipo: "PAPEL", preco_cota: "105.50", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
+                            { ticker: "MXRF11", tipo: "PAPEL", preco_cota: "10.20", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
                         ]},
-                        { label: "TIJOLO", val: 50, assets: [
-                            { ticker: "HGLG11", tipo: "TIJOLO", vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
+                        { label: "TIJOLO", val: 0, assets: [
+                            { ticker: "HGLG11", tipo: "TIJOLO", preco_cota: "162.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
                         ]}
                     ]}
                 ]
@@ -502,7 +511,7 @@
             return struct;
         }
 
-        /* ================= ENGINE DA CARTEIRA IDEAL E SIMULAÇÃO ================= */
+        /* ================= ENGINE DA CARTEIRA IDEAL ================= */
         function getTargetStructure(path) {
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
@@ -513,24 +522,24 @@
         }
 
         function atualizarSimulacao() {
-            let inputTotal = document.getElementById('input-valor-total');
-            let total = parseFloat(inputTotal ? inputTotal.value : 10000) || 0;
+            // O Total agora vem da soma dos valores adicionados, e não de um input
+            let total = 0;
+            if (db.investimentos && db.investimentos.carteiraIdeal) {
+                total = db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
+            }
             
-            // 1. Atualizar Tabela de Resumo Bloqueada
+            // 1. Atualizar Tabela Macro
             let htmlResumo = '';
-            let somaValores = 0;
-            let somaPct = 0;
-
+            
             if (db.investimentos && db.investimentos.carteiraIdeal) {
                 db.investimentos.carteiraIdeal.forEach(item => {
-                    let valCalc = (total * item.val) / 100;
-                    somaValores += valCalc;
-                    somaPct += item.val;
+                    let valCalc = parseFloat(item.val) || 0;
+                    let pct = total > 0 ? ((valCalc / total) * 100).toFixed(1) : 0;
                     
                     htmlResumo += `
                         <tr style="border-bottom: 1px solid var(--border-color);">
                             <td style="padding: 15px 20px; font-weight: 600; color: var(--text-main);">${item.label}</td>
-                            <td style="padding: 15px 20px; text-align: center; color: var(--text-muted);">${item.val}%</td>
+                            <td style="padding: 15px 20px; text-align: center; color: var(--text-muted);">${pct}%</td>
                             <td style="padding: 15px 20px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(valCalc)}</td>
                         </tr>
                     `;
@@ -545,16 +554,49 @@
 
             const totPct = document.getElementById('resumo-total-pct');
             if(totPct) {
-                totPct.innerText = somaPct + '%';
-                totPct.style.color = somaPct === 100 ? 'var(--color-gain)' : 'var(--color-expense)';
+                totPct.innerText = total > 0 ? '100%' : '0%';
+                totPct.style.color = 'var(--color-gain)';
             }
             
-            // 2. Atualizar Tooltip do Gráfico de Pizza se ele estiver ativo
+            // 2. Atualizar Tabela de Cotas (Imóveis)
+            let htmlCotas = '';
+            let totalCotasGeral = 0;
+            let imoveisNode = db.investimentos?.carteiraIdeal?.find(i => i.label === 'Imóveis');
+            if(imoveisNode && imoveisNode.sub) {
+                imoveisNode.sub.forEach(subGroup => {
+                    if(subGroup.assets) {
+                        subGroup.assets.forEach(asset => {
+                            let qtd = parseInt(asset.num_cotas) || 0;
+                            totalCotasGeral += qtd;
+                            htmlCotas += `
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 15px 20px; font-weight: 600; color: var(--text-main);">${asset.ticker}</td>
+                                    <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--color-highlight);">${qtd}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                });
+            }
+            if(htmlCotas === '') {
+                htmlCotas = `<tr><td colspan="2" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhuma cota registrada.</td></tr>`;
+            } else {
+                htmlCotas += `
+                    <tr style="background: rgba(0,0,0,0.2);">
+                        <td style="padding: 15px 20px; font-weight: bold; color: var(--text-main); text-align: right;">TOTAL DE COTAS:</td>
+                        <td style="padding: 15px 20px; text-align: center; font-weight: bold; color: var(--color-gain);">${totalCotasGeral}</td>
+                    </tr>
+                `;
+            }
+            const tbodyCotas = document.getElementById('tbody-resumo-cotas');
+            if(tbodyCotas) tbodyCotas.innerHTML = htmlCotas;
+
+            // 3. Atualizar Tooltip da Pizza
             if (charts['chartInvestPie'] && currentPath.length === 0) {
                 charts['chartInvestPie'].options.plugins.tooltip.callbacks.label = function(context) {
-                    let pct = context.parsed;
-                    let val = (total * pct) / 100;
-                    return ` ${context.label}: ${pct}% (${formatMoney(val)})`;
+                    let val = context.raw;
+                    let pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
                 };
                 charts['chartInvestPie'].update();
             }
@@ -564,8 +606,6 @@
             currentPath = path;
             
             if (path.length === 2) {
-                // Nível de Ativos
-                document.getElementById('simulacao-container').style.display = 'none';
                 document.getElementById('invest-chart-zone').style.display = 'none';
                 document.getElementById('invest-assets-zone').style.display = 'block';
                 
@@ -576,16 +616,13 @@
                 document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
                 renderAssetCards(subGroup.assets);
             } else {
-                // Nível Gráfico
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 document.getElementById('invest-assets-zone').style.display = 'none';
                 
                 if (path.length === 0) {
                     document.getElementById('invest-main-title').innerText = "Carteira Ideal";
-                    document.getElementById('simulacao-container').style.display = 'block'; // Mostra simulação na raiz
                 } else {
                     document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
-                    document.getElementById('simulacao-container').style.display = 'none';
                 }
                 renderPieChartZone();
             }
@@ -594,20 +631,29 @@
         function renderPieChartZone() {
             let list = getTargetStructure(currentPath);
             
-            // Renderiza lista de edição da barra lateral
+            // Trava as telas da Raiz e da primeira camada de Imóveis (Papel e Tijolo)
+            let isFixedLevel = currentPath.length === 0 || (currentPath.length === 1 && currentPath[0] === 'Imóveis');
+            
             let htmlList = list.map((item, idx) => `
                 <div class="editor-row">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px;" value="${item.label}" onchange="updatePieItem(${idx}, 'label', this.value)">
-                    <input type="number" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:70px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)">
-                    <button class="btn-remove" onclick="removePieSlice(${idx})">✕</button>
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixedLevel ? 'var(--text-muted)' : 'var(--text-main)'};" value="${item.label}" ${isFixedLevel ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
+                    <input type="number" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px;" value="${item.val}" onchange="updatePieItem(${idx}, 'val', this.value)" placeholder="R$ 0,00">
+                    ${!isFixedLevel ? `<button class="btn-remove" onclick="removePieSlice(${idx})">✕</button>` : `<div style="width: 24px;"></div>`}
                 </div>
             `).join('');
+            
             document.getElementById('editor-items-list').innerHTML = htmlList;
+
+            let btnAdd = document.getElementById('btn-add-pie');
+            if(btnAdd) {
+                btnAdd.style.display = isFixedLevel ? 'none' : 'block';
+            }
 
             destroyChart('chartInvestPie');
             
             let labels = list.map(i => i.label);
-            let dataVals = list.map(i => i.val);
+            let dataVals = list.map(i => parseFloat(i.val) || 0);
+            let totalVal = dataVals.reduce((a, b) => a + b, 0);
 
             charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
                 type: 'pie',
@@ -629,19 +675,17 @@
                         datalabels: {
                             color: '#ffffff',
                             font: { weight: '700', size: 14 },
-                            formatter: (val) => val + '%'
+                            formatter: (val, ctx) => {
+                                if(totalVal === 0) return '0%';
+                                return ((val / totalVal) * 100).toFixed(0) + '%';
+                            }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    let pct = context.parsed;
-                                    // Se estiver na raiz, calcula o dinheiro
-                                    if(currentPath.length === 0) {
-                                        let total = parseFloat(document.getElementById('input-valor-total')?.value) || 0;
-                                        let val = (total * pct) / 100;
-                                        return ` ${context.label}: ${pct}% (${formatMoney(val)})`;
-                                    }
-                                    return ` ${context.label}: ${pct}%`;
+                                    let val = context.raw;
+                                    let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0;
+                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
                                 }
                             }
                         }
@@ -651,6 +695,12 @@
                         if (elements.length > 0) {
                             let clickedIdx = elements[0].index;
                             let targetItem = list[clickedIdx];
+                            
+                            // BLOQUEIO: Não deixa entrar nas outras fatias. Só em Imóveis.
+                            if (currentPath.length === 0 && targetItem.label !== "Imóveis") {
+                                return; 
+                            }
+                            
                             if (!targetItem.sub && currentPath.length === 0) { targetItem.sub = []; }
                             let newPath = [...currentPath, targetItem.label];
                             navigateToPath(newPath);
@@ -659,7 +709,6 @@
                 }
             });
 
-            // Atualiza calculos sempre que renderiza a root
             if(currentPath.length === 0) atualizarSimulacao();
         }
 
@@ -676,7 +725,7 @@
 
         function addPieSlice() {
             let list = getTargetStructure(currentPath);
-            list.push({ label: "Novo Alvo", val: 10, sub: [] });
+            list.push({ label: "Novo Alvo", val: 100, sub: [] });
             scheduleSave();
             renderPieChartZone();
         }
@@ -697,7 +746,12 @@
                     <button class="btn-card-del" onclick="removeAssetCard(${idx})">✕</button>
                     <h4><input type="text" style="color:#000; font-weight:700; text-align:center; border:none; width:100%; font-size:1.3rem; outline:none;" value="${asset.ticker}" onchange="updateAssetField(${idx}, 'ticker', this.value)"></h4>
                     
-                    <div class="asset-meta-row"><b>TIPO DE FUNDO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.tipo}" onchange="updateAssetField(${idx}, 'tipo', this.value)"></span></div>
+                    <div class="asset-meta-row" style="margin-bottom: 8px;">
+                        <b>TIPO DE FUNDO</b>
+                        <span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.tipo}" onchange="updateAssetField(${idx}, 'tipo', this.value)"></span>
+                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota || 0}" onchange="updateAssetField(${idx}, 'preco_cota', this.value)"></span>
+                    </div>
+
                     <div class="asset-meta-row"><b>VALOR PATRIMONIAL</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vp}" onchange="updateAssetField(${idx}, 'vp', this.value)"></span></div>
                     <div class="asset-meta-row"><b>LIQUIDEZ DIÁRIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.liq}" onchange="updateAssetField(${idx}, 'liq', this.value)"></span></div>
                     <div class="asset-meta-row"><b>P/VP</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pvp}" onchange="updateAssetField(${idx}, 'pvp', this.value)"></span></div>
@@ -707,6 +761,14 @@
                     <div class="asset-meta-row"><b>NÚMERO DE IMÓVEIS</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.num_imoveis}" onchange="updateAssetField(${idx}, 'num_imoveis', this.value)"></span></div>
                     <div class="asset-meta-row"><b>VACÂNCIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vacancia}" onchange="updateAssetField(${idx}, 'vacancia', this.value)"></span></div>
                     <div class="asset-meta-row"><b>% PL MÁXIMO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pl_max}" onchange="updateAssetField(${idx}, 'pl_max', this.value)"></span></div>
+                    
+                    <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
+                        <div style="font-size: 13px; font-weight: 900; text-align: center; margin-bottom: 10px; color: #333;">TOTAL DE COTAS: ${asset.num_cotas || 0}</div>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" id="buy-qtd-${idx}" placeholder="Qtd" style="width: 45%; border: 1px solid #ccc; border-radius: 4px; padding: 6px; text-align: center; font-size: 12px; font-weight: bold;">
+                            <button onclick="buyCotas(${idx})" style="width: 55%; background: var(--color-gain); border: none; color: #fff; font-weight: 800; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 11px;">+ ADICIONAR</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
 
@@ -721,12 +783,29 @@
             scheduleSave();
         }
 
+        // Função exposta no Window para o clique no botão
+        window.buyCotas = function(idx) {
+            let qtd = parseInt(document.getElementById('buy-qtd-' + idx).value) || 0;
+            if (qtd !== 0) { 
+                let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
+                let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
+                let currentCotas = parseInt(subGroup.assets[idx].num_cotas) || 0;
+                
+                let novaQtd = currentCotas + qtd;
+                if(novaQtd < 0) novaQtd = 0; // Previne ficar negativo sem querer
+
+                subGroup.assets[idx].num_cotas = novaQtd;
+                scheduleSave();
+                renderAssetCards(subGroup.assets);
+            }
+        };
+
         function addAssetCard() {
             let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
             let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
             
             subGroup.assets.push({
-                ticker: "NOVO11", tipo: currentPath[1], vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,00", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 8%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "6% OU MENOS"
+                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,00", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 8%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "6% OU MENOS"
             });
             scheduleSave(); renderAssetCards(subGroup.assets);
         }
