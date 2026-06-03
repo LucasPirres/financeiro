@@ -22,7 +22,7 @@
             --color-neutral: #b0bec5; 
             --color-highlight: #ffb300; 
             --color-purple: #7b1fa2;
-            --color-blue: #4da6ff; /* Nova cor para inputs numéricos de FIIs */
+            --color-blue: #4da6ff;
             
             --border-color: #222222;
         }
@@ -134,14 +134,6 @@
         .card-planilhas:hover { border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.25); }
         .card-planilhas .icon { color: var(--color-highlight); }
 
-        .split-card { padding: 0; gap: 0; flex-direction: column; cursor: default; }
-        .split-card:hover { border-color: #2196f3; box-shadow: 0 20px 40px rgba(33, 150, 243, 0.25); }
-        .half-link { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; gap: 8px; cursor: pointer; }
-        .half-link:hover { background: rgba(255, 255, 255, 0.05); }
-        .half-link:first-child { border-bottom: 2px solid var(--border-color); }
-        .half-link .icon { font-size: 32px; color: #2196f3; }
-        .half-link h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; margin: 0; }
-
         /* ================= TELA DE PLANILHAS (FII) ================= */
         .invest-scroll-area {
             display: none; 
@@ -184,7 +176,6 @@
     </div>
 
     <div id="app-container">
-        <!-- Sidebar e Plano Financeiro Original mantidos intactos -->
         <aside>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
@@ -245,29 +236,11 @@
             <div id="invest-header-title" style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
+        <!-- Modificação: Apenas 1 botão (Planilha) na aba de investimentos -->
         <div id="invest-menu-view" class="invest-menu-screen">
-            <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
-                <div class="invest-menu-card">
-                    <div class="icon">💼</div>
-                    <h3>Minha Carteira</h3>
-                </div>
-            </a>
-            
-            <div class="invest-menu-card split-card">
-                <a href="https://portal.xpi.com.br/" target="_blank" class="half-link">
-                    <div class="icon">💻</div>
-                    <h3>XP (PC)</h3>
-                </a>
-                
-                <a href="#" onclick="openXPApp(event)" class="half-link">
-                    <div class="icon">📱</div>
-                    <h3>XP (APP)</h3>
-                </a>
-            </div>
-
             <div class="invest-menu-card card-planilhas" onclick="openInvestPlanilhas()">
                 <div class="icon">📊</div>
-                <h3>Planilhas</h3>
+                <h3>Planilha de FIIs</h3>
             </div>
         </div>
 
@@ -317,6 +290,12 @@
                     </table>
                 </div>
                 <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFII()">+ Adicionar Novo Fundo</button>
+
+                <!-- Modificação: Imagem de Como Escolher Bons FIIs inserida abaixo da Planilha -->
+                <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-color); text-align: center;">
+                    <img src="EDC94816-9590-4735-94B4-003FBB23B553.jpg" alt="Como Escolher Bons FIIs" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                </div>
+
             </div>
         </div>
     </div>
@@ -324,27 +303,6 @@
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
-        // ======= NAVEGAÇÃO XP =======
-        window.openXPApp = function(event) {
-            event.preventDefault();
-            var start = Date.now();
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            var isAndroid = /android/i.test(userAgent);
-            var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-
-            if (isAndroid) {
-                window.location.href = "intent://#Intent;scheme=xpi;package=br.com.xp.investimentos;S.browser_fallback_url=https%3A%2F%2Fportal.xpi.com.br%2F;end";
-            } else if (isIOS) {
-                window.location.href = "xpi://";
-                setTimeout(function() {
-                    if (Date.now() - start < 2200) { window.open("https://portal.xpi.com.br/", "_blank"); }
-                }, 1500);
-            } else {
-                window.open("https://portal.xpi.com.br/", "_blank");
-            }
-        };
-
-        // ======= NAVEGAÇÃO PRINCIPAL =======
         let currentInvestView = 'menu';
 
         function openApp(appName) {
@@ -401,7 +359,6 @@
             }
         }
 
-        // ======= BANCO DE DADOS E INFRA =======
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -457,7 +414,6 @@
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= PLANILHAS DE FIIs (NOVO COM CÁLCULOS DA IMAGEM) =======
         function addFII() {
             db.fiis.push({ ticker: '', classe: '', qtd: 0, pm: 0, dy12: 0, dy1: 0 });
             renderFIITable();
@@ -471,7 +427,6 @@
         }
 
         function updateFII(index, field, value) {
-            // Salva dados no DB
             if (field === 'ticker' || field === 'classe') {
                 db.fiis[index][field] = value;
             } else {
@@ -479,23 +434,18 @@
                 db.fiis[index][field] = isNaN(val) ? 0 : val;
             }
             
-            // Cálculos parciais da linha para evitar re-renderização completa do input focada
             let fii = db.fiis[index];
             let investido = (fii.qtd || 0) * (fii.pm || 0);
-            // Lógica Renda Mensal Média = Total Investido * (DY 12 Meses / 100) / 12 (Padrão da Imagem)
             let renda = investido * ((fii.dy12 || 0) / 100) / 12;
             
-            // Atualiza campos estáticos da linha atual
             document.getElementById(`fii-investido-${index}`).innerText = investido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById(`fii-renda-${index}`).innerText = renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             
-            // Atualiza os percentuais e os totais
             updateFIIKPIs();
             scheduleSave();
         }
 
         function renderFIITable() {
-            // Migração silenciosa caso existam dados antigos (setor -> classe, dy -> dy12/dy1)
             db.fiis.forEach(fii => {
                 if(fii.setor !== undefined) { fii.classe = fii.setor; delete fii.setor; }
                 if(fii.dy !== undefined) { fii.dy12 = fii.dy * 12; fii.dy1 = fii.dy; delete fii.dy; }
@@ -533,7 +483,6 @@
             let totalCotas = 0;
             let somaPesoDY1 = 0;
             
-            // Primeira passagem para somar o investimento total global (necessário pro % da carteira)
             db.fiis.forEach(fii => {
                 let investido = (fii.qtd || 0) * (fii.pm || 0);
                 let renda = investido * ((fii.dy12 || 0) / 100) / 12;
@@ -543,7 +492,6 @@
                 somaPesoDY1 += investido * ((fii.dy1 || 0) / 100);
             });
 
-            // Segunda passagem atualizando dependentes dinâmicos na DOM
             db.fiis.forEach((fii, i) => {
                 let investido = (fii.qtd || 0) * (fii.pm || 0);
                 let perc = totalInvestido > 0 ? (investido / totalInvestido) * 100 : 0;
@@ -551,7 +499,6 @@
                 if (percEl) percEl.innerText = perc.toFixed(1).replace('.', ',') + '%';
             });
 
-            // Atualiza as Linhas de TOTAIS na tabela e KPIs
             let dy12Medio = totalInvestido > 0 ? ((totalRenda * 12) / totalInvestido) * 100 : 0;
             let dy1Medio = totalInvestido > 0 ? (somaPesoDY1 / totalInvestido) * 100 : 0;
 
@@ -566,7 +513,6 @@
             document.getElementById('fii-kpi-dy').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
         }
 
-        // ======= PLANO FINANCEIRO ORIGINAL =======
         function switchTab(tabId) { 
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
