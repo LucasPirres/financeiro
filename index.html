@@ -112,7 +112,6 @@
         /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
         #invest-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; background-color: var(--bg-body); }
         
-        /* Atualize a classe invest-menu-screen para incluir gap e flex-wrap */
         .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; }
         .invest-menu-card { width: 420px; height: 260px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
         .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.15); }
@@ -206,7 +205,6 @@
         </header>
 
         <div id="invest-menu-view" class="invest-menu-screen">
-            <!-- Retângulo 1: Minha Carteira -->
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
@@ -214,18 +212,14 @@
                 </div>
             </a>
             
-            <!-- Retângulo 2: Conta XP (Dividido) -->
             <div class="invest-menu-card split-card">
                 
-                <!-- Parte de Cima: XP no PC (Abre no navegador) -->
                 <a href="https://portal.xpi.com.br/" target="_blank" class="half-link">
                     <div class="icon">💻</div>
                     <h3>XP (PC)</h3>
                 </a>
                 
-                <!-- Parte de Baixo: XP no Celular (Deep Link para abrir o App) -->
-                <!-- O link "xpi://" tenta forçar a abertura do aplicativo nativo no celular -->
-                <a href="xpi://" class="half-link">
+                <a href="#" onclick="openXPApp(event)" class="half-link">
                     <div class="icon">📱</div>
                     <h3>XP (APP)</h3>
                 </a>
@@ -237,6 +231,25 @@
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
+        // Função Inteligente para abrir o app no celular
+        window.openXPApp = function(event) {
+            event.preventDefault(); // Impede que a tela pule pro topo ao clicar no link vazio
+            
+            // Marca o tempo exato do clique
+            var start = Date.now();
+            
+            // Tenta abrir o aplicativo nativo via URI
+            window.location.href = "xpi://";
+            
+            // Define um timer de 2 segundos. 
+            // Se o navegador ainda estiver aberto/ativo, significa que o app não estava instalado
+            setTimeout(function() {
+                if (Date.now() - start < 2500) { // Se demorou menos de 2.5s, o celular não foi para outro aplicativo
+                    window.open("https://portal.xpi.com.br/", "_blank"); // Abre o site oficial no navegador
+                }
+            }, 2000);
+        };
+
         function openApp(appName) {
             document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
