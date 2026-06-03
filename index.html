@@ -22,6 +22,7 @@
             --color-neutral: #b0bec5; 
             --color-highlight: #ffb300; 
             --color-purple: #7b1fa2;
+            --color-blue: #4da6ff; /* Nova cor para inputs numéricos de FIIs */
             
             --border-color: #222222;
         }
@@ -130,7 +131,6 @@
         .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
         .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         
-        /* Modificador especial para o cartão de Planilhas */
         .card-planilhas:hover { border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.25); }
         .card-planilhas .icon { color: var(--color-highlight); }
 
@@ -162,7 +162,7 @@
             border-radius: 12px;
             padding: 30px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             animation: fadeIn 0.4s;
         }
@@ -184,6 +184,7 @@
     </div>
 
     <div id="app-container">
+        <!-- Sidebar e Plano Financeiro Original mantidos intactos -->
         <aside>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
@@ -278,26 +279,41 @@
                 
                 <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
                     <div class="card card-kpi" style="background: rgba(0,0,0,0.4);"><div class="card-title">Total Investido</div><div class="card-value" id="fii-kpi-total">R$ 0,00</div></div>
-                    <div class="card card-kpi" style="background: rgba(0,0,0,0.4);"><div class="card-title">Renda Mensal (Dividendos)</div><div class="card-value" id="fii-kpi-renda" style="color: var(--color-gain);">R$ 0,00</div></div>
-                    <div class="card card-kpi" style="background: rgba(0,0,0,0.4);"><div class="card-title">Dividend Yield Médio</div><div class="card-value" id="fii-kpi-dy" style="color: var(--color-highlight);">0,00%</div></div>
+                    <div class="card card-kpi" style="background: rgba(0,0,0,0.4);"><div class="card-title">Renda Mensal (Projetada)</div><div class="card-value" id="fii-kpi-renda" style="color: var(--color-gain);">R$ 0,00</div></div>
+                    <div class="card card-kpi" style="background: rgba(0,0,0,0.4);"><div class="card-title">DY 12 Meses (Médio)</div><div class="card-value" id="fii-kpi-dy" style="color: var(--color-highlight);">0,00%</div></div>
                 </div>
 
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 900px;">
+                    <table style="min-width: 1100px;">
                         <thead>
                             <tr>
-                                <th style="width: 12%;">Fundo (Ticker)</th>
-                                <th style="width: 15%;">Setor</th>
-                                <th style="width: 10%;">Cotas</th>
-                                <th style="width: 15%;">Preço Médio (R$)</th>
-                                <th style="width: 15%;">Total Investido</th>
-                                <th style="width: 12%;">DY Mensal (%)</th>
-                                <th style="width: 15%;">Renda Mensal</th>
+                                <th style="width: 10%;">Ticker</th>
+                                <th style="width: 12%;">Classe</th>
+                                <th style="width: 8%;">Qtd. Cotas</th>
+                                <th style="width: 11%;">Preço Médio</th>
+                                <th style="width: 13%;">Total Investido</th>
+                                <th style="width: 10%;">% da Carteira</th>
+                                <th style="width: 10%;">DY 12 Meses</th>
+                                <th style="width: 10%;">DY último mês</th>
+                                <th style="width: 13%;">Renda Mensal Média</th>
                                 <th style="width: 40px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-fiis">
-                            </tbody>
+                        </tbody>
+                        <tfoot id="tfoot-fiis" style="border-top: 2px solid var(--border-color); font-weight: 700; color: var(--text-main);">
+                            <tr>
+                                <td colspan="2" style="padding: 15px 5px; text-transform: uppercase;">TOTAL</td>
+                                <td id="fii-tot-cotas" style="padding: 15px 5px;">0</td>
+                                <td></td>
+                                <td id="fii-tot-investido" style="padding: 15px 5px;">R$ 0,00</td>
+                                <td style="padding: 15px 5px;">100,0%</td>
+                                <td id="fii-tot-dy12" style="padding: 15px 5px;">0,00%</td>
+                                <td id="fii-tot-dy1" style="padding: 15px 5px;">0,00%</td>
+                                <td id="fii-tot-renda" style="padding: 15px 5px;">R$ 0,00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFII()">+ Adicionar Novo Fundo</button>
@@ -347,7 +363,6 @@
         }
 
         function goHome() {
-            // Reseta a navegação dos investimentos
             document.getElementById('invest-planilhas-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'Investimentos';
@@ -371,7 +386,7 @@
             document.getElementById('invest-header-title').innerText = 'Planilhas';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
             currentInvestView = 'planilhas';
-            renderFIITable(); // Renderiza dados carregados
+            renderFIITable();
         }
 
         function goBackInvest() {
@@ -408,7 +423,7 @@
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
-                    if(!db.fiis) db.fiis = []; // Garante estrutura da aba planilhas
+                    if(!db.fiis) db.fiis = [];
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.fiis = [];
@@ -442,9 +457,9 @@
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= PLANILHAS DE FIIs (NOVO) =======
+        // ======= PLANILHAS DE FIIs (NOVO COM CÁLCULOS DA IMAGEM) =======
         function addFII() {
-            db.fiis.push({ ticker: '', setor: '', qtd: 0, pm: 0, dy: 0 });
+            db.fiis.push({ ticker: '', classe: '', qtd: 0, pm: 0, dy12: 0, dy1: 0 });
             renderFIITable();
             scheduleSave();
         }
@@ -457,39 +472,51 @@
 
         function updateFII(index, field, value) {
             // Salva dados no DB
-            if (field === 'ticker' || field === 'setor') {
+            if (field === 'ticker' || field === 'classe') {
                 db.fiis[index][field] = value;
             } else {
                 let val = parseFloat(value);
                 db.fiis[index][field] = isNaN(val) ? 0 : val;
             }
             
-            // Cálculos Automáticos
+            // Cálculos parciais da linha para evitar re-renderização completa do input focada
             let fii = db.fiis[index];
-            let investido = fii.qtd * fii.pm;
-            let renda = investido * (fii.dy / 100);
+            let investido = (fii.qtd || 0) * (fii.pm || 0);
+            // Lógica Renda Mensal Média = Total Investido * (DY 12 Meses / 100) / 12 (Padrão da Imagem)
+            let renda = investido * ((fii.dy12 || 0) / 100) / 12;
             
-            // Atualiza os valores dinâmicos diretos na DOM
+            // Atualiza campos estáticos da linha atual
             document.getElementById(`fii-investido-${index}`).innerText = investido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById(`fii-renda-${index}`).innerText = renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             
+            // Atualiza os percentuais e os totais
             updateFIIKPIs();
             scheduleSave();
         }
 
         function renderFIITable() {
+            // Migração silenciosa caso existam dados antigos (setor -> classe, dy -> dy12/dy1)
+            db.fiis.forEach(fii => {
+                if(fii.setor !== undefined) { fii.classe = fii.setor; delete fii.setor; }
+                if(fii.dy !== undefined) { fii.dy12 = fii.dy * 12; fii.dy1 = fii.dy; delete fii.dy; }
+                if(fii.dy12 === undefined) fii.dy12 = 0;
+                if(fii.dy1 === undefined) fii.dy1 = 0;
+            });
+
             const html = db.fiis.map((fii, i) => {
-                let investido = fii.qtd * fii.pm;
-                let renda = investido * (fii.dy / 100);
+                let investido = (fii.qtd || 0) * (fii.pm || 0);
+                let renda = investido * ((fii.dy12 || 0) / 100) / 12;
                 
                 return `
                 <tr>
-                    <td><input type="text" class="custom-input" style="font-weight: 700; text-transform: uppercase; color: var(--color-highlight);" value="${fii.ticker}" oninput="updateFII(${i}, 'ticker', this.value)" placeholder="Ex: XPML11"></td>
-                    <td><input type="text" class="custom-input" value="${fii.setor}" oninput="updateFII(${i}, 'setor', this.value)" placeholder="Ex: Shopping"></td>
-                    <td><input type="number" class="custom-input" value="${fii.qtd || ''}" oninput="updateFII(${i}, 'qtd', this.value)" placeholder="0"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${fii.pm || ''}" oninput="updateFII(${i}, 'pm', this.value)" placeholder="0.00"></td>
+                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${fii.ticker}" oninput="updateFII(${i}, 'ticker', this.value)" placeholder="XPML11"></td>
+                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${fii.classe || ''}" oninput="updateFII(${i}, 'classe', this.value)" placeholder="Shoppings"></td>
+                    <td><input type="number" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.qtd || ''}" oninput="updateFII(${i}, 'qtd', this.value)" placeholder="0"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.pm || ''}" oninput="updateFII(${i}, 'pm', this.value)" placeholder="0.00"></td>
                     <td id="fii-investido-${i}" style="padding: 12px 5px; color: var(--text-main); font-weight: 600;">${investido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${fii.dy || ''}" oninput="updateFII(${i}, 'dy', this.value)" placeholder="0.00"></td>
+                    <td id="fii-perc-${i}" style="padding: 12px 5px; color: var(--text-main); font-weight: 600;">0,0%</td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.dy12 || ''}" oninput="updateFII(${i}, 'dy12', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--text-main);" value="${fii.dy1 || ''}" oninput="updateFII(${i}, 'dy1', this.value)" placeholder="0.00"></td>
                     <td id="fii-renda-${i}" style="padding: 12px 5px; color: var(--color-gain); font-weight: 600;">${renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
                     <td style="text-align: right;"><button class="btn-remove" onclick="removeFII(${i})">✕</button></td>
                 </tr>
@@ -503,19 +530,40 @@
         function updateFIIKPIs() {
             let totalInvestido = 0;
             let totalRenda = 0;
+            let totalCotas = 0;
+            let somaPesoDY1 = 0;
             
+            // Primeira passagem para somar o investimento total global (necessário pro % da carteira)
             db.fiis.forEach(fii => {
-                let investido = fii.qtd * fii.pm;
-                let renda = investido * (fii.dy / 100);
+                let investido = (fii.qtd || 0) * (fii.pm || 0);
+                let renda = investido * ((fii.dy12 || 0) / 100) / 12;
                 totalInvestido += investido;
                 totalRenda += renda;
+                totalCotas += (parseFloat(fii.qtd) || 0);
+                somaPesoDY1 += investido * ((fii.dy1 || 0) / 100);
             });
+
+            // Segunda passagem atualizando dependentes dinâmicos na DOM
+            db.fiis.forEach((fii, i) => {
+                let investido = (fii.qtd || 0) * (fii.pm || 0);
+                let perc = totalInvestido > 0 ? (investido / totalInvestido) * 100 : 0;
+                let percEl = document.getElementById(`fii-perc-${i}`);
+                if (percEl) percEl.innerText = perc.toFixed(1).replace('.', ',') + '%';
+            });
+
+            // Atualiza as Linhas de TOTAIS na tabela e KPIs
+            let dy12Medio = totalInvestido > 0 ? ((totalRenda * 12) / totalInvestido) * 100 : 0;
+            let dy1Medio = totalInvestido > 0 ? (somaPesoDY1 / totalInvestido) * 100 : 0;
+
+            document.getElementById('fii-tot-cotas').innerText = totalCotas;
+            document.getElementById('fii-tot-investido').innerText = totalInvestido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('fii-tot-dy12').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
+            document.getElementById('fii-tot-dy1').innerText = dy1Medio.toFixed(2).replace('.', ',') + '%';
+            document.getElementById('fii-tot-renda').innerText = totalRenda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 
             document.getElementById('fii-kpi-total').innerText = totalInvestido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('fii-kpi-renda').innerText = totalRenda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            
-            let dyMedio = totalInvestido > 0 ? ((totalRenda / totalInvestido) * 100) : 0;
-            document.getElementById('fii-kpi-dy').innerText = dyMedio.toFixed(2) + '%';
+            document.getElementById('fii-kpi-dy').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
         }
 
         // ======= PLANO FINANCEIRO ORIGINAL =======
