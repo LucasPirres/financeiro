@@ -100,7 +100,7 @@
         .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-family: 'Inter', sans-serif; padding: 8px 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
         .custom-input:focus { border-bottom: 1px solid var(--text-muted); background: #1a1a1a; border-radius: 4px 4px 0 0; }
         
-        .btn-add { background: #1a1a1a; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-add { background: #1a1a1a; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
         .btn-add:hover { background: var(--border-color); }
         .btn-add-gain { border-color: var(--color-gain); color: var(--color-gain); }
         .btn-add-gain:hover { background: rgba(0, 230, 118, 0.1); }
@@ -152,7 +152,7 @@
             </div>
             <div class="nav-section">Anos</div>
             <div id="years-list"></div>
-            <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%;" onclick="addYear()">+ Novo Ano</button></div>
+            <div style="padding: 0 20px;"><button class="btn-add" style="width: 100%; margin-top: 5px;" onclick="addYear()">+ Novo Ano</button></div>
             <div class="nav-section" style="margin-top: 30px;">Meses</div>
             <div id="months-list"></div>
         </aside>
@@ -182,17 +182,17 @@
                     <div class="entry-section" style="border-left: 3px solid var(--color-gain);">
                         <div class="entry-title" style="color: var(--color-gain);">Entradas / Receitas</div>
                         <table><thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-ganhos"></tbody></table>
-                        <button class="btn-add btn-add-gain" onclick="addRow('inc')">+ Adicionar Entrada</button>
+                        <button class="btn-add btn-add-gain" style="margin-top: 15px;" onclick="addRow('inc')">+ Adicionar Entrada</button>
                     </div>
                     <div class="entry-section" style="border-left: 3px solid var(--text-muted);">
                         <div class="entry-title" style="color: var(--text-muted);">Saídas Fixas (Projetado x Real)</div>
                         <table><thead><tr><th>Descrição / Categoria</th><th>Valor Base</th><th>Valor Real</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-fixos"></tbody></table>
-                        <button class="btn-add" onclick="addRow('fix')">+ Adicionar Saída Fixa</button>
+                        <button class="btn-add" style="margin-top: 15px;" onclick="addRow('fix')">+ Adicionar Saída Fixa</button>
                     </div>
                     <div class="entry-section" style="border-left: 3px solid var(--color-expense);">
                         <div class="entry-title" style="color: var(--color-expense);">Saídas Variáveis</div>
                         <table><thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-variaveis"></tbody></table>
-                        <button class="btn-add btn-add-exp" onclick="addRow('exp')">+ Adicionar Saída Variável</button>
+                        <button class="btn-add btn-add-exp" style="margin-top: 15px;" onclick="addRow('exp')">+ Adicionar Saída Variável</button>
                     </div>
                 </div>
             </main>
@@ -205,7 +205,6 @@
             <div style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
-        <!-- NOVO LINK ADICIONADO AQUI -->
         <div style="width: 100%; text-align: center; margin-top: 30px; margin-bottom: -15px;">
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="color: var(--color-gain); text-decoration: none; font-size: 15px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid transparent; transition: 0.3s;" onmouseover="this.style.color='var(--color-purple)'; this.style.borderColor='var(--color-purple)';" onmouseout="this.style.color='var(--color-gain)'; this.style.borderColor='transparent';">
                 🔗 Acessar Carteira Investidor10
@@ -233,7 +232,8 @@
                         <thead style="background: rgba(255,255,255,0.02);">
                             <tr>
                                 <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
-                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade Global</th>
+                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade</th>
+                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-resumo-cotas"></tbody>
@@ -242,19 +242,19 @@
 
                 <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                     <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo Geral da Carteira</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Valores consolidados baseados no <b style="color:var(--text-main);">Total Investido</b> preenchido na sua Carteira.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Comparativo da sua Alocação Real baseado nos aportes manuais.</p>
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead style="background: rgba(255,255,255,0.02);">
                             <tr>
                                 <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
                                 <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
-                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Investido</th>
+                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Investido (Aporte)</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-resumo-readonly"></tbody>
                         <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
                             <tr>
-                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
+                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL APORTADO</td>
                                 <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
                                 <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
                             </tr>
@@ -271,14 +271,17 @@
             <div id="invest-chart-zone" class="pie-box-wrapper">
                 <div class="chart-holder"><canvas id="chartInvestPie"></canvas></div>
 
-                <div style="display: flex; flex-direction: column; gap: 20px; width: 340px;">
+                <div style="display: flex; flex-direction: column; gap: 20px; width: 380px;">
                     <div class="editor-sidebar" style="width: 100%;">
-                        <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Alocação Baseada no Investido (R$)</h4>
+                        <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Adicionar Aporte / Alocação</h4>
                         <div id="editor-items-list"></div>
+                        
                         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
                             <span>TOTAL INVESTIDO:</span>
                             <span id="label-total-investido" style="color: var(--color-gain);">R$ 0,00</span>
                         </div>
+
+                        <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple); margin-top: 20px;" onclick="addPieSlice()">+ Adicionar Nova Categoria</button>
                     </div>
 
                     <div id="patrimonio-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px 20px; text-align: center; display: none;">
@@ -295,7 +298,7 @@
                             <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Qtd.</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Cotação Atual (R$)</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--color-gain); font-weight: bold; border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-main); font-weight:bold; border-bottom: 1px solid var(--border-color);"><span style="color:var(--color-gain);">+</span> Total Investido (R$) <span style="color:var(--color-expense);">-</span></th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">% da Carteira</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ação</th>
@@ -303,25 +306,40 @@
                     </thead>
                     <tbody id="tbody-acoes-brasil"></tbody>
                 </table>
-                <button id="btn-add-acao-generic" class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);" onclick="addAcaoGeneric()">+ Adicionar Ativo</button>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="btn-add-acao-generic" class="btn-add" style="border-color: var(--color-gain); color: var(--color-gain); margin-top:0;" onclick="addAcaoGeneric()">+ Adicionar Ativo</button>
+                    <button class="btn-add" style="border-color: var(--color-highlight); color: var(--color-highlight); margin-top:0;" onclick="atualizarCotacoes()">🔄 Atualizar Cotações Automáticas</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="sync-status">Conectando...</div>
+    <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
+        // =========================================================================
+        // ATENÇÃO: COLOQUE AQUI O SEU TOKEN GRATUITO DO SITE BRAPI.DEV
+        // Ele vai permitir que você busque as cotações reais da Bolsa de Valores!
+        // =========================================================================
+        const BRAPI_TOKEN = 'COLOQUE_SEU_TOKEN_AQUI'; 
+
         function openApp(appName) {
             document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('home-screen').style.display = 'none';
                 if (appName === 'plano') {
                     const app = document.getElementById('app-container');
-                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
-                    if (db.years[selectedYear]) { updateDashboard(); }
+                    app.style.display = 'flex'; 
+                    app.offsetHeight; 
+                    app.style.opacity = '1';
+                    if (db.years[selectedYear]) { 
+                        updateDashboard(); 
+                    }
                 } else if (appName === 'investimentos') {
                     const app = document.getElementById('invest-container');
-                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
+                    app.style.display = 'flex'; 
+                    app.offsetHeight; 
+                    app.style.opacity = '1';
                     backToInvestMenu();
                 }
             }, 500);
@@ -330,12 +348,15 @@
         function goHome() {
             const appPlano = document.getElementById('app-container');
             const appInvest = document.getElementById('invest-container');
-            appPlano.style.opacity = '0'; appInvest.style.opacity = '0';
+            appPlano.style.opacity = '0'; 
+            appInvest.style.opacity = '0';
             setTimeout(() => {
                 appPlano.style.display = 'none';
                 appInvest.style.display = 'none';
                 const home = document.getElementById('home-screen');
-                home.style.display = 'flex'; home.offsetHeight; home.style.opacity = '1';
+                home.style.display = 'flex'; 
+                home.offsetHeight; 
+                home.style.opacity = '1';
             }, 500);
         }
 
@@ -360,15 +381,24 @@
         }
 
         function navigateBack() {
-            if (currentPath.length > 0) { currentPath.pop(); navigateToPath(currentPath); } 
-            else { backToInvestMenu(); }
+            if (currentPath.length > 0) { 
+                currentPath.pop(); 
+                navigateToPath(currentPath); 
+            } 
+            else { 
+                backToInvestMenu(); 
+            }
         }
 
-        function formatMoney(val) { return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+        function formatMoney(val) { 
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); 
+        }
 
         function getPatrimonioTotal() {
             if (!db.investimentos || !db.investimentos.carteiraIdeal) return 0;
-            return db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
+            return db.investimentos.carteiraIdeal.reduce((acc, item) => {
+                return acc + (parseFloat(item.val) || 0);
+            }, 0);
         }
 
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
@@ -398,47 +428,9 @@
                     { label: "Renda Fixa", val: 0, sub: [], assets: [] },
                     { label: "Ações do Brasil", val: 0, sub: [], assets: [] },
                     { label: "Ativos no Exterior", val: 0, sub: [], assets: [] },
-                    { label: "Imóveis", val: 0, sub: [
-                        { label: "PAPEL", val: 0, assets: [
-                            { ticker: "KNCR11", qtd: 10, cotacao: 106.00, investido: 1055.00 },
-                            { ticker: "MXRF11", qtd: 50, cotacao: 10.40, investido: 510.00 }
-                        ]},
-                        { label: "TIJOLO", val: 0, assets: [
-                            { ticker: "HGLG11", qtd: 5, cotacao: 163.00, investido: 810.00 }
-                        ]}
-                    ]}
+                    { label: "Imóveis", val: 0, sub: [], assets: [] }
                 ]
             };
-        }
-
-        function calcularValorCategoria(categoria) {
-            let total = 0;
-            if (categoria.assets && categoria.assets.length > 0) {
-                categoria.assets.forEach(asset => {
-                    if (asset.qtd === undefined && asset.num_cotas !== undefined) {
-                        asset.qtd = asset.num_cotas; asset.cotacao = asset.preco_cota_atual;
-                    }
-                    let inv = parseFloat(asset.investido);
-                    if (isNaN(inv)) {
-                        inv = (parseFloat(asset.qtd) || 0) * (parseFloat(asset.pm || asset.preco_cota) || 0);
-                        asset.investido = inv; 
-                    }
-                    total += inv;
-                });
-            }
-            if (categoria.sub && categoria.sub.length > 0) {
-                categoria.sub.forEach(sub => {
-                    sub.val = calcularValorCategoria(sub); 
-                    total += sub.val;
-                });
-            }
-            return total;
-        }
-
-        function recalcularTodaCarteira() {
-            if (db.investimentos && db.investimentos.carteiraIdeal) {
-                db.investimentos.carteiraIdeal.forEach(cat => { cat.val = calcularValorCategoria(cat); });
-            }
         }
 
         async function loadData() {
@@ -446,26 +438,40 @@
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
-                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { db.investimentos = getDefaultInvestStructure(); }
+                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { 
+                        db.investimentos = getDefaultInvestStructure(); 
+                    }
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.investimentos = getDefaultInvestStructure();
                     await saveDataNow(); 
                 }
-                
-                recalcularTodaCarteira(); 
+
+                if (db.investimentos && db.investimentos.carteiraIdeal) {
+                    db.investimentos.carteiraIdeal.forEach(cat => {
+                        if (cat.sub && cat.sub.length > 0) {
+                            if (!cat.assets) cat.assets = [];
+                            cat.sub.forEach(sub => {
+                                if (sub.assets) {
+                                    sub.assets.forEach(a => cat.assets.push(a));
+                                }
+                            });
+                            cat.sub = []; 
+                        }
+                    });
+                }
                 
                 document.getElementById('sync-status').innerText = "Online";
-                renderSidebar(); updateUI();
+                renderSidebar(); 
+                updateUI();
             } catch (e) { 
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                 if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
                 
-                recalcularTodaCarteira(); 
-                
-                renderSidebar(); updateUI();
+                renderSidebar(); 
+                updateUI();
             }
         }
 
@@ -479,12 +485,16 @@
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
                 if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
-            } catch (e) { document.getElementById('sync-status').innerText = "Erro ao salvar"; }
+            } catch (e) { 
+                document.getElementById('sync-status').innerText = "Erro ao salvar"; 
+            }
         }
 
         function createYearStructure() {
             let struct = {};
-            MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; });
+            MONTHS.forEach(m => { 
+                struct[m] = { inc: [], fix: [], exp: [] }; 
+            });
             return struct;
         }
 
@@ -492,13 +502,16 @@
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
                 let found = current.find(item => item.label === path[i]);
-                if (found && found.sub) { current = found.sub; }
+                if (found && found.sub) { 
+                    current = found.sub; 
+                }
             }
             return current;
         }
 
         function atualizarSimulacao() {
-            let total = getPatrimonioTotal();
+            let total = getPatrimonioTotal(); 
+            
             let htmlResumo = '';
             if (db.investimentos && db.investimentos.carteiraIdeal) {
                 db.investimentos.carteiraIdeal.forEach(item => {
@@ -517,40 +530,52 @@
 
             const tbody = document.getElementById('tbody-resumo-readonly');
             if(tbody) tbody.innerHTML = htmlResumo;
+            
             const totCalc = document.getElementById('resumo-total-calc');
             if(totCalc) totCalc.innerText = formatMoney(total); 
 
             const totPct = document.getElementById('resumo-total-pct');
-            if(totPct) { totPct.innerText = total > 0 ? '100%' : '0%'; totPct.style.color = 'var(--color-gain)'; }
+            if(totPct) { 
+                totPct.innerText = total > 0 ? '100%' : '0%'; 
+                totPct.style.color = 'var(--color-gain)'; 
+            }
             
             let htmlCotas = '';
-            let totalCotasGeral = 0;
+            let totalSaldoGeral = 0;
             
             function searchAssets(list) {
                 list.forEach(node => {
                     if (node.assets) {
                         node.assets.forEach(asset => {
-                            let qtd = parseInt(asset.qtd) || parseInt(asset.num_cotas) || 0;
-                            totalCotasGeral += qtd;
+                            let qtd = parseFloat(asset.qtd) || parseFloat(asset.num_cotas) || 0;
+                            let cotacao = parseFloat(asset.cotacao) || parseFloat(asset.preco_cota_atual) || 0;
+                            
+                            let saldo = qtd * cotacao;
+                            totalSaldoGeral += saldo;
+                            
                             htmlCotas += `
                                 <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker || 'Ativo sem nome'}</td>
-                                    <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-highlight);">${qtd}</td>
+                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker || 'Sem nome'}</td>
+                                    <td style="padding: 15px 10px; text-align: center; color: var(--text-muted);">${qtd}</td>
+                                    <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-highlight);">${formatMoney(saldo)}</td>
                                 </tr>
                             `;
                         });
                     }
-                    if (node.sub) searchAssets(node.sub);
+                    if (node.sub && node.sub.length > 0) {
+                        searchAssets(node.sub);
+                    }
                 });
             }
             searchAssets(db.investimentos.carteiraIdeal);
 
-            if(htmlCotas === '') { htmlCotas = `<tr><td colspan="2" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhum ativo registrado.</td></tr>`; } 
-            else {
+            if(htmlCotas === '') { 
+                htmlCotas = `<tr><td colspan=\"3\" style=\"text-align:center; padding: 20px; color: var(--text-muted);\">Nenhum ativo registrado.</td></tr>`; 
+            } else {
                 htmlCotas += `
                     <tr style="background: rgba(0,0,0,0.2);">
-                        <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: left;">TOTAL GERAL EM VOLUME:</td>
-                        <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-gain);">${totalCotasGeral}</td>
+                        <td colspan="2" style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: right;">SALDO TOTAL (R$):</td>
+                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(totalSaldoGeral)}</td>
                     </tr>
                 `;
             }
@@ -564,32 +589,19 @@
             document.getElementById('invest-chart-zone').style.display = 'none';
             document.getElementById('invest-acoes-zone').style.display = 'none';
             
-            let currentGroup;
-            if (path.length === 0) {
-                currentGroup = { label: "Root", sub: db.investimentos.carteiraIdeal };
-            } else {
-                let curr = db.investimentos.carteiraIdeal;
-                for(let i=0; i<path.length; i++) {
-                    let found = curr.find(item => item.label === path[i]);
-                    if(found) {
-                        currentGroup = found;
-                        if(found.sub) curr = found.sub;
-                    }
-                }
-            }
-
-            if (path.length > 0 && (!currentGroup.sub || currentGroup.sub.length === 0)) {
+            if (path.length === 1) {
                 document.getElementById('invest-acoes-zone').style.display = 'block';
-                document.getElementById('invest-main-title').innerText = path[path.length - 1];
-                if(!currentGroup.assets) currentGroup.assets = [];
-                renderAcoesTable(currentGroup.assets);
+                document.getElementById('invest-main-title').innerText = path[0];
+                
+                let group = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
+                if(!group.assets) group.assets = [];
+                renderAcoesTable(group.assets, path[0]);
             } 
             else {
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 if (path.length === 0) { document.getElementById('invest-main-title').innerText = "Carteira Ideal"; } 
                 else { document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[path.length - 1]}`; }
                 
-                recalcularTodaCarteira();
                 renderPieChartZone();
             }
         }
@@ -598,18 +610,34 @@
             let list = getTargetStructure(currentPath);
             let isRoot = currentPath.length === 0;
             
+            const fixedLabels = ["Renda Fixa", "Ações do Brasil", "Ativos no Exterior", "Imóveis"];
+            
             let htmlList = list.map((item, idx) => {
                 let safeLabel = item.label.replace(/'/g, "\\'");
+                let isFixed = fixedLabels.includes(item.label);
+                
                 return `
-                <div class="editor-row" style="cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" onclick="handleSidebarClick('${safeLabel}')">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: var(--text-main); font-weight: 600; cursor: pointer;" value="${item.label}" readonly title="Clique para abrir">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px; color: var(--text-muted); font-weight:bold; cursor: pointer;" value="${formatMoney(item.val)}" readonly placeholder="R$ 0,00">
-                    <div style="width: 24px; color: var(--color-purple); font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Acessar Categoria">➔</div>
+                <div class="editor-row" style="transition: 0.2s;">
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixed ? 'var(--text-muted)' : 'var(--text-main)'}; font-weight: 600;" value="${item.label}" ${isFixed ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
+                    
+                    <div style="display: flex; align-items: center; background: #1a1a1a; padding-left: 10px; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <span style="color: var(--text-muted); font-size: 12px; font-weight: bold;">R$</span>
+                        <input type="number" step="0.01" class="custom-input" style="width: 80px; text-align: right; background: transparent; border: none; font-weight: bold; color: var(--color-gain);" value="${item.val}" placeholder="0.00" onchange="updatePieItem(${idx}, 'val', this.value)">
+                    </div>
+                    
+                    ${!isFixed ? `<button class="btn-remove" onclick="removePieSlice(${idx})" title="Remover Fatia">✕</button>` : `<div style="width: 24px;"></div>`}
+                    
+                    <div style="cursor: pointer; width: 30px; margin-left: 10px; color: var(--color-purple); font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Acessar Categoria (Tabela)" onclick="handleSidebarClick('${safeLabel}')">➔</div>
                 </div>
                 `;
             }).join('');
             
             document.getElementById('editor-items-list').innerHTML = htmlList;
+
+            let btnAdd = document.getElementById('btn-add-pie');
+            if(btnAdd) { 
+                btnAdd.style.display = isRoot ? 'block' : 'none'; 
+            }
 
             let patBox = document.getElementById('patrimonio-box');
             let patLabel = document.getElementById('label-patrimonio-total');
@@ -618,10 +646,13 @@
             let totalVal = list.reduce((a, b) => a + (parseFloat(b.val) || 0), 0);
             
             if(totInvLabel) totInvLabel.innerText = formatMoney(totalVal);
+            
             if (isRoot) {
                 if(patBox) patBox.style.display = 'block';
                 if(patLabel) patLabel.innerText = formatMoney(totalVal);
-            } else { if(patBox) patBox.style.display = 'none'; }
+            } else {
+                if(patBox) patBox.style.display = 'none';
+            }
 
             destroyChart('chartInvestPie');
             let labels = list.map(i => i.label);
@@ -629,17 +660,46 @@
 
             charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
                 type: 'pie',
-                data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: PIE_PALETTE.slice(0, list.length), borderWidth: 2, borderColor: 'var(--bg-card)' }] },
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: dataVals, 
+                        backgroundColor: PIE_PALETTE.slice(0, list.length), 
+                        borderWidth: 2, 
+                        borderColor: 'var(--bg-card)' 
+                    }] 
+                },
                 options: {
-                    responsive: true, maintainAspectRatio: false, animation: { duration: 600, easing: 'easeOutQuart' },
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: { duration: 600, easing: 'easeOutQuart' },
                     plugins: {
                         legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 12 } } },
-                        datalabels: { color: '#ffffff', font: { weight: '700', size: 14 }, formatter: (val, ctx) => { if(totalVal === 0) return ''; return ((val / totalVal) * 100).toFixed(0) + '%'; } },
-                        tooltip: { callbacks: { label: function(context) { let val = context.raw; let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0; return ` ${context.label}: ${formatMoney(val)} (${pct}%)`; } } }
+                        datalabels: { 
+                            color: '#ffffff', 
+                            font: { weight: '700', size: 14 }, 
+                            formatter: (val, ctx) => { 
+                                if(totalVal === 0) return ''; 
+                                return ((val / totalVal) * 100).toFixed(0) + '%'; 
+                            } 
+                        },
+                        tooltip: { 
+                            callbacks: { 
+                                label: function(context) { 
+                                    let val = context.raw; 
+                                    let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0; 
+                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`; 
+                                } 
+                            } 
+                        }
                     },
                     hover: { mode: 'nearest', intersect: true },
                     onClick: (evt, elements) => {
-                        if (elements.length > 0) { let clickedIdx = elements[0].index; let targetItem = list[clickedIdx]; handleSidebarClick(targetItem.label); }
+                        if (elements.length > 0) { 
+                            let clickedIdx = elements[0].index; 
+                            let targetItem = list[clickedIdx]; 
+                            handleSidebarClick(targetItem.label); 
+                        }
                     }
                 }
             });
@@ -647,17 +707,43 @@
             if(isRoot) atualizarSimulacao();
         }
 
+        window.updatePieItem = function(idx, field, value) {
+            let list = getTargetStructure(currentPath);
+            if(field === 'val') {
+                list[idx][field] = parseFloat(value) || 0;
+            } else {
+                list[idx][field] = value;
+            }
+            scheduleSave();
+            renderPieChartZone();
+        };
+
+        window.addPieSlice = function() {
+            let list = getTargetStructure(currentPath);
+            list.push({ label: "Nova Categoria", val: 0, sub: [], assets: [] });
+            scheduleSave();
+            renderPieChartZone();
+        };
+
+        window.removePieSlice = function(idx) {
+            let list = getTargetStructure(currentPath);
+            list.splice(idx, 1);
+            scheduleSave();
+            renderPieChartZone();
+        };
+
         window.handleSidebarClick = function(label) {
             let list = getTargetStructure(currentPath);
             let targetItem = list.find(i => i.label === label);
             
             if (!targetItem) return;
-            if (!targetItem.sub) { targetItem.sub = []; }
+            if (!targetItem.sub) targetItem.sub = [];
             
             let newPath = [...currentPath, label];
             navigateToPath(newPath);
         };
 
+        /* ================= TABELA ÚNICA DE ATIVOS GENÉRICA ================= */
         function getGroupFromPath() {
             let curr = db.investimentos.carteiraIdeal;
             let group = null;
@@ -671,6 +757,7 @@
         function renderAcoesTable(assetsList) {
             const tbody = document.getElementById('tbody-acoes-brasil');
             let html = '';
+            
             let patTotal = getPatrimonioTotal(); 
             
             assetsList.forEach((asset, idx) => {
@@ -678,18 +765,32 @@
                 let cotacao = parseFloat(asset.cotacao) || 0;
                 let investido = parseFloat(asset.investido) || 0;
                 
-                let saldo = qtd * cotacao;
+                let saldoAtual = qtd * cotacao;
                 let perc = patTotal > 0 ? (investido / patTotal) * 100 : 0;
                 
                 html += `
                     <tr style="border-bottom: 1px solid var(--border-color); transition: 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.02)'" onmouseout="this.style.backgroundColor='transparent'">
-                        <td><input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Nome do Ativo" onchange="updateAcaoField(${idx}, 'ticker', this.value)"></td>
-                        <td><input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;"></td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;"></td>
-                        <td style="font-weight: bold; color: var(--color-gain); text-align: center;">${formatMoney(saldo)}</td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${investido}" onchange="updateAcaoField(${idx}, 'investido', this.value)" style="text-align: center; color: var(--color-highlight); font-weight: bold; border-bottom: 1px solid var(--border-color); background: #1a1a1a;"></td>
-                        <td style="color: var(--text-muted); font-weight: bold; text-align: center;">${perc.toFixed(2)}%</td>
-                        <td style="text-align: center;"><button class="btn-remove" onclick="removeAcao(${idx})">✕</button></td>
+                        <td>
+                            <input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Nome do Ativo" onchange="updateAcaoField(${idx}, 'ticker', this.value)">
+                        </td>
+                        <td>
+                            <input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;">
+                        </td>
+                        <td style="font-weight: bold; color: var(--color-gain); text-align: center;">
+                            ${formatMoney(saldoAtual)}
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" class="custom-input" value="${investido}" onchange="updateAcaoField(${idx}, 'investido', this.value)" style="text-align: center; color: var(--color-highlight); font-weight: bold; border-bottom: 1px solid var(--border-color); background: #1a1a1a;">
+                        </td>
+                        <td style="color: var(--text-muted); font-weight: bold; text-align: center;">
+                            ${perc.toFixed(2)}%
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn-remove" onclick="removeAcao(${idx})">✕</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -699,7 +800,6 @@
         window.updateAcaoField = function(idx, field, value) {
             let group = getGroupFromPath();
             group.assets[idx][field] = value;
-            recalcularTodaCarteira(); 
             scheduleSave();
             renderAcoesTable(group.assets);
         };
@@ -715,57 +815,286 @@
         window.removeAcao = function(idx) {
             let group = getGroupFromPath();
             group.assets.splice(idx, 1);
-            recalcularTodaCarteira();
             scheduleSave();
             renderAcoesTable(group.assets);
         };
 
-        function switchTab(tabId) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tabId).classList.add('active'); event.currentTarget.classList.add('active'); updateUI(); }
-        function selectYear(y) { selectedYear = y; renderSidebar(); updateUI(); }
-        function selectMonth(m) { selectedMonth = m; renderSidebar(); updateUI(); }
-        function addYear() { let y = prompt("Digite o novo ano (ex: 2025):"); if(y && !db.years[y]) { db.years[y] = createYearStructure(); selectYear(y); scheduleSave(); } }
-        function deleteYear(y, event) { event.stopPropagation(); if(confirm(`Atenção: Deseja realmente excluir TODOS os dados de ${y}?`)) { delete db.years[y]; let keys = Object.keys(db.years); if(keys.length === 0) { let curY = new Date().getFullYear().toString(); db.years[curY] = createYearStructure(); selectedYear = curY; } else if(selectedYear === y) { selectedYear = keys[0]; } scheduleSave(); renderSidebar(); updateUI(); } }
+        /* ================= SISTEMA DE API (BRAPI) ================= */
+        window.atualizarCotacoes = async function() {
+            if (!BRAPI_TOKEN || BRAPI_TOKEN === 'i5U7DsoHQ8EE6x3zkCmmdm') {
+                alert("Para usar esta função mágica, adicione o seu Token gratuito da brapi.dev no código do site (linha ~410)!");
+                return;
+            }
 
-        function renderSidebar() {
-            document.getElementById('years-list').innerHTML = Object.keys(db.years).sort().map(y => `<div class="nav-item ${y === selectedYear ? 'active' : ''}" onclick="selectYear('${y}')">${y} <button class="btn-del-year" onclick="deleteYear('${y}', event)">✕</button></div>`).join('');
-            document.getElementById('months-list').innerHTML = MONTHS.map(m => `<div class="nav-item ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${m}</div>`).join('');
+            let tickersToFetch = [];
+            
+            function collectTickers(list) {
+                list.forEach(node => {
+                    if (node.assets) {
+                        node.assets.forEach(a => {
+                            if (a.ticker && a.ticker.trim() !== '' && !tickersToFetch.includes(a.ticker)) {
+                                tickersToFetch.push(a.ticker.trim());
+                            }
+                        });
+                    }
+                    if (node.sub) collectTickers(node.sub);
+                });
+            }
+            collectTickers(db.investimentos.carteiraIdeal);
+
+            if (tickersToFetch.length === 0) {
+                alert("Você ainda não cadastrou nenhum Ticker válido para atualizar.");
+                return;
+            }
+
+            document.getElementById('sync-status').innerText = "Buscando preços na Bolsa de Valores...";
+
+            try {
+                let url = `https://brapi.dev/api/quote/${tickersToFetch.join(',')}?token=${BRAPI_TOKEN}`;
+                let response = await fetch(url);
+                let data = await response.json();
+
+                if (data.results) {
+                    let priceMap = {};
+                    data.results.forEach(res => {
+                        priceMap[res.symbol] = res.regularMarketPrice;
+                    });
+
+                    function applyPrices(list) {
+                        list.forEach(node => {
+                            if (node.assets) {
+                                node.assets.forEach(a => {
+                                    if (a.ticker && priceMap[a.ticker]) {
+                                        a.cotacao = priceMap[a.ticker];
+                                    }
+                                });
+                            }
+                            if (node.sub) applyPrices(node.sub);
+                        });
+                    }
+                    applyPrices(db.investimentos.carteiraIdeal);
+
+                    scheduleSave();
+                    
+                    if (currentPath.length > 0) {
+                        let group = getGroupFromPath();
+                        if(group && group.assets) renderAcoesTable(group.assets);
+                    } else {
+                        renderPieChartZone();
+                    }
+
+                    document.getElementById('sync-status').innerText = "Cotações atualizadas com sucesso! ✅";
+                    setTimeout(() => document.getElementById('sync-status').innerText = "Online", 3500);
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao buscar as cotações. Verifique o seu Ticker ou tente novamente mais tarde.");
+                document.getElementById('sync-status').innerText = "Erro ao atualizar cotações";
+            }
+        };
+
+        /* ================= ENGINE DO PLANO FINANCEIRO ================= */
+        function switchTab(tabId) { 
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+            document.getElementById(tabId).classList.add('active'); 
+            event.currentTarget.classList.add('active'); 
+            updateUI(); 
         }
 
-        function addRow(type) { let newItem = { d: '', v: 0 }; if(type === 'fix') newItem.vr = 0; db.years[selectedYear][selectedMonth][type].push(newItem); renderTables(); scheduleSave(); updateDashboard(); }
-        function removeRow(type, index) { db.years[selectedYear][selectedMonth][type].splice(index, 1); renderTables(); scheduleSave(); updateDashboard(); }
-        function updateVal(type, index, field, value) { let val = field === 'd' ? value : (parseFloat(value) || 0); db.years[selectedYear][selectedMonth][type][index][field] = val; scheduleSave(); updateDashboard(); }
+        function selectYear(y) { 
+            selectedYear = y; 
+            renderSidebar(); 
+            updateUI(); 
+        }
+
+        function selectMonth(m) { 
+            selectedMonth = m; 
+            renderSidebar(); 
+            updateUI(); 
+        }
+
+        function addYear() { 
+            let y = prompt("Digite o novo ano (ex: 2025):"); 
+            if(y && !db.years[y]) { 
+                db.years[y] = createYearStructure(); 
+                selectYear(y); 
+                scheduleSave(); 
+            } 
+        }
+
+        function deleteYear(y, event) { 
+            event.stopPropagation(); 
+            if(confirm(`Atenção: Deseja realmente excluir TODOS os dados de ${y}?`)) { 
+                delete db.years[y]; 
+                let keys = Object.keys(db.years); 
+                if(keys.length === 0) { 
+                    let curY = new Date().getFullYear().toString(); 
+                    db.years[curY] = createYearStructure(); 
+                    selectedYear = curY; 
+                } else if(selectedYear === y) { 
+                    selectedYear = keys[0]; 
+                } 
+                scheduleSave(); 
+                renderSidebar(); 
+                updateUI(); 
+            } 
+        }
+
+        function renderSidebar() {
+            document.getElementById('years-list').innerHTML = Object.keys(db.years).sort().map(y => 
+                `<div class="nav-item ${y === selectedYear ? 'active' : ''}" onclick="selectYear('${y}')">${y} <button class="btn-del-year" onclick="deleteYear('${y}', event)">✕</button></div>`
+            ).join('');
+
+            document.getElementById('months-list').innerHTML = MONTHS.map(m => 
+                `<div class="nav-item ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${m}</div>`
+            ).join('');
+        }
+
+        function addRow(type) { 
+            let newItem = { d: '', v: 0 }; 
+            if(type === 'fix') newItem.vr = 0; 
+            db.years[selectedYear][selectedMonth][type].push(newItem); 
+            renderTables(); 
+            scheduleSave(); 
+            updateDashboard(); 
+        }
+
+        function removeRow(type, index) { 
+            db.years[selectedYear][selectedMonth][type].splice(index, 1); 
+            renderTables(); 
+            scheduleSave(); 
+            updateDashboard(); 
+        }
+
+        function updateVal(type, index, field, value) { 
+            let val = field === 'd' ? value : (parseFloat(value) || 0); 
+            db.years[selectedYear][selectedMonth][type][index][field] = val; 
+            scheduleSave(); 
+            updateDashboard(); 
+        }
 
         function renderTables() {
             document.getElementById('lbl-mes-ano').innerText = `${selectedMonth} / ${selectedYear}`;
             let data = db.years[selectedYear][selectedMonth];
+            
             const placeholders = { 'inc': 'Ex: Salário...', 'fix': 'Ex: Aluguel...', 'exp': 'Ex: Alimentação...' };
-            const createRows = (type, items) => items.map((item, i) => `<tr><td><input type="text" class="custom-input" value="${item.d}" oninput="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td><td><input type="number" class="custom-input" value="${item.v}" oninput="updateVal('${type}', ${i}, 'v', this.value)" placeholder="0.00"></td>${type === 'fix' ? `<td><input type="number" class="custom-input" value="${item.vr}" oninput="updateVal('${type}', ${i}, 'vr', this.value)" placeholder="0.00"></td>` : ''}<td style="text-align: right;"><button class="btn-remove" onclick="removeRow('${type}', ${i})">✕</button></td></tr>`).join('');
-            document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc); document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix); document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
+            
+            const createRows = (type, items) => items.map((item, i) => `
+                <tr>
+                    <td><input type="text" class="custom-input" value="${item.d}" oninput="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td>
+                    <td><input type="number" class="custom-input" value="${item.v}" oninput="updateVal('${type}', ${i}, 'v', this.value)" placeholder="0.00"></td>
+                    ${type === 'fix' ? `<td><input type="number" class="custom-input" value="${item.vr}" oninput="updateVal('${type}', ${i}, 'vr', this.value)" placeholder="0.00"></td>` : ''}
+                    <td style="text-align: right;"><button class="btn-remove" onclick="removeRow('${type}', ${i})">✕</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc); 
+            document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix); 
+            document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
         }
 
-        function updateUI() { renderTables(); updateDashboard(); }
+        function updateUI() { 
+            renderTables(); 
+            updateDashboard(); 
+        }
 
         function updateDashboard() {
             if(document.getElementById('app-container').style.display === 'none') return;
             let data = db.years[selectedYear][selectedMonth];
-            let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0); let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0); let varMes = data.exp.reduce((a, c) => a + c.v, 0); let despesasMes = fixosMes + varMes; let saldoMes = ganhosMes - despesasMes;
-            let elSaldo = document.getElementById('kpi-saldo'); elSaldo.innerText = saldoMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); elSaldo.style.color = saldoMes >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
-            document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); renderCharts(data);
+            
+            let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0); 
+            let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0); 
+            let varMes = data.exp.reduce((a, c) => a + c.v, 0); 
+            let despesasMes = fixosMes + varMes; 
+            let saldoMes = ganhosMes - despesasMes;
+
+            let elSaldo = document.getElementById('kpi-saldo'); 
+            elSaldo.innerText = saldoMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); 
+            elSaldo.style.color = saldoMes >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
+            
+            document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); 
+            renderCharts(data);
         }
 
         function renderCharts(monthData) {
-            const datalabelsConfig = { color: '#fff', align: 'right', anchor: 'end', font: { weight: '600', size: 11 }, formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : '' };
-            let catDespesas = {}; monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; }); monthData.exp.forEach(i => { if(i.v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + i.v; });
-            destroyChart('chartDonutMes'); charts['chartDonutMes'] = new Chart(document.getElementById('chartDonutMes'), { type: 'doughnut', data: { labels: Object.keys(catDespesas), datasets: [{ data: Object.values(catDespesas), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } });
-            destroyChart('chartHorizontalMes'); let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val); charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), { type: 'bar', data: { labels: dataDespesasArr.map(d=>d.label), datasets: [{ data: dataDespesasArr.map(d=>d.val), backgroundColor: '#ff5252', borderRadius: 2 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } });
-            let catGanhos = {}; monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; }); let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
-            destroyChart('chartHorizontalGanhos'); charts['chartHorizontalGanhos'] = new Chart(document.getElementById('chartHorizontalGanhos'), { type: 'bar', data: { labels: dataGanhosArr.map(d=>d.label), datasets: [{ data: dataGanhosArr.map(d=>d.val), backgroundColor: '#00e676', borderRadius: 2 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } });
-            let ganhosAno = []; let despesasAno = []; let catAno = {}; MONTHS.forEach(m => { let md = db.years[selectedYear][m]; ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0)); despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0)); md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; }); md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; }); });
-            destroyChart('chartDonutAno'); charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), { type: 'doughnut', data: { labels: Object.keys(catAno), datasets: [{ data: Object.values(catAno), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } });
-            destroyChart('chartBarAnual'); charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), { type: 'bar', data: { labels: MONTHS.map(m => m.substring(0,3)), datasets: [ { label: 'Entradas', data: ganhosAno, backgroundColor: '#00e676', borderRadius: 2 }, { label: 'Saídas', data: despesasAno, backgroundColor: '#ff5252', borderRadius: 2 } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#888888', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [2, 4] } } } } });
+            const datalabelsConfig = { 
+                color: '#fff', 
+                align: 'right', 
+                anchor: 'end', 
+                font: { weight: '600', size: 11 }, 
+                formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : '' 
+            };
+            
+            let catDespesas = {}; 
+            monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; }); 
+            monthData.exp.forEach(i => { if(i.v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + i.v; });
+            
+            destroyChart('chartDonutMes'); 
+            charts['chartDonutMes'] = new Chart(document.getElementById('chartDonutMes'), { 
+                type: 'doughnut', 
+                data: { 
+                    labels: Object.keys(catDespesas), 
+                    datasets: [{ data: Object.values(catDespesas), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] 
+                }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } 
+            });
+
+            destroyChart('chartHorizontalMes'); 
+            let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val); 
+            charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), { 
+                type: 'bar', 
+                data: { labels: dataDespesasArr.map(d=>d.label), datasets: [{ data: dataDespesasArr.map(d=>d.val), backgroundColor: '#ff5252', borderRadius: 2 }] }, 
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } 
+            });
+
+            let catGanhos = {}; 
+            monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; }); 
+            let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
+
+            destroyChart('chartHorizontalGanhos'); 
+            charts['chartHorizontalGanhos'] = new Chart(document.getElementById('chartHorizontalGanhos'), { 
+                type: 'bar', 
+                data: { labels: dataGanhosArr.map(d=>d.label), datasets: [{ data: dataGanhosArr.map(d=>d.val), backgroundColor: '#00e676', borderRadius: 2 }] }, 
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } 
+            });
+
+            let ganhosAno = []; 
+            let despesasAno = []; 
+            let catAno = {}; 
+            MONTHS.forEach(m => { 
+                let md = db.years[selectedYear][m]; 
+                ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0)); 
+                despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0)); 
+                md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; }); 
+                md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; }); 
+            });
+
+            destroyChart('chartDonutAno'); 
+            charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), { 
+                type: 'doughnut', 
+                data: { labels: Object.keys(catAno), datasets: [{ data: Object.values(catAno), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } 
+            });
+
+            destroyChart('chartBarAnual'); 
+            charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), { 
+                type: 'bar', 
+                data: {
+                    labels: MONTHS.map(m => m.substring(0,3)),
+                    datasets: [
+                        { label: 'Entradas', data: ganhosAno, backgroundColor: '#00e676', borderRadius: 2 },
+                        { label: 'Saídas', data: despesasAno, backgroundColor: '#ff5252', borderRadius: 2 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#888888', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [2, 4] } } } } 
+            });
         }
 
-        function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
+        function destroyChart(id) { 
+            if(charts[id]) charts[id].destroy(); 
+        }
+
         window.onload = loadData;
     </script>
 </body>
