@@ -141,8 +141,8 @@
             flex: 1; 
             padding: 40px; 
             overflow-y: auto; 
-            align-items: flex-start; 
-            justify-content: center;
+            align-items: center; /* Mantém o cartão centralizado no eixo X */
+            justify-content: flex-start; /* FIX: Permite que a tela tenha "scroll" sem cortar o topo */
             flex-direction: column;
         }
 
@@ -179,6 +179,9 @@
 
     <div id="app-container">
         <aside>
+            <div class="profile-section" style="text-align: center; padding: 20px;">
+                <img src="{1FE66A21-1320-437E-88D9-C16FEC6A30C8}.png" alt="Foto de Perfil" class="profile-pic" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--color-gain); object-fit: cover; margin-bottom: 10px;">
+            </div>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
                 <div style="font-size: 15px;">Dashboard<br><span style="color: var(--text-muted); font-weight: 400; font-size: 12px;">Plano Financeiro</span></div>
@@ -238,7 +241,6 @@
             <div id="invest-header-title" style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
-        <!-- MENU PRINCIPAL DE INVESTIMENTOS -->
         <div id="invest-menu-view" class="invest-menu-screen">
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
@@ -253,7 +255,6 @@
             </div>
         </div>
 
-        <!-- SUB-MENU DE PLANILHAS -->
         <div id="invest-planilhas-menu-view" class="invest-menu-screen" style="display: none;">
             <div class="invest-menu-card card-planilhas" onclick="openFiiTable()">
                 <div class="icon">📊</div>
@@ -261,18 +262,16 @@
             </div>
         </div>
 
-        <!-- TABELA E IMAGEM DE FIIs -->
         <div id="invest-planilhas-view" class="invest-scroll-area">
             
-            <!-- SEÇÃO COM A FOTO DOS CRITÉRIOS DE FIIs -->
             <div class="fii-card" style="margin-bottom: 25px; padding: 25px; display: flex; flex-direction: column; align-items: center;">
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 20px; width: 100%; text-align: left;">
                     📚 Critérios: Como Escolher Bons FIIs
                 </div>
-                <img src="EDC94816-9590-4735-94B4-003FBB23B553_4.jpg" alt="Tabela de critérios para escolher FIIs" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
+                
+                <img src="EDC94816-9590-4735-94B4-003FBB23B553.jpg" alt="Critérios para escolher FIIs" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
             </div>
 
-            <!-- SEÇÃO DA PLANILHA DE FIIs -->
             <div class="fii-card">
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
                     🏢 Fundos Imobiliários (FIIs)
