@@ -205,6 +205,13 @@
             <div style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
+        <!-- NOVO LINK ADICIONADO AQUI -->
+        <div style="width: 100%; text-align: center; margin-top: 30px; margin-bottom: -15px;">
+            <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="color: var(--color-gain); text-decoration: none; font-size: 15px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid transparent; transition: 0.3s;" onmouseover="this.style.color='var(--color-purple)'; this.style.borderColor='var(--color-purple)';" onmouseout="this.style.color='var(--color-gain)'; this.style.borderColor='transparent';">
+                🔗 Acessar Carteira Investidor10
+            </a>
+        </div>
+
         <div id="invest-menu-view" class="invest-menu-screen">
             <div class="invest-menu-card" onclick="openInvestSub('carteira')">
                 <div class="icon">📊</div>
@@ -404,19 +411,17 @@
             };
         }
 
-        // AGORA CALCULA BASEADO NO VALOR MANUAL "TOTAL INVESTIDO"
         function calcularValorCategoria(categoria) {
             let total = 0;
             if (categoria.assets && categoria.assets.length > 0) {
                 categoria.assets.forEach(asset => {
-                    // Migração automática de quem tinha os dados no layout antigo (PM ou Cotas)
                     if (asset.qtd === undefined && asset.num_cotas !== undefined) {
                         asset.qtd = asset.num_cotas; asset.cotacao = asset.preco_cota_atual;
                     }
                     let inv = parseFloat(asset.investido);
                     if (isNaN(inv)) {
                         inv = (parseFloat(asset.qtd) || 0) * (parseFloat(asset.pm || asset.preco_cota) || 0);
-                        asset.investido = inv; // Seta o valor pra nova variável
+                        asset.investido = inv; 
                     }
                     total += inv;
                 });
@@ -518,7 +523,6 @@
             const totPct = document.getElementById('resumo-total-pct');
             if(totPct) { totPct.innerText = total > 0 ? '100%' : '0%'; totPct.style.color = 'var(--color-gain)'; }
             
-            // CONTA RECURSIVA PARA BUSCAR TODOS OS ATIVOS (AÇÕES, FII, ETC) E SUAS QUANTIDADES
             let htmlCotas = '';
             let totalCotasGeral = 0;
             
@@ -554,14 +558,12 @@
             if(tbodyCotas) tbodyCotas.innerHTML = htmlCotas;
         }
 
-        // NAVEGAÇÃO PROFUNDA E EXIBIÇÃO DE TABELA vs PIZZA
         function navigateToPath(path) {
             currentPath = path;
             
             document.getElementById('invest-chart-zone').style.display = 'none';
             document.getElementById('invest-acoes-zone').style.display = 'none';
             
-            // Detecta qual nó estamos visualizando
             let currentGroup;
             if (path.length === 0) {
                 currentGroup = { label: "Root", sub: db.investimentos.carteiraIdeal };
@@ -576,7 +578,6 @@
                 }
             }
 
-            // SE NÃO TIVER SUB-NÓS (FOLHA), MOSTRA A TABELA!
             if (path.length > 0 && (!currentGroup.sub || currentGroup.sub.length === 0)) {
                 document.getElementById('invest-acoes-zone').style.display = 'block';
                 document.getElementById('invest-main-title').innerText = path[path.length - 1];
@@ -584,7 +585,6 @@
                 renderAcoesTable(currentGroup.assets);
             } 
             else {
-                // SE TIVER SUB-NÓS, CONTINUA MOSTRANDO A PIZZA
                 document.getElementById('invest-chart-zone').style.display = 'flex';
                 if (path.length === 0) { document.getElementById('invest-main-title').innerText = "Carteira Ideal"; } 
                 else { document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[path.length - 1]}`; }
@@ -658,8 +658,6 @@
             navigateToPath(newPath);
         };
 
-        /* ================= TABELA ÚNICA DE ATIVOS GENÉRICA ================= */
-        // Pega o grupo/pasta exatamente onde o usuário está no momento
         function getGroupFromPath() {
             let curr = db.investimentos.carteiraIdeal;
             let group = null;
@@ -722,7 +720,6 @@
             renderAcoesTable(group.assets);
         };
 
-        /* ================= ENGINE DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tabId).classList.add('active'); event.currentTarget.classList.add('active'); updateUI(); }
         function selectYear(y) { selectedYear = y; renderSidebar(); updateUI(); }
         function selectMonth(m) { selectedMonth = m; renderSidebar(); updateUI(); }
