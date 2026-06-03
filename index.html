@@ -28,32 +28,68 @@
             --border-color: #222222;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-main); overflow: hidden; height: 100vh; width: 100vw; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
 
         /* ================= TELA INICIAL (MENU DE ESCOLHA) ================= */
         #home-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.4)), url('330cd61c3377c1a6aec04293dedaa18a.gif') no-repeat center center;
             background-size: cover;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 8%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8%;
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
 
         .home-card {
-            width: 400px; height: 500px;
-            position: relative; z-index: 1;
-            border-radius: 12px; overflow: hidden;
+            width: 400px;
+            height: 500px;
+            position: relative;
+            z-index: 1;
+            border-radius: 12px;
+            overflow: hidden;
             cursor: pointer;
             box-shadow: 0 15px 35px rgba(0,0,0,0.9);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid var(--border-color);
             background: var(--bg-card);
         }
@@ -65,8 +101,13 @@
         }
 
         .home-card .card-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
             filter: brightness(0.25);
             transition: filter 0.3s ease, transform 0.5s ease;
             z-index: 1;
@@ -78,137 +119,493 @@
         }
 
         .home-card h2 {
-            position: relative; z-index: 2;
-            color: #ffffff; font-size: 2.2rem; font-weight: 700;
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
             text-shadow: 2px 4px 15px rgba(0,0,0,1);
-            text-align: center; pointer-events: none;
-            letter-spacing: 2px; text-transform: uppercase;
+            text-align: center;
+            pointer-events: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         @media (max-width: 900px) {
-            #home-screen { flex-direction: column; justify-content: center; gap: 20px; padding: 20px; }
-            .home-card { width: 100%; height: 250px; }
+            #home-screen {
+                flex-direction: column;
+                justify-content: center;
+                gap: 20px;
+                padding: 20px;
+            }
+            .home-card {
+                width: 100%;
+                height: 250px;
+            }
         }
 
         /* ================= CONTAINER DO APP (PLANO FINANCEIRO) ================= */
         #app-container {
             display: none;
-            width: 100vw; height: 100vh;
-            opacity: 0; transition: opacity 0.5s ease;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
-        .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
-        .logo-icon { width: 30px; height: 30px; background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--color-gain); font-size: 14px; }
-        
-        .nav-section { padding: 10px 20px; color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
-        .nav-item { padding: 10px 20px; cursor: pointer; color: var(--text-muted); font-size: 14px; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
-        .nav-item:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.05); }
-        .nav-item.active { background: rgba(0, 230, 118, 0.05); color: var(--color-gain); font-weight: 600; border-left: 3px solid var(--color-gain); }
-        
-        .btn-del-year { background: transparent; border: none; color: var(--text-muted); cursor: pointer; opacity: 0.3; transition: 0.2s; }
-        .nav-item:hover .btn-del-year { opacity: 1; color: var(--color-expense); }
+        aside {
+            width: 220px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
 
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { height: 70px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; gap: 20px; background: var(--bg-card); position: relative; justify-content: center; }
-        
-        .header-tabs { display: flex; gap: 20px; }
-        
-        .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 15px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
-        .tab-btn.active { color: var(--text-main); border-bottom: 2px solid var(--color-gain); text-shadow: 0 0 8px rgba(0, 230, 118, 0.2); }
-        
-        .btn-back-home { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-back-home:hover { background: var(--border-color); }
-        .btn-back-home.header-left { position: absolute; left: 30px; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px 30px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
 
-        main { flex: 1; padding: 25px 30px; overflow-y: auto; }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s; }
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: #1a1a1a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gain);
+            font-size: 14px;
+        }
+        
+        .nav-section {
+            padding: 10px 20px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
-        .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
-        .card-title { color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .card-value { font-size: 28px; font-weight: 700; letter-spacing: 0.5px; }
-        
-        .card-kpi { grid-column: span 1; }
-        .card-donut { grid-column: span 1; grid-row: span 2; align-items: center; }
-        .card-horizontal { grid-column: span 2; grid-row: span 2; }
-        .card-bar-full { grid-column: span 4; grid-row: span 2; }
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .entry-section { background: var(--bg-card); border-radius: 8px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); }
-        .entry-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-item:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 230, 118, 0.05);
+            color: var(--color-gain);
+            font-weight: 600;
+            border-left: 3px solid var(--color-gain);
+        }
         
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { color: var(--text-muted); font-weight: 600; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 12px 5px; border-bottom: 1px solid #1a1a1a; }
+        .btn-del-year {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            opacity: 0.3;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover .btn-del-year {
+            opacity: 1;
+            color: var(--color-expense);
+        }
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            gap: 20px;
+            background: var(--bg-card);
+            position: relative;
+            justify-content: center;
+        }
         
-        .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-family: 'Inter', sans-serif; padding: 8px 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
-        .custom-input:focus { border-bottom: 1px solid var(--text-muted); background: #1a1a1a; border-radius: 4px 4px 0 0; }
+        .header-tabs {
+            display: flex;
+            gap: 20px;
+        }
         
-        .btn-add { background: #1a1a1a; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-add:hover { background: var(--border-color); }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn.active {
+            color: var(--text-main);
+            border-bottom: 2px solid var(--color-gain);
+            text-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
+        }
         
-        .btn-add-gain { border-color: var(--color-gain); color: var(--color-gain); }
-        .btn-add-gain:hover { background: rgba(0, 230, 118, 0.1); }
-        .btn-add-exp { border-color: var(--color-expense); color: var(--color-expense); }
-        .btn-add-exp:hover { background: rgba(255, 82, 82, 0.1); }
-        .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .btn-remove:hover { color: var(--color-expense); }
+        .btn-back-home {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-back-home:hover {
+            background: var(--border-color);
+        }
+
+        .btn-back-home.header-left {
+            position: absolute;
+            left: 30px;
+        }
+
+        main {
+            flex: 1;
+            padding: 25px 30px;
+            overflow-y: auto;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            grid-auto-rows: minmax(150px, auto);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .card-kpi {
+            grid-column: span 1;
+        }
+
+        .card-donut {
+            grid-column: span 1;
+            grid-row: span 2;
+            align-items: center;
+        }
+
+        .card-horizontal {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .card-bar-full {
+            grid-column: span 4;
+            grid-row: span 2;
+        }
+
+        .entry-section {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .entry-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 5px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        
+        .custom-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            padding: 8px 5px;
+            outline: none;
+            border-bottom: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .custom-input:focus {
+            border-bottom: 1px solid var(--text-muted);
+            background: #1a1a1a;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .btn-add {
+            background: #1a1a1a;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-add:hover {
+            background: var(--border-color);
+        }
+        
+        .btn-add-gain {
+            border-color: var(--color-gain);
+            color: var(--color-gain);
+        }
+
+        .btn-add-gain:hover {
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        .btn-add-exp {
+            border-color: var(--color-expense);
+            color: var(--color-expense);
+        }
+
+        .btn-add-exp:hover {
+            background: rgba(255, 82, 82, 0.1);
+        }
+
+        .btn-remove {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-remove:hover {
+            color: var(--color-expense);
+        }
 
         /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
         #invest-container {
-            display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease;
-            flex-direction: column; background-color: var(--bg-body);
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            flex-direction: column;
+            background-color: var(--bg-body);
         }
+
         .invest-menu-screen {
-            display: flex; flex: 1; align-items: center; justify-content: center; gap: 50px; padding: 40px;
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            padding: 40px;
         }
+
         .invest-menu-card {
-            width: 380px; height: 280px; background: var(--bg-card); border: 2px solid var(--border-color);
-            border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px;
+            width: 380px;
+            height: 280px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            gap: 15px;
         }
+
         .invest-menu-card:hover {
-            transform: translateY(-5px); border-color: var(--color-purple);
+            transform: translateY(-5px);
+            border-color: var(--color-purple);
             box-shadow: 0 20px 40px rgba(123, 31, 162, 0.2);
         }
-        .invest-menu-card .icon { font-size: 40px; color: var(--color-purple); }
-        .invest-menu-card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        .invest-menu-card .icon {
+            font-size: 40px;
+            color: var(--color-purple);
+        }
+
+        .invest-menu-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
         
-        .invest-content-area { display: none; flex: 1; padding: 30px 50px; overflow-y: auto; flex-direction: column; }
-        .center-title { text-align: center; font-size: 1.8rem; font-weight: 700; color: var(--color-purple); letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
+        .invest-content-area {
+            display: none;
+            flex: 1;
+            padding: 30px 50px;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+
+        .center-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-purple);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
         
-        .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
-        .chart-holder { width: 400px; height: 400px; position: relative; }
+        .pie-box-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            margin-top: 10px;
+        }
+
+        .chart-holder {
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
         
-        .editor-sidebar { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
-        .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .editor-sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .editor-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
 
         .btn-back-invest {
-            background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 25px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-back-invest:hover { background: var(--border-color); color: var(--text-main); border-color: var(--color-purple); }
+
+        .btn-back-invest:hover {
+            background: var(--border-color);
+            color: var(--text-main);
+            border-color: var(--color-purple);
+        }
         
-        .asset-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; margin-top: 25px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .asset-card {
-            background: #ffffff; color: #000000; border-radius: 8px; padding: 20px; position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; border: 1px solid #e0e0e0;
-        }
-        .asset-card h4 { font-size: 1.4rem; font-weight: 700; text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; }
-        .asset-meta-row { display: flex; flex-direction: column; gap: 6px; font-size: 11px; border-bottom: 1px solid #eeeeee; padding: 4px 0; }
-        .asset-meta-row span { font-size: 12px; }
-        .asset-card .btn-card-del { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #cc0000; font-weight: 700; cursor: pointer; }
-
-        .add-asset-dashed {
-            border: 2px dashed #444444; border-radius: 8px; height: 100%; min-height: 350px; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; color: var(--text-muted);
-        }
-        .add-asset-dashed:hover { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.02); }
-        .add-asset-dashed .plus { font-size: 45px; font-weight: 300; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -302,35 +699,34 @@
             
             <div style="display: flex; gap: 20px; height: calc(100vh - 120px); width: 100%; max-width: 1100px; margin: 0 auto; padding-bottom: 20px;">
                 <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo de Cotas (Imóveis)</h3>
+                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo de Ativos/Cotas</h3>
                     <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 15px;">
                         <thead style="background: rgba(255,255,255,0.02);">
                             <tr>
                                 <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
-                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade de Cotas</th>
+                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade</th>
+                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-resumo-cotas">
-                        </tbody>
+                        <tbody id="tbody-resumo-cotas"></tbody>
                     </table>
                 </div>
 
                 <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                     <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo Geral da Carteira</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Valores consolidados baseados nos valores aportados na sua Carteira Ideal.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Comparativo da sua Alocação Real baseado nos aportes manuais.</p>
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead style="background: rgba(255,255,255,0.02);">
                             <tr>
                                 <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
                                 <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
-                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Calculado</th>
+                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Investido (Aporte)</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-resumo-readonly">
-                        </tbody>
+                        <tbody id="tbody-resumo-readonly"></tbody>
                         <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
                             <tr>
-                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL GERAL</td>
+                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL APORTADO</td>
                                 <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
                                 <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
                             </tr>
@@ -345,50 +741,43 @@
             <h2 id="invest-main-title" class="center-title" style="color: var(--color-highlight);">Carteira Ideal</h2>
 
             <div id="invest-chart-zone" class="pie-box-wrapper">
-                <div class="chart-holder">
-                    <canvas id="chartInvestPie"></canvas>
-                </div>
+                <div class="chart-holder"><canvas id="chartInvestPie"></canvas></div>
 
-                <div style="display: flex; flex-direction: column; gap: 20px; width: 340px;">
+                <div style="display: flex; flex-direction: column; gap: 20px; width: 380px;">
                     <div class="editor-sidebar" style="width: 100%;">
-                        <h4 id="gerenciar-alocacao-title" style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Gerenciar Alocação (R$)</h4>
-                        
+                        <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Adicionar Aporte / Alocação</h4>
                         <div id="editor-items-list"></div>
                         
-                        <div id="total-investido-box" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
                             <span>TOTAL INVESTIDO:</span>
                             <span id="label-total-investido" style="color: var(--color-gain);">R$ 0,00</span>
                         </div>
+
+                        <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple); margin-top: 20px;" onclick="addPieSlice()">+ Adicionar Nova Categoria</button>
                     </div>
 
                     <div id="patrimonio-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px 20px; text-align: center; display: none;">
-                        <h3 style="color: var(--text-muted); font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">Patrimônio Total</h3>
+                        <h3 style="color: var(--text-muted); font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">Capital Total Investido</h3>
                         <h1 id="label-patrimonio-total" style="color: var(--color-gain); font-size: 26px; margin: 0;">R$ 0,00</h1>
                     </div>
                 </div>
             </div>
 
-            <div id="invest-assets-zone" style="display: none; width: 100%;">
-                <div class="asset-grid" id="asset-cards-container"></div>
-            </div>
-
-            <div id="invest-acoes-zone" style="display: none; width: 100%; max-width: 950px; margin: 0 auto; background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div id="invest-acoes-zone" style="display: none; width: 100%; max-width: 1050px; margin: 0 auto; background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead style="background: rgba(255,255,255,0.02);">
                         <tr>
                             <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Qtd.</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Preço Médio (R$)</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Cotação Atual (R$)</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Total Investido (R$)</th>
+                            <th style="padding: 15px 10px; text-align: center; color: var(--color-gain); font-weight: bold; border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">% da Carteira</th>
                             <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody-acoes-brasil">
-                    </tbody>
+                    <tbody id="tbody-acoes-brasil"></tbody>
                 </table>
-                <button id="btn-add-acao-generic" class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);">+ Adicionar Ativo</button>
+                <button id="btn-add-acao-generic" class="btn-add" style="margin-top: 20px; border-color: var(--color-gain); color: var(--color-gain);" onclick="addAcaoGeneric()">+ Adicionar Ativo</button>
             </div>
         </div>
     </div>
@@ -402,11 +791,17 @@
                 document.getElementById('home-screen').style.display = 'none';
                 if (appName === 'plano') {
                     const app = document.getElementById('app-container');
-                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
-                    if (db.years[selectedYear]) { updateDashboard(); }
+                    app.style.display = 'flex'; 
+                    app.offsetHeight; 
+                    app.style.opacity = '1';
+                    if (db.years[selectedYear]) { 
+                        updateDashboard(); 
+                    }
                 } else if (appName === 'investimentos') {
                     const app = document.getElementById('invest-container');
-                    app.style.display = 'flex'; app.offsetHeight; app.style.opacity = '1';
+                    app.style.display = 'flex'; 
+                    app.offsetHeight; 
+                    app.style.opacity = '1';
                     backToInvestMenu();
                 }
             }, 500);
@@ -415,12 +810,15 @@
         function goHome() {
             const appPlano = document.getElementById('app-container');
             const appInvest = document.getElementById('invest-container');
-            appPlano.style.opacity = '0'; appInvest.style.opacity = '0';
+            appPlano.style.opacity = '0'; 
+            appInvest.style.opacity = '0';
             setTimeout(() => {
                 appPlano.style.display = 'none';
                 appInvest.style.display = 'none';
                 const home = document.getElementById('home-screen');
-                home.style.display = 'flex'; home.offsetHeight; home.style.opacity = '1';
+                home.style.display = 'flex'; 
+                home.offsetHeight; 
+                home.style.opacity = '1';
             }, 500);
         }
 
@@ -445,22 +843,25 @@
         }
 
         function navigateBack() {
-            if (currentPath.length > 0) {
-                currentPath.pop();
-                navigateToPath(currentPath);
-            } else {
-                backToInvestMenu();
+            if (currentPath.length > 0) { 
+                currentPath.pop(); 
+                navigateToPath(currentPath); 
+            } 
+            else { 
+                backToInvestMenu(); 
             }
         }
 
-        function formatMoney(val) {
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        function formatMoney(val) { 
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); 
         }
 
-        // Função Global de Patrimônio Total baseada na Raiz auto-calculada
+        // AGORA O PATRIMÔNIO É A SOMA DA RAIZ (QUE VOCÊ INSERE MANUALMENTE)
         function getPatrimonioTotal() {
             if (!db.investimentos || !db.investimentos.carteiraIdeal) return 0;
-            return db.investimentos.carteiraIdeal.reduce((acc, item) => acc + (parseFloat(item.val) || 0), 0);
+            return db.investimentos.carteiraIdeal.reduce((acc, item) => {
+                return acc + (parseFloat(item.val) || 0);
+            }, 0);
         }
 
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
@@ -490,47 +891,9 @@
                     { label: "Renda Fixa", val: 0, sub: [], assets: [] },
                     { label: "Ações do Brasil", val: 0, sub: [], assets: [] },
                     { label: "Ativos no Exterior", val: 0, sub: [], assets: [] },
-                    { label: "Imóveis", val: 0, sub: [
-                        { label: "PAPEL", val: 0, assets: [
-                            { ticker: "KNCR11", tipo: "PAPEL", preco_cota: "105.50", preco_cota_atual: "106.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,06", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" },
-                            { ticker: "MXRF11", tipo: "PAPEL", preco_cota: "10.20", preco_cota_atual: "10.40", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "1,02", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 9% E MENOS DE 20%", num_imoveis: "-", vacancia: "-", pl_max: "6% OU MENOS" }
-                        ]},
-                        { label: "TIJOLO", val: 0, assets: [
-                            { ticker: "HGLG11", tipo: "TIJOLO", preco_cota: "162.00", preco_cota_atual: "163.00", num_cotas: 0, vp: "Mais de 500 MILHÕES", liq: "Mais de 1 MILHÃO", pvp: "0,95", hist: "4 ANOS OU MAIS", hist_div: "ESTÁVEL OU CRESCENTE", dy: "ACIMA DE 5% E MENOS DE 15%", num_imoveis: "8 OU MAIS", vacancia: "10% OU MENOS", pl_max: "-" }
-                        ]}
-                    ]}
+                    { label: "Imóveis", val: 0, sub: [], assets: [] }
                 ]
             };
-        }
-
-        // MOTOR QUE CALCULA TUDO AUTOMATICAMENTE E SOBRESCREVE VALORES
-        function calcularValorCategoria(categoria) {
-            let total = 0;
-            if (categoria.assets && categoria.assets.length > 0) {
-                categoria.assets.forEach(asset => {
-                    if (asset.qtd !== undefined && asset.pm !== undefined) {
-                        total += (parseFloat(asset.qtd) || 0) * (parseFloat(asset.pm) || 0);
-                    }
-                    else if (asset.num_cotas !== undefined && asset.preco_cota !== undefined) {
-                        total += (parseFloat(asset.num_cotas) || 0) * (parseFloat(asset.preco_cota) || 0);
-                    }
-                });
-            }
-            if (categoria.sub && categoria.sub.length > 0) {
-                categoria.sub.forEach(sub => {
-                    sub.val = calcularValorCategoria(sub); 
-                    total += sub.val;
-                });
-            }
-            return total;
-        }
-
-        function recalcularTodaCarteira() {
-            if (db.investimentos && db.investimentos.carteiraIdeal) {
-                db.investimentos.carteiraIdeal.forEach(cat => {
-                    cat.val = calcularValorCategoria(cat); 
-                });
-            }
         }
 
         async function loadData() {
@@ -538,26 +901,42 @@
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
-                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { db.investimentos = getDefaultInvestStructure(); }
+                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { 
+                        db.investimentos = getDefaultInvestStructure(); 
+                    }
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.investimentos = getDefaultInvestStructure();
                     await saveDataNow(); 
                 }
-                
-                recalcularTodaCarteira(); 
+
+                // SCRIPT AUTOMÁTICO DE MIGRAÇÃO: Pega as sub-pastas antigas (Papel/Tijolo) 
+                // e joga tudo para a nova Tabela Genérica na Raiz da Categoria
+                if (db.investimentos && db.investimentos.carteiraIdeal) {
+                    db.investimentos.carteiraIdeal.forEach(cat => {
+                        if (cat.sub && cat.sub.length > 0) {
+                            if (!cat.assets) cat.assets = [];
+                            cat.sub.forEach(sub => {
+                                if (sub.assets) {
+                                    sub.assets.forEach(a => cat.assets.push(a));
+                                }
+                            });
+                            cat.sub = []; // Esvazia as ramificações inúteis
+                        }
+                    });
+                }
                 
                 document.getElementById('sync-status').innerText = "Online";
-                renderSidebar(); updateUI();
+                renderSidebar(); 
+                updateUI();
             } catch (e) { 
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                 if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
                 
-                recalcularTodaCarteira(); 
-                
-                renderSidebar(); updateUI();
+                renderSidebar(); 
+                updateUI();
             }
         }
 
@@ -571,12 +950,16 @@
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
                 if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
-            } catch (e) { document.getElementById('sync-status').innerText = "Erro ao salvar"; }
+            } catch (e) { 
+                document.getElementById('sync-status').innerText = "Erro ao salvar"; 
+            }
         }
 
         function createYearStructure() {
             let struct = {};
-            MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; });
+            MONTHS.forEach(m => { 
+                struct[m] = { inc: [], fix: [], exp: [] }; 
+            });
             return struct;
         }
 
@@ -584,13 +967,15 @@
             let current = db.investimentos.carteiraIdeal;
             for(let i=0; i<path.length; i++) {
                 let found = current.find(item => item.label === path[i]);
-                if (found) { current = found.sub; }
+                if (found && found.sub) { 
+                    current = found.sub; 
+                }
             }
             return current;
         }
 
         function atualizarSimulacao() {
-            let total = getPatrimonioTotal();
+            let total = getPatrimonioTotal(); // Total Investido Manual
             
             let htmlResumo = '';
             if (db.investimentos && db.investimentos.carteiraIdeal) {
@@ -615,37 +1000,49 @@
             if(totCalc) totCalc.innerText = formatMoney(total); 
 
             const totPct = document.getElementById('resumo-total-pct');
-            if(totPct) {
-                totPct.innerText = total > 0 ? '100%' : '0%';
-                totPct.style.color = 'var(--color-gain)';
+            if(totPct) { 
+                totPct.innerText = total > 0 ? '100%' : '0%'; 
+                totPct.style.color = 'var(--color-gain)'; 
             }
             
+            // CONTA PARA A TABELA DE ATIVOS: Qtd * Preço Atual = Saldo!
             let htmlCotas = '';
-            let totalCotasGeral = 0;
-            let imoveisNode = db.investimentos?.carteiraIdeal?.find(i => i.label === 'Imóveis');
-            if(imoveisNode && imoveisNode.sub) {
-                imoveisNode.sub.forEach(subGroup => {
-                    if(subGroup.assets) {
-                        subGroup.assets.forEach(asset => {
-                            let qtd = parseInt(asset.num_cotas) || 0;
-                            totalCotasGeral += qtd;
+            let totalSaldoGeral = 0;
+            
+            function searchAssets(list) {
+                list.forEach(node => {
+                    if (node.assets) {
+                        node.assets.forEach(asset => {
+                            // Suporte a migração automática de chaves antigas
+                            let qtd = parseFloat(asset.qtd) || parseFloat(asset.num_cotas) || 0;
+                            let cotacao = parseFloat(asset.cotacao) || parseFloat(asset.preco_cota_atual) || 0;
+                            
+                            let saldo = qtd * cotacao;
+                            totalSaldoGeral += saldo;
+                            
                             htmlCotas += `
                                 <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker}</td>
-                                    <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-highlight);">${qtd}</td>
+                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker || 'Sem nome'}</td>
+                                    <td style="padding: 15px 10px; text-align: center; color: var(--text-muted);">${qtd}</td>
+                                    <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-highlight);">${formatMoney(saldo)}</td>
                                 </tr>
                             `;
                         });
                     }
+                    if (node.sub && node.sub.length > 0) {
+                        searchAssets(node.sub);
+                    }
                 });
             }
-            if(htmlCotas === '') {
-                htmlCotas = `<tr><td colspan="2" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhuma cota registrada.</td></tr>`;
+            searchAssets(db.investimentos.carteiraIdeal);
+
+            if(htmlCotas === '') { 
+                htmlCotas = `<tr><td colspan="3" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhum ativo registrado.</td></tr>`; 
             } else {
                 htmlCotas += `
                     <tr style="background: rgba(0,0,0,0.2);">
-                        <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: left;">TOTAL DE COTAS:</td>
-                        <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--color-gain);">${totalCotasGeral}</td>
+                        <td colspan="2" style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: right;">SALDO TOTAL (R$):</td>
+                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(totalSaldoGeral)}</td>
                     </tr>
                 `;
             }
@@ -657,38 +1054,21 @@
             currentPath = path;
             
             document.getElementById('invest-chart-zone').style.display = 'none';
-            document.getElementById('invest-assets-zone').style.display = 'none';
             document.getElementById('invest-acoes-zone').style.display = 'none';
             
-            if (path.length === 2 && path[0] === 'Imóveis') {
-                document.getElementById('invest-assets-zone').style.display = 'block';
-                
-                let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
-                let subGroup = parentPizza.sub.find(item => item.label === path[1]);
-                if(!subGroup.assets) subGroup.assets = [];
-                
-                document.getElementById('invest-main-title').innerText = `Ativos: ${path[1]}`;
-                renderAssetCards(subGroup.assets);
-                
-            } else if (path.length === 1 && (path[0] === 'Ações do Brasil' || path[0] === 'Ativos no Exterior' || path[0] === 'Renda Fixa')) {
+            // Como só temos 1 ramificação agora, se o path for 1, mostramos a Tabela Universal
+            if (path.length === 1) {
                 document.getElementById('invest-acoes-zone').style.display = 'block';
                 document.getElementById('invest-main-title').innerText = path[0];
                 
                 let group = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
                 if(!group.assets) group.assets = [];
-                
                 renderAcoesTable(group.assets, path[0]);
-                
-            } else {
+            } 
+            else {
+                // RAIZ (Root Pie Chart)
                 document.getElementById('invest-chart-zone').style.display = 'flex';
-                
-                if (path.length === 0) {
-                    document.getElementById('invest-main-title').innerText = "Carteira Ideal";
-                } else {
-                    document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[0]}`;
-                }
-                
-                recalcularTodaCarteira();
+                document.getElementById('invest-main-title').innerText = "Carteira Ideal";
                 renderPieChartZone();
             }
         }
@@ -697,19 +1077,35 @@
             let list = getTargetStructure(currentPath);
             let isRoot = currentPath.length === 0;
             
-            // AGORA AS LINHAS DA LISTA SÃO CLICÁVEIS PARA ACESSAR AS SUBCATEGORIAS MESMO ZERADO
+            // Fatias Padrão (Não Podem Ter o Nome Alterado ou Deletado)
+            const fixedLabels = ["Renda Fixa", "Ações do Brasil", "Ativos no Exterior", "Imóveis"];
+            
             let htmlList = list.map((item, idx) => {
                 let safeLabel = item.label.replace(/'/g, "\\'");
+                let isFixed = fixedLabels.includes(item.label);
+                
                 return `
-                <div class="editor-row" style="cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" onclick="handleSidebarClick('${safeLabel}')">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: var(--text-main); font-weight: 600; cursor: pointer;" value="${item.label}" readonly title="Clique para abrir">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; width:110px; color: var(--text-muted); font-weight:bold; cursor: pointer;" value="${formatMoney(item.val)}" readonly placeholder="R$ 0,00">
-                    <div style="width: 24px; color: var(--color-purple); font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Acessar Categoria">➔</div>
+                <div class="editor-row" style="transition: 0.2s;">
+                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixed ? 'var(--text-muted)' : 'var(--text-main)'}; font-weight: 600;" value="${item.label}" ${isFixed ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
+                    
+                    <div style="display: flex; align-items: center; background: #1a1a1a; padding-left: 10px; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <span style="color: var(--text-muted); font-size: 12px; font-weight: bold;">R$</span>
+                        <input type="number" step="0.01" class="custom-input" style="width: 80px; text-align: right; background: transparent; border: none; font-weight: bold; color: var(--color-gain);" value="${item.val}" placeholder="0.00" onchange="updatePieItem(${idx}, 'val', this.value)">
+                    </div>
+                    
+                    ${!isFixed ? `<button class="btn-remove" onclick="removePieSlice(${idx})" title="Remover Fatia">✕</button>` : `<div style="width: 24px;"></div>`}
+                    
+                    <div style="cursor: pointer; width: 30px; margin-left: 10px; color: var(--color-purple); font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Acessar Categoria (Tabela)" onclick="handleSidebarClick('${safeLabel}')">➔</div>
                 </div>
                 `;
             }).join('');
             
             document.getElementById('editor-items-list').innerHTML = htmlList;
+
+            let btnAdd = document.getElementById('btn-add-pie');
+            if(btnAdd) { 
+                btnAdd.style.display = isRoot ? 'block' : 'none'; 
+            }
 
             let patBox = document.getElementById('patrimonio-box');
             let patLabel = document.getElementById('label-patrimonio-total');
@@ -727,51 +1123,50 @@
             }
 
             destroyChart('chartInvestPie');
-            
             let labels = list.map(i => i.label);
             let dataVals = list.map(i => parseFloat(i.val) || 0);
 
             charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
                 type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: dataVals,
-                        backgroundColor: PIE_PALETTE.slice(0, list.length),
-                        borderWidth: 2,
-                        borderColor: 'var(--bg-card)'
-                    }]
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: dataVals, 
+                        backgroundColor: PIE_PALETTE.slice(0, list.length), 
+                        borderWidth: 2, 
+                        borderColor: 'var(--bg-card)' 
+                    }] 
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, 
+                    maintainAspectRatio: false, 
                     animation: { duration: 600, easing: 'easeOutQuart' },
                     plugins: {
                         legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 12 } } },
-                        datalabels: {
-                            color: '#ffffff',
-                            font: { weight: '700', size: 14 },
-                            formatter: (val, ctx) => {
+                        datalabels: { 
+                            color: '#ffffff', 
+                            font: { weight: '700', size: 14 }, 
+                            formatter: (val, ctx) => { 
                                 if(totalVal === 0) return ''; 
-                                return ((val / totalVal) * 100).toFixed(0) + '%';
-                            }
+                                return ((val / totalVal) * 100).toFixed(0) + '%'; 
+                            } 
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let val = context.raw;
-                                    let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0;
-                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`;
-                                }
-                            }
+                        tooltip: { 
+                            callbacks: { 
+                                label: function(context) { 
+                                    let val = context.raw; 
+                                    let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0; 
+                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`; 
+                                } 
+                            } 
                         }
                     },
                     hover: { mode: 'nearest', intersect: true },
                     onClick: (evt, elements) => {
-                        if (elements.length > 0) {
-                            let clickedIdx = elements[0].index;
-                            let targetItem = list[clickedIdx];
-                            handleSidebarClick(targetItem.label);
+                        if (elements.length > 0) { 
+                            let clickedIdx = elements[0].index; 
+                            let targetItem = list[clickedIdx]; 
+                            handleSidebarClick(targetItem.label); 
                         }
                     }
                 }
@@ -780,200 +1175,167 @@
             if(isRoot) atualizarSimulacao();
         }
 
-        window.handleSidebarClick = function(label) {
-            let isRoot = currentPath.length === 0;
-            
-            if (isRoot && label !== "Imóveis" && label !== "Renda Fixa" && label !== "Ações do Brasil" && label !== "Ativos no Exterior") {
-                return; 
+        window.updatePieItem = function(idx, field, value) {
+            let list = getTargetStructure(currentPath);
+            if(field === 'val') {
+                list[idx][field] = parseFloat(value) || 0;
+            } else {
+                list[idx][field] = value;
             }
-            
+            scheduleSave();
+            renderPieChartZone();
+        };
+
+        window.addPieSlice = function() {
+            let list = getTargetStructure(currentPath);
+            list.push({ label: "Nova Categoria", val: 0, sub: [], assets: [] });
+            scheduleSave();
+            renderPieChartZone();
+        };
+
+        window.removePieSlice = function(idx) {
+            let list = getTargetStructure(currentPath);
+            list.splice(idx, 1);
+            scheduleSave();
+            renderPieChartZone();
+        };
+
+        window.handleSidebarClick = function(label) {
             let list = getTargetStructure(currentPath);
             let targetItem = list.find(i => i.label === label);
             
             if (!targetItem) return;
-            if (!targetItem.sub && isRoot) { targetItem.sub = []; }
+            if (!targetItem.sub) targetItem.sub = [];
             
             let newPath = [...currentPath, label];
             navigateToPath(newPath);
         };
 
-        /* ================= CARDS DE CRITÉRIOS DE ATIVOS (IMÓVEIS) ================= */
-        function renderAssetCards(assetsList) {
-            let container = document.getElementById('asset-cards-container');
-            
-            let html = assetsList.map((asset, idx) => `
-                <div class="asset-card">
-                    <button class="btn-card-del" onclick="removeAssetCard(${idx})">✕</button>
-                    <h4><input type="text" style="color:#000; font-weight:700; text-align:center; border:none; width:100%; font-size:1.3rem; outline:none;" value="${asset.ticker}" onchange="updateAssetField(${idx}, 'ticker', this.value)"></h4>
-                    
-                    <div class="asset-meta-row" style="margin-bottom: 8px;">
-                        <b>TIPO DE FUNDO</b>
-                        <span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.tipo}" onchange="updateAssetField(${idx}, 'tipo', this.value)"></span>
-                        
-                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA COMPRADO: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota || 0}" onchange="updateAssetField(${idx}, 'preco_cota', this.value)"></span>
-                        <span style="font-weight: bold; margin-top: 5px; display: block; color: #000; font-size: 13px;">PREÇO DA COTA ATUAL: R$ <input type="number" step="0.01" style="border:none; background:transparent; width: 70px; font-weight: bold; color: #000; font-size: 13px;" value="${asset.preco_cota_atual || 0}" onchange="updateAssetField(${idx}, 'preco_cota_atual', this.value)"></span>
-                    </div>
-
-                    <div class="asset-meta-row"><b>VALOR PATRIMONIAL</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vp}" onchange="updateAssetField(${idx}, 'vp', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>LIQUIDEZ DIÁRIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.liq}" onchange="updateAssetField(${idx}, 'liq', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>P/VP</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pvp}" onchange="updateAssetField(${idx}, 'pvp', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>HISTÓRICO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.hist}" onchange="updateAssetField(${idx}, 'hist', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>HISTÓRICO DE DIVIDENDOS</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.hist_div}" onchange="updateAssetField(${idx}, 'hist_div', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>DIVIDEND YIELD</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.dy}" onchange="updateAssetField(${idx}, 'dy', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>NÚMERO DE IMÓVEIS</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.num_imoveis}" onchange="updateAssetField(${idx}, 'num_imoveis', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>VACÂNCIA</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.vacancia}" onchange="updateAssetField(${idx}, 'vacancia', this.value)"></span></div>
-                    <div class="asset-meta-row"><b>% PL MÁXIMO</b><span><input type="text" style="border:none; width:100%; font-size:11px;" value="${asset.pl_max}" onchange="updateAssetField(${idx}, 'pl_max', this.value)"></span></div>
-                    
-                    <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
-                        <div style="font-size: 13px; font-weight: 900; text-align: center; margin-bottom: 10px; color: #333;">TOTAL DE COTAS: ${asset.num_cotas || 0}</div>
-                        <div style="display: flex; gap: 5px;">
-                            <input type="number" id="buy-qtd-${idx}" placeholder="Qtd" style="width: 45%; border: 1px solid #ccc; border-radius: 4px; padding: 6px; text-align: center; font-size: 12px; font-weight: bold;">
-                            <button onclick="buyCotas(${idx})" style="width: 55%; background: var(--color-gain); border: none; color: #fff; font-weight: 800; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 11px;">+ ADICIONAR</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            html += `<div class="add-asset-dashed" onclick="addAssetCard()"><div class="plus">+</div></div>`;
-            container.innerHTML = html;
-        }
-
-        function updateAssetField(idx, field, value) {
-            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
-            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
-            subGroup.assets[idx][field] = value;
-            recalcularTodaCarteira(); 
-            scheduleSave();
-        }
-
-        window.buyCotas = function(idx) {
-            let qtd = parseInt(document.getElementById('buy-qtd-' + idx).value) || 0;
-            if (qtd !== 0) { 
-                let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
-                let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
-                let currentCotas = parseInt(subGroup.assets[idx].num_cotas) || 0;
-                
-                let novaQtd = currentCotas + qtd;
-                if(novaQtd < 0) novaQtd = 0;
-
-                subGroup.assets[idx].num_cotas = novaQtd;
-                recalcularTodaCarteira(); 
-                scheduleSave();
-                renderAssetCards(subGroup.assets);
+        /* ================= TABELA ÚNICA DE ATIVOS GENÉRICA ================= */
+        function getGroupFromPath() {
+            let curr = db.investimentos.carteiraIdeal;
+            let group = null;
+            for(let i=0; i<currentPath.length; i++) {
+                group = curr.find(item => item.label === currentPath[i]);
+                if (group && group.sub) curr = group.sub;
             }
-        };
-
-        function addAssetCard() {
-            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
-            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
-            
-            subGroup.assets.push({
-                ticker: "NOVO11", tipo: currentPath[1], preco_cota: "0.00", preco_cota_atual: "0.00", num_cotas: 0, vp: "-", liq: "-", pvp: "-", hist: "-", hist_div: "-", dy: "-", num_imoveis: "-", vacancia: "-", pl_max: "-"
-            });
-            scheduleSave(); renderAssetCards(subGroup.assets);
+            return group;
         }
 
-        function removeAssetCard(idx) {
-            let parentPizza = db.investimentos.carteiraIdeal.find(item => item.label === currentPath[0]);
-            let subGroup = parentPizza.sub.find(item => item.label === currentPath[1]);
-            subGroup.assets.splice(idx, 1);
-            recalcularTodaCarteira();
-            scheduleSave(); renderAssetCards(subGroup.assets);
-        }
-
-        /* ================= TABELAS GENÉRICAS (AÇÕES, FIXA, EXTERIOR) ================= */
         function renderAcoesTable(assetsList, groupName) {
             const tbody = document.getElementById('tbody-acoes-brasil');
             let html = '';
+            
+            // O Percentual da carteira é baseado no Total Investido (Root)
             let patTotal = getPatrimonioTotal(); 
             
             assetsList.forEach((asset, idx) => {
                 let qtd = parseFloat(asset.qtd) || 0;
                 let cotacao = parseFloat(asset.cotacao) || 0;
-                let pm = parseFloat(asset.pm) || 0;
                 
-                let total = qtd * pm;
-                let perc = patTotal > 0 ? (total / patTotal) * 100 : 0;
+                // Saldo Auto-Calculado (Quantidade x Cotação)
+                let saldoAtual = qtd * cotacao;
+                let perc = patTotal > 0 ? (saldoAtual / patTotal) * 100 : 0;
                 
                 html += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td><input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Ex: Ativo" onchange="updateAcaoField(${idx}, '${groupName}', 'ticker', this.value)"></td>
-                        <td><input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'qtd', this.value)" min="0" style="text-align: center;"></td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${asset.pm || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'pm', this.value)" style="text-align: center;"></td>
-                        <td><input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, '${groupName}', 'cotacao', this.value)" style="text-align: center;"></td>
-                        <td style="font-weight: bold; color: var(--text-main); text-align: center;">${formatMoney(total)}</td>
-                        <td style="color: var(--color-highlight); font-weight: bold; text-align: center;">${perc.toFixed(2)}%</td>
-                        <td style="text-align: center;"><button class="btn-remove" onclick="removeAcao(${idx}, '${groupName}')">✕</button></td>
+                    <tr style="border-bottom: 1px solid var(--border-color); transition: 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.02)'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td>
+                            <input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Nome do Ativo" onchange="updateAcaoField(${idx}, 'ticker', this.value)">
+                        </td>
+                        <td>
+                            <input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;">
+                        </td>
+                        <td style="font-weight: bold; color: var(--color-gain); text-align: center;">
+                            ${formatMoney(saldoAtual)}
+                        </td>
+                        <td style="color: var(--text-muted); font-weight: bold; text-align: center;">
+                            ${perc.toFixed(2)}%
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn-remove" onclick="removeAcao(${idx})">✕</button>
+                        </td>
                     </tr>
                 `;
             });
             tbody.innerHTML = html;
-            
-            document.getElementById('btn-add-acao-generic').onclick = function() {
-                addAcaoBrasil(groupName);
-            };
         }
 
-        window.updateAcaoField = function(idx, groupName, field, value) {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
+        window.updateAcaoField = function(idx, field, value) {
+            let group = getGroupFromPath();
             group.assets[idx][field] = value;
-            recalcularTodaCarteira(); 
             scheduleSave();
-            renderAcoesTable(group.assets, groupName);
+            renderAcoesTable(group.assets, currentPath[0]);
         };
 
-        window.addAcaoBrasil = function(groupName) {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
+        window.addAcaoGeneric = function() {
+            let group = getGroupFromPath();
             if(!group.assets) group.assets = [];
-            group.assets.push({ ticker: '', qtd: 0, pm: 0, cotacao: 0 });
+            group.assets.push({ ticker: '', qtd: 0, cotacao: 0 });
             scheduleSave();
-            renderAcoesTable(group.assets, groupName);
+            renderAcoesTable(group.assets, currentPath[0]);
         };
 
-        window.removeAcao = function(idx, groupName) {
-            let group = db.investimentos.carteiraIdeal.find(item => item.label === groupName);
+        window.removeAcao = function(idx) {
+            let group = getGroupFromPath();
             group.assets.splice(idx, 1);
-            recalcularTodaCarteira();
             scheduleSave();
-            renderAcoesTable(group.assets, groupName);
+            renderAcoesTable(group.assets, currentPath[0]);
         };
 
-        /* ================= ENGINE ANTERIOR DO PLANO FINANCEIRO ================= */
-        function switchTab(tabId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            updateUI();
+        /* ================= ENGINE DO PLANO FINANCEIRO ================= */
+        function switchTab(tabId) { 
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+            document.getElementById(tabId).classList.add('active'); 
+            event.currentTarget.classList.add('active'); 
+            updateUI(); 
         }
 
-        function selectYear(y) { selectedYear = y; renderSidebar(); updateUI(); }
-        function selectMonth(m) { selectedMonth = m; renderSidebar(); updateUI(); }
-        
-        function addYear() {
-            let y = prompt("Digite o novo ano (ex: 2025):");
-            if(y && !db.years[y]) { db.years[y] = createYearStructure(); selectYear(y); scheduleSave(); }
+        function selectYear(y) { 
+            selectedYear = y; 
+            renderSidebar(); 
+            updateUI(); 
         }
 
-        function deleteYear(y, event) {
-            event.stopPropagation();
-            if(confirm(`Atenção: Deseja realmente excluir TODOS os dados de ${y}?`)) {
-                delete db.years[y];
-                let keys = Object.keys(db.years);
-                if(keys.length === 0) {
-                    let curY = new Date().getFullYear().toString();
-                    db.years[curY] = createYearStructure();
-                    selectedYear = curY;
-                } else if(selectedYear === y) { selectedYear = keys[0]; }
-                scheduleSave(); renderSidebar(); updateUI();
-            }
+        function selectMonth(m) { 
+            selectedMonth = m; 
+            renderSidebar(); 
+            updateUI(); 
+        }
+
+        function addYear() { 
+            let y = prompt("Digite o novo ano (ex: 2025):"); 
+            if(y && !db.years[y]) { 
+                db.years[y] = createYearStructure(); 
+                selectYear(y); 
+                scheduleSave(); 
+            } 
+        }
+
+        function deleteYear(y, event) { 
+            event.stopPropagation(); 
+            if(confirm(`Atenção: Deseja realmente excluir TODOS os dados de ${y}?`)) { 
+                delete db.years[y]; 
+                let keys = Object.keys(db.years); 
+                if(keys.length === 0) { 
+                    let curY = new Date().getFullYear().toString(); 
+                    db.years[curY] = createYearStructure(); 
+                    selectedYear = curY; 
+                } else if(selectedYear === y) { 
+                    selectedYear = keys[0]; 
+                } 
+                scheduleSave(); 
+                renderSidebar(); 
+                updateUI(); 
+            } 
         }
 
         function renderSidebar() {
             document.getElementById('years-list').innerHTML = Object.keys(db.years).sort().map(y => 
-                `<div class="nav-item ${y === selectedYear ? 'active' : ''}" onclick="selectYear('${y}')">
-                    ${y} <button class="btn-del-year" onclick="deleteYear('${y}', event)">✕</button>
-                </div>`
+                `<div class="nav-item ${y === selectedYear ? 'active' : ''}" onclick="selectYear('${y}')">${y} <button class="btn-del-year" onclick="deleteYear('${y}', event)">✕</button></div>`
             ).join('');
 
             document.getElementById('months-list').innerHTML = MONTHS.map(m => 
@@ -981,34 +1343,35 @@
             ).join('');
         }
 
-        function addRow(type) {
-            let newItem = { d: '', v: 0 };
-            if(type === 'fix') newItem.vr = 0;
-            db.years[selectedYear][selectedMonth][type].push(newItem);
-            renderTables(); scheduleSave(); updateDashboard();
+        function addRow(type) { 
+            let newItem = { d: '', v: 0 }; 
+            if(type === 'fix') newItem.vr = 0; 
+            db.years[selectedYear][selectedMonth][type].push(newItem); 
+            renderTables(); 
+            scheduleSave(); 
+            updateDashboard(); 
         }
 
-        function removeRow(type, index) {
-            db.years[selectedYear][selectedMonth][type].splice(index, 1);
-            renderTables(); scheduleSave(); updateDashboard();
+        function removeRow(type, index) { 
+            db.years[selectedYear][selectedMonth][type].splice(index, 1); 
+            renderTables(); 
+            scheduleSave(); 
+            updateDashboard(); 
         }
 
-        function updateVal(type, index, field, value) {
-            let val = field === 'd' ? value : (parseFloat(value) || 0);
-            db.years[selectedYear][selectedMonth][type][index][field] = val;
-            scheduleSave(); updateDashboard();
+        function updateVal(type, index, field, value) { 
+            let val = field === 'd' ? value : (parseFloat(value) || 0); 
+            db.years[selectedYear][selectedMonth][type][index][field] = val; 
+            scheduleSave(); 
+            updateDashboard(); 
         }
 
         function renderTables() {
             document.getElementById('lbl-mes-ano').innerText = `${selectedMonth} / ${selectedYear}`;
             let data = db.years[selectedYear][selectedMonth];
-
-            const placeholders = {
-                'inc': 'Ex: Salário, Rendimentos...',
-                'fix': 'Ex: Aluguel, Assinaturas...',
-                'exp': 'Ex: Alimentação, Transporte...'
-            };
-
+            
+            const placeholders = { 'inc': 'Ex: Salário...', 'fix': 'Ex: Aluguel...', 'exp': 'Ex: Alimentação...' };
+            
             const createRows = (type, items) => items.map((item, i) => `
                 <tr>
                     <td><input type="text" class="custom-input" value="${item.d}" oninput="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td>
@@ -1018,87 +1381,97 @@
                 </tr>
             `).join('');
 
-            document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc);
-            document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix);
+            document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc); 
+            document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix); 
             document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
         }
 
-        function updateUI() { renderTables(); updateDashboard(); }
+        function updateUI() { 
+            renderTables(); 
+            updateDashboard(); 
+        }
 
         function updateDashboard() {
             if(document.getElementById('app-container').style.display === 'none') return;
-
             let data = db.years[selectedYear][selectedMonth];
-            let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0);
-            let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0);
-            let varMes = data.exp.reduce((a, c) => a + c.v, 0);
-            let despesasMes = fixosMes + varMes;
+            
+            let ganhosMes = data.inc.reduce((a, c) => a + c.v, 0); 
+            let fixosMes = data.fix.reduce((a, c) => a + (c.vr > 0 ? c.vr : c.v), 0); 
+            let varMes = data.exp.reduce((a, c) => a + c.v, 0); 
+            let despesasMes = fixosMes + varMes; 
             let saldoMes = ganhosMes - despesasMes;
 
-            let elSaldo = document.getElementById('kpi-saldo');
-            elSaldo.innerText = saldoMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            let elSaldo = document.getElementById('kpi-saldo'); 
+            elSaldo.innerText = saldoMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); 
             elSaldo.style.color = saldoMes >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
             
-            document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            document.getElementById('kpi-despesas').innerText = despesasMes.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); 
             renderCharts(data);
         }
 
         function renderCharts(monthData) {
-            const datalabelsConfig = {
-                color: '#fff', align: 'right', anchor: 'end',
-                font: { weight: '600', size: 11 },
-                formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : ''
+            const datalabelsConfig = { 
+                color: '#fff', 
+                align: 'right', 
+                anchor: 'end', 
+                font: { weight: '600', size: 11 }, 
+                formatter: (val) => val > 0 ? 'R$ ' + val.toLocaleString('pt-BR') : '' 
             };
-
-            let catDespesas = {};
-            monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; });
+            
+            let catDespesas = {}; 
+            monthData.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + v; }); 
             monthData.exp.forEach(i => { if(i.v>0) catDespesas[i.d || 'Sem Nome'] = (catDespesas[i.d || 'Sem Nome'] || 0) + i.v; });
             
-            destroyChart('chartDonutMes');
-            charts['chartDonutMes'] = new Chart(document.getElementById('chartDonutMes'), {
-                type: 'doughnut',
-                data: { labels: Object.keys(catDespesas), datasets: [{ data: Object.values(catDespesas), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } }
+            destroyChart('chartDonutMes'); 
+            charts['chartDonutMes'] = new Chart(document.getElementById('chartDonutMes'), { 
+                type: 'doughnut', 
+                data: { 
+                    labels: Object.keys(catDespesas), 
+                    datasets: [{ data: Object.values(catDespesas), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] 
+                }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } 
             });
 
-            destroyChart('chartHorizontalMes');
-            let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val);
-            charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), {
-                type: 'bar',
-                data: { labels: dataDespesasArr.map(d=>d.label), datasets: [{ data: dataDespesasArr.map(d=>d.val), backgroundColor: '#ff5252', borderRadius: 2 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
+            destroyChart('chartHorizontalMes'); 
+            let dataDespesasArr = Object.keys(catDespesas).map(k => ({ label: k, val: catDespesas[k] })).sort((a,b) => b.val - a.val); 
+            charts['chartHorizontalMes'] = new Chart(document.getElementById('chartHorizontalMes'), { 
+                type: 'bar', 
+                data: { labels: dataDespesasArr.map(d=>d.label), datasets: [{ data: dataDespesasArr.map(d=>d.val), backgroundColor: '#ff5252', borderRadius: 2 }] }, 
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } 
             });
 
-            let catGanhos = {};
-            monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; });
+            let catGanhos = {}; 
+            monthData.inc.forEach(i => { if(i.v>0) catGanhos[i.d || 'Sem Nome'] = (catGanhos[i.d || 'Sem Nome'] || 0) + i.v; }); 
             let dataGanhosArr = Object.keys(catGanhos).map(k => ({ label: k, val: catGanhos[k] })).sort((a,b) => b.val - a.val);
 
-            destroyChart('chartHorizontalGanhos');
-            charts['chartHorizontalGanhos'] = new Chart(document.getElementById('chartHorizontalGanhos'), {
-                type: 'bar',
-                data: { labels: dataGanhosArr.map(d=>d.label), datasets: [{ data: dataGanhosArr.map(d=>d.val), backgroundColor: '#00e676', borderRadius: 2 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } }
+            destroyChart('chartHorizontalGanhos'); 
+            charts['chartHorizontalGanhos'] = new Chart(document.getElementById('chartHorizontalGanhos'), { 
+                type: 'bar', 
+                data: { labels: dataGanhosArr.map(d=>d.label), datasets: [{ data: dataGanhosArr.map(d=>d.val), backgroundColor: '#00e676', borderRadius: 2 }] }, 
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 70 } }, plugins: { legend: { display: false }, datalabels: datalabelsConfig }, scales: { x: { display: false }, y: { grid: { display: false } } } } 
             });
 
-            let ganhosAno = []; let despesasAno = []; let catAno = {};
-            MONTHS.forEach(m => {
-                let md = db.years[selectedYear][m];
-                ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0));
-                despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0));
-                md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; });
-                md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; });
+            let ganhosAno = []; 
+            let despesasAno = []; 
+            let catAno = {}; 
+            MONTHS.forEach(m => { 
+                let md = db.years[selectedYear][m]; 
+                ganhosAno.push(md.inc.reduce((a,c)=>a+c.v, 0)); 
+                despesasAno.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v), 0) + md.exp.reduce((a,c)=>a+c.v, 0)); 
+                md.fix.forEach(i => { let v = i.vr > 0 ? i.vr : i.v; if(v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + v; }); 
+                md.exp.forEach(i => { if(i.v>0) catAno[i.d || 'Sem Nome'] = (catAno[i.d || 'Sem Nome'] || 0) + i.v; }); 
             });
 
-            destroyChart('chartDonutAno');
-            charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), {
-                type: 'doughnut',
-                data: { labels: Object.keys(catAno), datasets: [{ data: Object.values(catAno), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } }
+            destroyChart('chartDonutAno'); 
+            charts['chartDonutAno'] = new Chart(document.getElementById('chartDonutAno'), { 
+                type: 'doughnut', 
+                data: { labels: Object.keys(catAno), datasets: [{ data: Object.values(catAno), backgroundColor: CHART_COLORS_EXPENSES, borderWidth: 1, borderColor: '#141414', cutout: '75%' }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'right', labels: { color: '#888888', boxWidth: 10, font: {size: 11} } } } } 
             });
 
-            destroyChart('chartBarAnual');
-            charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), {
-                type: 'bar',
+            destroyChart('chartBarAnual'); 
+            charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), { 
+                type: 'bar', 
                 data: {
                     labels: MONTHS.map(m => m.substring(0,3)),
                     datasets: [
@@ -1106,11 +1479,13 @@
                         { label: 'Saídas', data: despesasAno, backgroundColor: '#ff5252', borderRadius: 2 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#888888', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [2, 4] } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#888888', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [2, 4] } } } } 
             });
         }
 
-        function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
+        function destroyChart(id) { 
+            if(charts[id]) charts[id].destroy(); 
+        }
 
         window.onload = loadData;
     </script>
