@@ -109,18 +109,28 @@
         .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
         .btn-remove:hover { color: var(--color-expense); }
 
-        /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
-        #invest-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; background-color: var(--bg-body); }
+        /* ================= LAYER DE INVESTIMENTOS COM FUNDO COMPATÍVEL ================= */
+        #invest-container { 
+            display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; 
+            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8)), url('fa9b95a5c4c084ee94fc16cbc9e3beef.jpg') no-repeat center center;
+            background-size: cover;
+        }
         
+        /* Proteção para o header ficar opaco e legível sobre o fundo */
+        #invest-container header {
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
         .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; }
-        .invest-menu-card { width: 420px; height: 260px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
-        .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.15); }
+        .invest-menu-card { width: 420px; height: 260px; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
+        .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.25); background: rgba(25, 25, 25, 0.9); }
         .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
         .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         
-        /* Novas classes para o cartão dividido em dois */
         .split-card { padding: 0; gap: 0; flex-direction: column; cursor: default; }
-        .split-card:hover { transform: translateY(-5px); border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.15); }
+        .split-card:hover { border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.25); }
         .half-link { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; gap: 8px; cursor: pointer; }
         .half-link:hover { background: rgba(255, 255, 255, 0.05); }
         .half-link:first-child { border-bottom: 2px solid var(--border-color); }
@@ -213,7 +223,6 @@
             </a>
             
             <div class="invest-menu-card split-card">
-                
                 <a href="https://portal.xpi.com.br/" target="_blank" class="half-link">
                     <div class="icon">💻</div>
                     <h3>XP (PC)</h3>
@@ -223,7 +232,6 @@
                     <div class="icon">📱</div>
                     <h3>XP (APP)</h3>
                 </a>
-                
             </div>
         </div>
     </div>
@@ -231,23 +239,30 @@
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
-        // Função Inteligente para abrir o app no celular
+        // Função com detecção robusta de sistema operacional para Deep Links
         window.openXPApp = function(event) {
-            event.preventDefault(); // Impede que a tela pule pro topo ao clicar no link vazio
+            event.preventDefault();
             
-            // Marca o tempo exato do clique
             var start = Date.now();
-            
-            // Tenta abrir o aplicativo nativo via URI
-            window.location.href = "xpi://";
-            
-            // Define um timer de 2 segundos. 
-            // Se o navegador ainda estiver aberto/ativo, significa que o app não estava instalado
-            setTimeout(function() {
-                if (Date.now() - start < 2500) { // Se demorou menos de 2.5s, o celular não foi para outro aplicativo
-                    window.open("https://portal.xpi.com.br/", "_blank"); // Abre o site oficial no navegador
-                }
-            }, 2000);
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var isAndroid = /android/i.test(userAgent);
+            var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+            if (isAndroid) {
+                // No Android, a estrutura de Intent força a abertura do app nativo ou cai direto no fallback definido
+                window.location.href = "intent://#Intent;scheme=xpi;package=br.com.xp.investimentos;S.browser_fallback_url=https%3A%2F%2Fportal.xpi.com.br%2F;end";
+            } else if (isIOS) {
+                // Estrutura iOS com detecção de tempo de resposta agressiva
+                window.location.href = "xpi://";
+                setTimeout(function() {
+                    if (Date.now() - start < 2200) {
+                        window.open("https://portal.xpi.com.br/", "_blank");
+                    }
+                }, 1500);
+            } else {
+                // Caso clique do computador ou agente desconhecido
+                window.open("https://portal.xpi.com.br/", "_blank");
+            }
         };
 
         function openApp(appName) {
@@ -351,7 +366,6 @@
             return struct;
         }
 
-        /* ================= ENGINE DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) { 
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
