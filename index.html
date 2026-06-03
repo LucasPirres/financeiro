@@ -61,7 +61,7 @@
         @media (max-width: 900px) { #home-screen { flex-direction: column; justify-content: center; gap: 20px; padding: 20px; } .home-card { width: 100%; height: 250px; } }
 
         /* ================= CONTAINER DO APP (PLANO) ================= */
-        #app-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; }
+        #app-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex; }
         aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
         .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
         .logo-icon { width: 30px; height: 30px; background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--color-gain); font-size: 14px; }
@@ -111,23 +111,12 @@
 
         /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
         #invest-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; background-color: var(--bg-body); }
-        .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; gap: 50px; padding: 40px; }
-        .invest-menu-card { width: 380px; height: 280px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
-        .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-purple); box-shadow: 0 20px 40px rgba(123, 31, 162, 0.2); }
-        .invest-menu-card .icon { font-size: 40px; color: var(--color-purple); }
-        .invest-menu-card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; }
+        .invest-menu-card { width: 420px; height: 260px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
+        .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.15); }
+        .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
+        .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         
-        .invest-content-area { display: none; flex: 1; padding: 30px 50px; overflow-y: auto; flex-direction: column; }
-        .center-title { text-align: center; font-size: 1.8rem; font-weight: 700; color: var(--color-purple); letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
-        
-        .pie-box-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 10px; }
-        .chart-holder { width: 400px; height: 400px; position: relative; }
-        .editor-sidebar { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
-        .editor-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-
-        .btn-back-invest { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 25px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-back-invest:hover { background: var(--border-color); color: var(--text-main); border-color: var(--color-purple); }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -205,124 +194,19 @@
             <div style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
         </header>
 
-        <div style="width: 100%; text-align: center; margin-top: 30px; margin-bottom: -15px;">
-            <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="color: var(--color-gain); text-decoration: none; font-size: 15px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid transparent; transition: 0.3s;" onmouseover="this.style.color='var(--color-purple)'; this.style.borderColor='var(--color-purple)';" onmouseout="this.style.color='var(--color-gain)'; this.style.borderColor='transparent';">
-                🔗 Acessar Carteira Investidor10
-            </a>
-        </div>
-
         <div id="invest-menu-view" class="invest-menu-screen">
-            <div class="invest-menu-card" onclick="openInvestSub('carteira')">
-                <div class="icon">📊</div>
-                <h3>Carteira Ideal</h3>
-            </div>
-            <div class="invest-menu-card" onclick="openInvestSub('resumo')">
-                <div class="icon">📝</div>
-                <h3>Resumo da Carteira</h3>
-            </div>
-        </div>
-
-        <div id="invest-resumo-view" class="invest-content-area" style="flex-direction: column;">
-            <div><button onclick="backToInvestMenu()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar para Investimentos</button></div>
-            
-            <div style="display: flex; gap: 20px; height: calc(100vh - 120px); width: 100%; max-width: 1100px; margin: 0 auto; padding-bottom: 20px;">
-                <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo de Ativos/Cotas</h3>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 15px;">
-                        <thead style="background: rgba(255,255,255,0.02);">
-                            <tr>
-                                <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo (Ticker)</th>
-                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Quantidade</th>
-                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-resumo-cotas"></tbody>
-                    </table>
+            <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
+                <div class="invest-menu-card">
+                    <div class="icon">💼</div>
+                    <h3>Minha Carteira</h3>
                 </div>
-
-                <div style="flex: 1; background-color: var(--bg-card); border-radius: 12px; padding: 25px; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                    <h3 class="center-title" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0; text-align: left;">Resumo Geral da Carteira</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Comparativo da sua Alocação Real baseado nos aportes manuais.</p>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead style="background: rgba(255,255,255,0.02);">
-                            <tr>
-                                <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Categoria</th>
-                                <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Alocação Real (%)</th>
-                                <th style="padding: 15px 10px; text-align: right; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Valor Investido (Aporte)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-resumo-readonly"></tbody>
-                        <tfoot style="border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
-                            <tr>
-                                <td style="padding: 15px 10px; font-weight: bold; color: var(--text-main);">TOTAL APORTADO</td>
-                                <td style="padding: 15px 10px; text-align: center; font-weight: bold; color: var(--text-main);" id="resumo-total-pct">100%</td>
-                                <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);" id="resumo-total-calc">R$ 0,00</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="invest-carteira-view" class="invest-content-area">
-            <div><button onclick="navigateBack()" class="btn-back-invest"><span style="font-size: 16px;">🡠</span> Voltar</button></div>
-            <h2 id="invest-main-title" class="center-title" style="color: var(--color-highlight);">Carteira Ideal</h2>
-
-            <div id="invest-chart-zone" class="pie-box-wrapper">
-                <div class="chart-holder"><canvas id="chartInvestPie"></canvas></div>
-
-                <div style="display: flex; flex-direction: column; gap: 20px; width: 380px;">
-                    <div class="editor-sidebar" style="width: 100%;">
-                        <h4 style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Adicionar Aporte / Alocação</h4>
-                        <div id="editor-items-list"></div>
-                        
-                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold; color: var(--text-main); font-size: 14px;">
-                            <span>TOTAL INVESTIDO:</span>
-                            <span id="label-total-investido" style="color: var(--color-gain);">R$ 0,00</span>
-                        </div>
-
-                        <button id="btn-add-pie" class="btn-add" style="width:100%; border-color: var(--color-purple); color: var(--color-purple); margin-top: 20px;" onclick="addPieSlice()">+ Adicionar Nova Categoria</button>
-                    </div>
-
-                    <div id="patrimonio-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px 20px; text-align: center; display: none;">
-                        <h3 style="color: var(--text-muted); font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">Capital Total Investido</h3>
-                        <h1 id="label-patrimonio-total" style="color: var(--color-gain); font-size: 26px; margin: 0;">R$ 0,00</h1>
-                    </div>
-                </div>
-            </div>
-
-            <div id="invest-acoes-zone" style="display: none; width: 100%; max-width: 1050px; margin: 0 auto; background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead style="background: rgba(255,255,255,0.02);">
-                        <tr>
-                            <th style="padding: 15px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ativo</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Qtd.</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Cotação Atual (R$)</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--color-gain); font-weight: bold; border-bottom: 1px solid var(--border-color);">Saldo Atual (R$)</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-main); font-weight:bold; border-bottom: 1px solid var(--border-color);"><span style="color:var(--color-gain);">+</span> Total Investido (R$) <span style="color:var(--color-expense);">-</span></th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">% da Carteira</th>
-                            <th style="padding: 15px 10px; text-align: center; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-acoes-brasil"></tbody>
-                </table>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button id="btn-add-acao-generic" class="btn-add" style="border-color: var(--color-gain); color: var(--color-gain); margin-top:0;" onclick="addAcaoGeneric()">+ Adicionar Ativo</button>
-                    <button class="btn-add" style="border-color: var(--color-highlight); color: var(--color-highlight); margin-top:0;" onclick="atualizarCotacoes()">🔄 Atualizar Cotações Automáticas</button>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
 
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
-        // =========================================================================
-        // ATENÇÃO: COLOQUE AQUI O SEU TOKEN GRATUITO DO SITE BRAPI.DEV
-        // Ele vai permitir que você busque as cotações reais da Bolsa de Valores!
-        // =========================================================================
-        const BRAPI_TOKEN = 'COLOQUE_SEU_TOKEN_AQUI'; 
-
         function openApp(appName) {
             document.getElementById('home-screen').style.opacity = '0';
             setTimeout(() => {
@@ -340,7 +224,6 @@
                     app.style.display = 'flex'; 
                     app.offsetHeight; 
                     app.style.opacity = '1';
-                    backToInvestMenu();
                 }
             }, 500);
         }
@@ -360,47 +243,6 @@
             }, 500);
         }
 
-        function openInvestSub(subView) {
-            document.getElementById('invest-menu-view').style.display = 'none';
-            document.getElementById('invest-resumo-view').style.display = 'none';
-            document.getElementById('invest-carteira-view').style.display = 'none';
-
-            if (subView === 'resumo') {
-                document.getElementById('invest-resumo-view').style.display = 'flex';
-                atualizarSimulacao(); 
-            } else if (subView === 'carteira') {
-                document.getElementById('invest-carteira-view').style.display = 'flex';
-                navigateToPath([]); 
-            }
-        }
-
-        function backToInvestMenu() {
-            document.getElementById('invest-menu-view').style.display = 'flex';
-            document.getElementById('invest-resumo-view').style.display = 'none';
-            document.getElementById('invest-carteira-view').style.display = 'none';
-        }
-
-        function navigateBack() {
-            if (currentPath.length > 0) { 
-                currentPath.pop(); 
-                navigateToPath(currentPath); 
-            } 
-            else { 
-                backToInvestMenu(); 
-            }
-        }
-
-        function formatMoney(val) { 
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); 
-        }
-
-        function getPatrimonioTotal() {
-            if (!db.investimentos || !db.investimentos.carteiraIdeal) return 0;
-            return db.investimentos.carteiraIdeal.reduce((acc, item) => {
-                return acc + (parseFloat(item.val) || 0);
-            }, 0);
-        }
-
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -409,56 +251,25 @@
 
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const CHART_COLORS_EXPENSES = ['#ff5252', '#c62828', '#d84315', '#ef6c00', '#546e7a', '#37474f', '#212121'];
-        const PIE_PALETTE = ['#29b6f6', '#66bb6a', '#ffa726', '#ab47bc', '#ec407a', '#26a69a', '#78909c'];
         
         let db = { years: {}, investimentos: {} };
         let selectedYear = new Date().getFullYear().toString();
         let selectedMonth = MONTHS[new Date().getMonth()];
         let charts = {};
         let syncTimeout;
-        let currentPath = []; 
 
         Chart.defaults.color = '#888888';
         Chart.defaults.borderColor = '#222222';
         Chart.defaults.font.family = 'Inter';
-
-        function getDefaultInvestStructure() {
-            return {
-                carteiraIdeal: [
-                    { label: "Renda Fixa", val: 0, sub: [], assets: [] },
-                    { label: "Ações do Brasil", val: 0, sub: [], assets: [] },
-                    { label: "Ativos no Exterior", val: 0, sub: [], assets: [] },
-                    { label: "Imóveis", val: 0, sub: [], assets: [] }
-                ]
-            };
-        }
 
         async function loadData() {
             try {
                 const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
                 if (data && data.dados) { 
                     db = data.dados;
-                    if (!db.investimentos || !db.investimentos.carteiraIdeal) { 
-                        db.investimentos = getDefaultInvestStructure(); 
-                    }
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
-                    db.investimentos = getDefaultInvestStructure();
                     await saveDataNow(); 
-                }
-
-                if (db.investimentos && db.investimentos.carteiraIdeal) {
-                    db.investimentos.carteiraIdeal.forEach(cat => {
-                        if (cat.sub && cat.sub.length > 0) {
-                            if (!cat.assets) cat.assets = [];
-                            cat.sub.forEach(sub => {
-                                if (sub.assets) {
-                                    sub.assets.forEach(a => cat.assets.push(a));
-                                }
-                            });
-                            cat.sub = []; 
-                        }
-                    });
                 }
                 
                 document.getElementById('sync-status').innerText = "Online";
@@ -468,7 +279,6 @@
                 console.error(e); 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                if(!db.investimentos || !db.investimentos.carteiraIdeal) db.investimentos = getDefaultInvestStructure();
                 
                 renderSidebar(); 
                 updateUI();
@@ -497,401 +307,6 @@
             });
             return struct;
         }
-
-        function getTargetStructure(path) {
-            let current = db.investimentos.carteiraIdeal;
-            for(let i=0; i<path.length; i++) {
-                let found = current.find(item => item.label === path[i]);
-                if (found && found.sub) { 
-                    current = found.sub; 
-                }
-            }
-            return current;
-        }
-
-        function atualizarSimulacao() {
-            let total = getPatrimonioTotal(); 
-            
-            let htmlResumo = '';
-            if (db.investimentos && db.investimentos.carteiraIdeal) {
-                db.investimentos.carteiraIdeal.forEach(item => {
-                    let valCalc = parseFloat(item.val) || 0;
-                    let pct = total > 0 ? ((valCalc / total) * 100).toFixed(1) : 0;
-                    
-                    htmlResumo += `
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${item.label}</td>
-                            <td style="padding: 15px 10px; text-align: center; color: var(--text-muted);">${pct}%</td>
-                            <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(valCalc)}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            const tbody = document.getElementById('tbody-resumo-readonly');
-            if(tbody) tbody.innerHTML = htmlResumo;
-            
-            const totCalc = document.getElementById('resumo-total-calc');
-            if(totCalc) totCalc.innerText = formatMoney(total); 
-
-            const totPct = document.getElementById('resumo-total-pct');
-            if(totPct) { 
-                totPct.innerText = total > 0 ? '100%' : '0%'; 
-                totPct.style.color = 'var(--color-gain)'; 
-            }
-            
-            let htmlCotas = '';
-            let totalSaldoGeral = 0;
-            
-            function searchAssets(list) {
-                list.forEach(node => {
-                    if (node.assets) {
-                        node.assets.forEach(asset => {
-                            let qtd = parseFloat(asset.qtd) || parseFloat(asset.num_cotas) || 0;
-                            let cotacao = parseFloat(asset.cotacao) || parseFloat(asset.preco_cota_atual) || 0;
-                            
-                            let saldo = qtd * cotacao;
-                            totalSaldoGeral += saldo;
-                            
-                            htmlCotas += `
-                                <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 15px 10px; font-weight: 600; color: var(--text-main);">${asset.ticker || 'Sem nome'}</td>
-                                    <td style="padding: 15px 10px; text-align: center; color: var(--text-muted);">${qtd}</td>
-                                    <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-highlight);">${formatMoney(saldo)}</td>
-                                </tr>
-                            `;
-                        });
-                    }
-                    if (node.sub && node.sub.length > 0) {
-                        searchAssets(node.sub);
-                    }
-                });
-            }
-            searchAssets(db.investimentos.carteiraIdeal);
-
-            if(htmlCotas === '') { 
-                htmlCotas = `<tr><td colspan=\"3\" style=\"text-align:center; padding: 20px; color: var(--text-muted);\">Nenhum ativo registrado.</td></tr>`; 
-            } else {
-                htmlCotas += `
-                    <tr style="background: rgba(0,0,0,0.2);">
-                        <td colspan="2" style="padding: 15px 10px; font-weight: bold; color: var(--text-main); text-align: right;">SALDO TOTAL (R$):</td>
-                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: var(--color-gain);">${formatMoney(totalSaldoGeral)}</td>
-                    </tr>
-                `;
-            }
-            const tbodyCotas = document.getElementById('tbody-resumo-cotas');
-            if(tbodyCotas) tbodyCotas.innerHTML = htmlCotas;
-        }
-
-        function navigateToPath(path) {
-            currentPath = path;
-            
-            document.getElementById('invest-chart-zone').style.display = 'none';
-            document.getElementById('invest-acoes-zone').style.display = 'none';
-            
-            if (path.length === 1) {
-                document.getElementById('invest-acoes-zone').style.display = 'block';
-                document.getElementById('invest-main-title').innerText = path[0];
-                
-                let group = db.investimentos.carteiraIdeal.find(item => item.label === path[0]);
-                if(!group.assets) group.assets = [];
-                renderAcoesTable(group.assets, path[0]);
-            } 
-            else {
-                document.getElementById('invest-chart-zone').style.display = 'flex';
-                if (path.length === 0) { document.getElementById('invest-main-title').innerText = "Carteira Ideal"; } 
-                else { document.getElementById('invest-main-title').innerText = `Carteira Ideal: ${path[path.length - 1]}`; }
-                
-                renderPieChartZone();
-            }
-        }
-
-        function renderPieChartZone() {
-            let list = getTargetStructure(currentPath);
-            let isRoot = currentPath.length === 0;
-            
-            const fixedLabels = ["Renda Fixa", "Ações do Brasil", "Ativos no Exterior", "Imóveis"];
-            
-            let htmlList = list.map((item, idx) => {
-                let safeLabel = item.label.replace(/'/g, "\\'");
-                let isFixed = fixedLabels.includes(item.label);
-                
-                return `
-                <div class="editor-row" style="transition: 0.2s;">
-                    <input type="text" class="custom-input" style="background:#1a1a1a; padding:5px 8px; color: ${isFixed ? 'var(--text-muted)' : 'var(--text-main)'}; font-weight: 600;" value="${item.label}" ${isFixed ? 'readonly' : ''} onchange="updatePieItem(${idx}, 'label', this.value)">
-                    
-                    <div style="display: flex; align-items: center; background: #1a1a1a; padding-left: 10px; border-radius: 4px; border: 1px solid var(--border-color);">
-                        <span style="color: var(--text-muted); font-size: 12px; font-weight: bold;">R$</span>
-                        <input type="number" step="0.01" class="custom-input" style="width: 80px; text-align: right; background: transparent; border: none; font-weight: bold; color: var(--color-gain);" value="${item.val}" placeholder="0.00" onchange="updatePieItem(${idx}, 'val', this.value)">
-                    </div>
-                    
-                    ${!isFixed ? `<button class="btn-remove" onclick="removePieSlice(${idx})" title="Remover Fatia">✕</button>` : `<div style="width: 24px;"></div>`}
-                    
-                    <div style="cursor: pointer; width: 30px; margin-left: 10px; color: var(--color-purple); font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Acessar Categoria (Tabela)" onclick="handleSidebarClick('${safeLabel}')">➔</div>
-                </div>
-                `;
-            }).join('');
-            
-            document.getElementById('editor-items-list').innerHTML = htmlList;
-
-            let btnAdd = document.getElementById('btn-add-pie');
-            if(btnAdd) { 
-                btnAdd.style.display = isRoot ? 'block' : 'none'; 
-            }
-
-            let patBox = document.getElementById('patrimonio-box');
-            let patLabel = document.getElementById('label-patrimonio-total');
-            let totInvLabel = document.getElementById('label-total-investido');
-            
-            let totalVal = list.reduce((a, b) => a + (parseFloat(b.val) || 0), 0);
-            
-            if(totInvLabel) totInvLabel.innerText = formatMoney(totalVal);
-            
-            if (isRoot) {
-                if(patBox) patBox.style.display = 'block';
-                if(patLabel) patLabel.innerText = formatMoney(totalVal);
-            } else {
-                if(patBox) patBox.style.display = 'none';
-            }
-
-            destroyChart('chartInvestPie');
-            let labels = list.map(i => i.label);
-            let dataVals = list.map(i => parseFloat(i.val) || 0);
-
-            charts['chartInvestPie'] = new Chart(document.getElementById('chartInvestPie'), {
-                type: 'pie',
-                data: { 
-                    labels: labels, 
-                    datasets: [{ 
-                        data: dataVals, 
-                        backgroundColor: PIE_PALETTE.slice(0, list.length), 
-                        borderWidth: 2, 
-                        borderColor: 'var(--bg-card)' 
-                    }] 
-                },
-                options: {
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    animation: { duration: 600, easing: 'easeOutQuart' },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 12 } } },
-                        datalabels: { 
-                            color: '#ffffff', 
-                            font: { weight: '700', size: 14 }, 
-                            formatter: (val, ctx) => { 
-                                if(totalVal === 0) return ''; 
-                                return ((val / totalVal) * 100).toFixed(0) + '%'; 
-                            } 
-                        },
-                        tooltip: { 
-                            callbacks: { 
-                                label: function(context) { 
-                                    let val = context.raw; 
-                                    let pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : 0; 
-                                    return ` ${context.label}: ${formatMoney(val)} (${pct}%)`; 
-                                } 
-                            } 
-                        }
-                    },
-                    hover: { mode: 'nearest', intersect: true },
-                    onClick: (evt, elements) => {
-                        if (elements.length > 0) { 
-                            let clickedIdx = elements[0].index; 
-                            let targetItem = list[clickedIdx]; 
-                            handleSidebarClick(targetItem.label); 
-                        }
-                    }
-                }
-            });
-
-            if(isRoot) atualizarSimulacao();
-        }
-
-        window.updatePieItem = function(idx, field, value) {
-            let list = getTargetStructure(currentPath);
-            if(field === 'val') {
-                list[idx][field] = parseFloat(value) || 0;
-            } else {
-                list[idx][field] = value;
-            }
-            scheduleSave();
-            renderPieChartZone();
-        };
-
-        window.addPieSlice = function() {
-            let list = getTargetStructure(currentPath);
-            list.push({ label: "Nova Categoria", val: 0, sub: [], assets: [] });
-            scheduleSave();
-            renderPieChartZone();
-        };
-
-        window.removePieSlice = function(idx) {
-            let list = getTargetStructure(currentPath);
-            list.splice(idx, 1);
-            scheduleSave();
-            renderPieChartZone();
-        };
-
-        window.handleSidebarClick = function(label) {
-            let list = getTargetStructure(currentPath);
-            let targetItem = list.find(i => i.label === label);
-            
-            if (!targetItem) return;
-            if (!targetItem.sub) targetItem.sub = [];
-            
-            let newPath = [...currentPath, label];
-            navigateToPath(newPath);
-        };
-
-        /* ================= TABELA ÚNICA DE ATIVOS GENÉRICA ================= */
-        function getGroupFromPath() {
-            let curr = db.investimentos.carteiraIdeal;
-            let group = null;
-            for(let i=0; i<currentPath.length; i++) {
-                group = curr.find(item => item.label === currentPath[i]);
-                if (group && group.sub) curr = group.sub;
-            }
-            return group;
-        }
-
-        function renderAcoesTable(assetsList) {
-            const tbody = document.getElementById('tbody-acoes-brasil');
-            let html = '';
-            
-            let patTotal = getPatrimonioTotal(); 
-            
-            assetsList.forEach((asset, idx) => {
-                let qtd = parseFloat(asset.qtd) || 0;
-                let cotacao = parseFloat(asset.cotacao) || 0;
-                let investido = parseFloat(asset.investido) || 0;
-                
-                let saldoAtual = qtd * cotacao;
-                let perc = patTotal > 0 ? (investido / patTotal) * 100 : 0;
-                
-                html += `
-                    <tr style="border-bottom: 1px solid var(--border-color); transition: 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.02)'" onmouseout="this.style.backgroundColor='transparent'">
-                        <td>
-                            <input type="text" class="custom-input" value="${asset.ticker || ''}" placeholder="Nome do Ativo" onchange="updateAcaoField(${idx}, 'ticker', this.value)">
-                        </td>
-                        <td>
-                            <input type="number" class="custom-input" value="${asset.qtd || 0}" onchange="updateAcaoField(${idx}, 'qtd', this.value)" min="0" style="text-align: center;">
-                        </td>
-                        <td>
-                            <input type="number" step="0.01" class="custom-input" value="${asset.cotacao || 0}" onchange="updateAcaoField(${idx}, 'cotacao', this.value)" style="text-align: center;">
-                        </td>
-                        <td style="font-weight: bold; color: var(--color-gain); text-align: center;">
-                            ${formatMoney(saldoAtual)}
-                        </td>
-                        <td>
-                            <input type="number" step="0.01" class="custom-input" value="${investido}" onchange="updateAcaoField(${idx}, 'investido', this.value)" style="text-align: center; color: var(--color-highlight); font-weight: bold; border-bottom: 1px solid var(--border-color); background: #1a1a1a;">
-                        </td>
-                        <td style="color: var(--text-muted); font-weight: bold; text-align: center;">
-                            ${perc.toFixed(2)}%
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn-remove" onclick="removeAcao(${idx})">✕</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-
-        window.updateAcaoField = function(idx, field, value) {
-            let group = getGroupFromPath();
-            group.assets[idx][field] = value;
-            scheduleSave();
-            renderAcoesTable(group.assets);
-        };
-
-        window.addAcaoGeneric = function() {
-            let group = getGroupFromPath();
-            if(!group.assets) group.assets = [];
-            group.assets.push({ ticker: '', qtd: 0, cotacao: 0, investido: 0 });
-            scheduleSave();
-            renderAcoesTable(group.assets);
-        };
-
-        window.removeAcao = function(idx) {
-            let group = getGroupFromPath();
-            group.assets.splice(idx, 1);
-            scheduleSave();
-            renderAcoesTable(group.assets);
-        };
-
-        /* ================= SISTEMA DE API (BRAPI) ================= */
-        window.atualizarCotacoes = async function() {
-            if (!BRAPI_TOKEN || BRAPI_TOKEN === 'i5U7DsoHQ8EE6x3zkCmmdm') {
-                alert("Para usar esta função mágica, adicione o seu Token gratuito da brapi.dev no código do site (linha ~410)!");
-                return;
-            }
-
-            let tickersToFetch = [];
-            
-            function collectTickers(list) {
-                list.forEach(node => {
-                    if (node.assets) {
-                        node.assets.forEach(a => {
-                            if (a.ticker && a.ticker.trim() !== '' && !tickersToFetch.includes(a.ticker)) {
-                                tickersToFetch.push(a.ticker.trim());
-                            }
-                        });
-                    }
-                    if (node.sub) collectTickers(node.sub);
-                });
-            }
-            collectTickers(db.investimentos.carteiraIdeal);
-
-            if (tickersToFetch.length === 0) {
-                alert("Você ainda não cadastrou nenhum Ticker válido para atualizar.");
-                return;
-            }
-
-            document.getElementById('sync-status').innerText = "Buscando preços na Bolsa de Valores...";
-
-            try {
-                let url = `https://brapi.dev/api/quote/${tickersToFetch.join(',')}?token=${BRAPI_TOKEN}`;
-                let response = await fetch(url);
-                let data = await response.json();
-
-                if (data.results) {
-                    let priceMap = {};
-                    data.results.forEach(res => {
-                        priceMap[res.symbol] = res.regularMarketPrice;
-                    });
-
-                    function applyPrices(list) {
-                        list.forEach(node => {
-                            if (node.assets) {
-                                node.assets.forEach(a => {
-                                    if (a.ticker && priceMap[a.ticker]) {
-                                        a.cotacao = priceMap[a.ticker];
-                                    }
-                                });
-                            }
-                            if (node.sub) applyPrices(node.sub);
-                        });
-                    }
-                    applyPrices(db.investimentos.carteiraIdeal);
-
-                    scheduleSave();
-                    
-                    if (currentPath.length > 0) {
-                        let group = getGroupFromPath();
-                        if(group && group.assets) renderAcoesTable(group.assets);
-                    } else {
-                        renderPieChartZone();
-                    }
-
-                    document.getElementById('sync-status').innerText = "Cotações atualizadas com sucesso! ✅";
-                    setTimeout(() => document.getElementById('sync-status').innerText = "Online", 3500);
-                }
-            } catch(e) {
-                console.error(e);
-                alert("Erro ao buscar as cotações. Verifique o seu Ticker ou tente novamente mais tarde.");
-                document.getElementById('sync-status').innerText = "Erro ao atualizar cotações";
-            }
-        };
 
         /* ================= ENGINE DO PLANO FINANCEIRO ================= */
         function switchTab(tabId) { 
