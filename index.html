@@ -111,12 +111,23 @@
 
         /* ================= LAYER DINÂMICO DE INVESTIMENTOS ================= */
         #invest-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; background-color: var(--bg-body); }
-        .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; }
+        
+        /* Atualize a classe invest-menu-screen para incluir gap e flex-wrap */
+        .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; }
         .invest-menu-card { width: 420px; height: 260px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
         .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.15); }
         .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
         .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         
+        /* Novas classes para o cartão dividido em dois */
+        .split-card { padding: 0; gap: 0; flex-direction: column; cursor: default; }
+        .split-card:hover { transform: translateY(-5px); border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.15); }
+        .half-link { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; gap: 8px; cursor: pointer; }
+        .half-link:hover { background: rgba(255, 255, 255, 0.05); }
+        .half-link:first-child { border-bottom: 2px solid var(--border-color); }
+        .half-link .icon { font-size: 32px; color: var(--color-highlight); }
+        .half-link h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; margin: 0; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -195,12 +206,31 @@
         </header>
 
         <div id="invest-menu-view" class="invest-menu-screen">
+            <!-- Retângulo 1: Minha Carteira -->
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
                     <h3>Minha Carteira</h3>
                 </div>
             </a>
+            
+            <!-- Retângulo 2: Conta XP (Dividido) -->
+            <div class="invest-menu-card split-card">
+                
+                <!-- Parte de Cima: XP no PC (Abre no navegador) -->
+                <a href="https://portal.xpi.com.br/" target="_blank" class="half-link">
+                    <div class="icon">💻</div>
+                    <h3>XP (PC)</h3>
+                </a>
+                
+                <!-- Parte de Baixo: XP no Celular (Deep Link para abrir o App) -->
+                <!-- O link "xpi://" tenta forçar a abertura do aplicativo nativo no celular -->
+                <a href="xpi://" class="half-link">
+                    <div class="icon">📱</div>
+                    <h3>XP (APP)</h3>
+                </a>
+                
+            </div>
         </div>
     </div>
 
