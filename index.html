@@ -64,6 +64,8 @@
         /* ================= CONTAINER DO APP (PLANO) ================= */
         #app-container { display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex; }
         aside { width: 220px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
+        .profile-section { text-align: center; padding: 20px; }
+        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--color-gain); object-fit: cover; margin-bottom: 10px; }
         .logo-area { display: flex; align-items: center; gap: 10px; padding: 0 20px 30px 20px; font-weight: 700; font-size: 16px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
         .logo-icon { width: 30px; height: 30px; background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--color-gain); font-size: 14px; }
         .nav-section { padding: 10px 20px; color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
@@ -109,6 +111,8 @@
         .btn-add-exp:hover { background: rgba(255, 82, 82, 0.1); }
         .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
         .btn-remove:hover { color: var(--color-expense); }
+        .btn-move { background: transparent; border: none; color: var(--text-main); cursor: pointer; font-size: 16px; transition: 0.2s; margin: 0 4px; opacity: 0.5; }
+        .btn-move:hover { opacity: 1; color: var(--color-highlight); }
 
         /* ================= LAYER DE INVESTIMENTOS ================= */
         #invest-container { 
@@ -134,15 +138,18 @@
         .card-planilhas:hover { border-color: var(--color-highlight); box-shadow: 0 20px 40px rgba(255, 179, 0, 0.25); }
         .card-planilhas .icon { color: var(--color-highlight); }
 
-        /* ================= TELA DE PLANILHAS (FII) ================= */
+        .card-acoes:hover { border-color: var(--color-blue); box-shadow: 0 20px 40px rgba(77, 166, 255, 0.25); }
+        .card-acoes .icon { color: var(--color-blue); }
+
+        /* ================= TELA DE PLANILHAS (FIIs e AÇÕES) ================= */
         .invest-scroll-area {
             display: none; 
             width: 100%; 
             flex: 1; 
             padding: 40px; 
             overflow-y: auto; 
-            align-items: center; /* Mantém o cartão centralizado no eixo X */
-            justify-content: flex-start; /* FIX: Permite que a tela tenha "scroll" sem cortar o topo */
+            align-items: center; 
+            justify-content: flex-start; 
             flex-direction: column;
         }
 
@@ -179,8 +186,8 @@
 
     <div id="app-container">
         <aside>
-            <div class="profile-section" style="text-align: center; padding: 20px;">
-                <img src="{1FE66A21-1320-437E-88D9-C16FEC6A30C8}.png" alt="Foto de Perfil" class="profile-pic" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--color-gain); object-fit: cover; margin-bottom: 10px;">
+            <div class="profile-section">
+                <img src="{1FE66A21-1320-437E-88D9-C16FEC6A30C8}.png" alt="Foto de Perfil" class="profile-pic">
             </div>
             <div class="logo-area">
                 <div class="logo-icon">▲</div>
@@ -257,8 +264,13 @@
 
         <div id="invest-planilhas-menu-view" class="invest-menu-screen" style="display: none;">
             <div class="invest-menu-card card-planilhas" onclick="openFiiTable()">
-                <div class="icon">📊</div>
+                <div class="icon">🏢</div>
                 <h3>Planilha de FIIs</h3>
+            </div>
+            
+            <div class="invest-menu-card card-acoes" onclick="openAcoesTable()">
+                <div class="icon">📈</div>
+                <h3>Planilha de Ações BR</h3>
             </div>
         </div>
 
@@ -268,7 +280,6 @@
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 20px; width: 100%; text-align: left;">
                     📚 Critérios: Como Escolher Bons FIIs
                 </div>
-                
                 <img src="EDC94816-9590-4735-94B4-003FBB23B553.jpg" alt="Critérios para escolher FIIs" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
             </div>
 
@@ -296,7 +307,7 @@
                                 <th style="width: 10%;">DY 12 Meses</th>
                                 <th style="width: 10%;">DY último mês</th>
                                 <th style="width: 13%;">Renda Mensal Média</th>
-                                <th style="width: 40px;"></th>
+                                <th style="width: 80px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-fiis">
@@ -319,6 +330,44 @@
                 <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFII()">+ Adicionar Novo Fundo</button>
             </div>
         </div>
+
+        <div id="invest-acoes-view" class="invest-scroll-area">
+            
+            <div class="fii-card" style="margin-bottom: 25px; padding: 25px; display: flex; flex-direction: column; align-items: center; border-top-color: var(--color-blue);">
+                <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 20px; width: 100%; text-align: left;">
+                    📚 Critérios: Como Escolher Boas Ações
+                </div>
+                <img src="Gemini_Generated_Image_ld3kvxld3kvxld3k.jpg" alt="Critérios para escolher Ações" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
+            </div>
+
+            <div class="fii-card" style="border-top-color: var(--color-blue);">
+                <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 25px;">
+                    📈 Ações (Brasil)
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 1100px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Ticker</th>
+                                <th style="width: 15%;">Setor</th>
+                                <th style="width: 10%;">P/L</th>
+                                <th style="width: 10%;">ROE (%)</th>
+                                <th style="width: 12%;">Dívida Liq/EBITDA</th>
+                                <th style="width: 10%;">CAGR (%)</th>
+                                <th style="width: 10%;">ROIC (%)</th>
+                                <th style="width: 10%;">P/VP</th>
+                                <th style="width: 80px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-acoes">
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-blue); color: var(--color-blue);" onclick="addAcao()">+ Adicionar Nova Ação</button>
+            </div>
+        </div>
+
     </div>
 
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
@@ -344,6 +393,7 @@
 
         function goHome() {
             document.getElementById('invest-planilhas-view').style.display = 'none';
+            document.getElementById('invest-acoes-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
@@ -379,9 +429,20 @@
             renderFIITable();
         }
 
+        function openAcoesTable() {
+            document.getElementById('invest-planilhas-menu-view').style.display = 'none';
+            const acoesView = document.getElementById('invest-acoes-view');
+            acoesView.style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'PLANILHA DE AÇÕES BR';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'acoes-table';
+            renderAcoesTable();
+        }
+
         function goBackInvest() {
-            if (currentInvestView === 'planilhas-table') {
+            if (currentInvestView === 'planilhas-table' || currentInvestView === 'acoes-table') {
                 document.getElementById('invest-planilhas-view').style.display = 'none';
+                document.getElementById('invest-acoes-view').style.display = 'none';
                 document.getElementById('invest-planilhas-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
@@ -406,7 +467,7 @@
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const CHART_COLORS_EXPENSES = ['#ff5252', '#c62828', '#d84315', '#ef6c00', '#546e7a', '#37474f', '#212121'];
         
-        let db = { years: {}, fiis: [] };
+        let db = { years: {}, fiis: [], acoes: [] };
         let selectedYear = new Date().getFullYear().toString();
         let selectedMonth = MONTHS[new Date().getMonth()];
         let charts = {};
@@ -420,19 +481,22 @@
                 if (data && data.dados) { 
                     db = data.dados;
                     if(!db.fiis) db.fiis = [];
+                    if(!db.acoes) db.acoes = [];
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.fiis = [];
+                    db.acoes = [];
                     await saveDataNow(); 
                 }
                 
                 document.getElementById('sync-status').innerText = "Online";
-                renderSidebar(); updateUI(); renderFIITable();
+                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable();
             } catch (e) { 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                 if(!db.fiis) db.fiis = [];
-                renderSidebar(); updateUI(); renderFIITable();
+                if(!db.acoes) db.acoes = [];
+                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable();
             }
         }
 
@@ -453,7 +517,7 @@
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= PLANILHAS DE FIIs (NOVO COM CÁLCULOS DA IMAGEM) =======
+        // ======= PLANILHAS DE FIIs =======
         function addFII() {
             db.fiis.push({ ticker: '', classe: '', qtd: 0, pm: 0, dy12: 0, dy1: 0 });
             renderFIITable();
@@ -465,9 +529,17 @@
             renderFIITable();
             scheduleSave();
         }
+        
+        function moveFII(index, direction) {
+            if (index + direction < 0 || index + direction >= db.fiis.length) return;
+            const temp = db.fiis[index];
+            db.fiis[index] = db.fiis[index + direction];
+            db.fiis[index + direction] = temp;
+            renderFIITable();
+            scheduleSave();
+        }
 
         function updateFII(index, field, value) {
-            // Salva dados no DB
             if (field === 'ticker' || field === 'classe') {
                 db.fiis[index][field] = value;
             } else {
@@ -475,22 +547,18 @@
                 db.fiis[index][field] = isNaN(val) ? 0 : val;
             }
             
-            // Cálculos parciais da linha para evitar re-renderização completa do input focada
             let fii = db.fiis[index];
             let investido = (fii.qtd || 0) * (fii.pm || 0);
             let renda = investido * ((fii.dy12 || 0) / 100) / 12;
             
-            // Atualiza campos estáticos da linha atual
             document.getElementById(`fii-investido-${index}`).innerText = investido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById(`fii-renda-${index}`).innerText = renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             
-            // Atualiza os percentuais e os totais
             updateFIIKPIs();
             scheduleSave();
         }
 
         function renderFIITable() {
-            // Migração silenciosa caso existam dados antigos
             db.fiis.forEach(fii => {
                 if(fii.setor !== undefined) { fii.classe = fii.setor; delete fii.setor; }
                 if(fii.dy !== undefined) { fii.dy12 = fii.dy * 12; fii.dy1 = fii.dy; delete fii.dy; }
@@ -513,7 +581,11 @@
                     <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.dy12 || ''}" oninput="updateFII(${i}, 'dy12', this.value)" placeholder="0.00"></td>
                     <td><input type="number" step="0.01" class="custom-input" style="color: var(--text-main);" value="${fii.dy1 || ''}" oninput="updateFII(${i}, 'dy1', this.value)" placeholder="0.00"></td>
                     <td id="fii-renda-${i}" style="padding: 12px 5px; color: var(--color-gain); font-weight: 600;">${renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
-                    <td style="text-align: right;"><button class="btn-remove" onclick="removeFII(${i})">✕</button></td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn-move" onclick="moveFII(${i}, -1)">↑</button>
+                        <button class="btn-move" onclick="moveFII(${i}, 1)">↓</button>
+                        <button class="btn-remove" onclick="removeFII(${i})">✕</button>
+                    </td>
                 </tr>
                 `;
             }).join('');
@@ -556,6 +628,57 @@
             document.getElementById('fii-kpi-total').innerText = totalInvestido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('fii-kpi-renda').innerText = totalRenda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('fii-kpi-dy').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
+        }
+
+        // ======= PLANILHAS DE AÇÕES (NOVO) =======
+        function addAcao() {
+            db.acoes.push({ ticker: '', setor: '', pl: '', roe: '', divEbitda: '', cagr: '', roic: '', pvp: '' });
+            renderAcoesTable();
+            scheduleSave();
+        }
+
+        function removeAcao(index) {
+            db.acoes.splice(index, 1);
+            renderAcoesTable();
+            scheduleSave();
+        }
+        
+        function moveAcao(index, direction) {
+            if (index + direction < 0 || index + direction >= db.acoes.length) return;
+            const temp = db.acoes[index];
+            db.acoes[index] = db.acoes[index + direction];
+            db.acoes[index + direction] = temp;
+            renderAcoesTable();
+            scheduleSave();
+        }
+
+        function updateAcao(index, field, value) {
+            db.acoes[index][field] = value;
+            scheduleSave();
+        }
+
+        function renderAcoesTable() {
+            const html = db.acoes.map((acao, i) => {
+                return `
+                <tr>
+                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${acao.ticker}" oninput="updateAcao(${i}, 'ticker', this.value)" placeholder="VALE3"></td>
+                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${acao.setor}" oninput="updateAcao(${i}, 'setor', this.value)" placeholder="Mineração"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pl}" oninput="updateAcao(${i}, 'pl', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roe}" oninput="updateAcao(${i}, 'roe', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.divEbitda}" oninput="updateAcao(${i}, 'divEbitda', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.cagr}" oninput="updateAcao(${i}, 'cagr', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roic}" oninput="updateAcao(${i}, 'roic', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pvp}" oninput="updateAcao(${i}, 'pvp', this.value)" placeholder="0.00"></td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn-move" onclick="moveAcao(${i}, -1)">↑</button>
+                        <button class="btn-move" onclick="moveAcao(${i}, 1)">↓</button>
+                        <button class="btn-remove" onclick="removeAcao(${i})">✕</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            document.getElementById('tbody-acoes').innerHTML = html;
         }
 
         // ======= PLANO FINANCEIRO ORIGINAL =======
