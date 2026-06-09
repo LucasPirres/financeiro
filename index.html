@@ -142,7 +142,10 @@
         .card-acoes:hover { border-color: var(--color-blue); box-shadow: 0 20px 40px rgba(77, 166, 255, 0.25); }
         .card-acoes .icon { color: var(--color-blue); }
 
-        /* ================= TELA DE PLANILHAS (FII E AÇÕES) ================= */
+        .card-carteira:hover { border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.25); }
+        .card-carteira .icon { color: var(--color-gain); font-size: 48px; }
+
+        /* ================= TELA DE PLANILHAS E CARTEIRA ================= */
         .invest-scroll-area {
             display: none; 
             width: 100%; 
@@ -253,13 +256,18 @@
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
-                    <h3>Minha Carteira</h3>
+                    <h3>Minha Carteira (Broker)</h3>
                 </div>
             </a>
+            
+            <div class="invest-menu-card card-carteira" onclick="openCarteiraResumo()">
+                <div class="icon">💰</div>
+                <h3>Resumo da Carteira</h3>
+            </div>
 
             <div class="invest-menu-card card-planilhas" onclick="openInvestPlanilhas()">
                 <div class="icon">📊</div>
-                <h3>Planilhas</h3>
+                <h3>Planilhas de Ativos</h3>
             </div>
         </div>
 
@@ -272,6 +280,47 @@
             <div class="invest-menu-card card-acoes" onclick="openAcoesTable()">
                 <div class="icon">📈</div>
                 <h3>Planilha de Ações BR</h3>
+            </div>
+        </div>
+
+        <div id="invest-carteira-view" class="invest-scroll-area">
+            <div class="fii-card" style="border-top-color: var(--color-gain);">
+                <div class="entry-title" style="color: var(--color-gain); font-size: 1.4rem; margin-bottom: 25px;">
+                    💰 Resumo da Carteira
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <input type="text" id="cart-ativo" class="custom-input" placeholder="Ativo (Ex: VGHF11)" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <input type="number" id="cart-qtd" class="custom-input" placeholder="Qtd" style="width: 100px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <input type="number" id="cart-pm" class="custom-input" placeholder="P. Médio (R$)" step="0.01" style="width: 130px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <input type="number" id="cart-pa" class="custom-input" placeholder="P. Atual (R$)" step="0.01" style="width: 130px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <button onclick="adicionarAtivoCarteira()" class="btn-add" style="border-color: var(--color-gain); color: var(--color-gain);">+ Adicionar</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 900px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Ativo</th>
+                                <th style="width: 10%;">Qtd</th>
+                                <th style="width: 15%;">P. Médio</th>
+                                <th style="width: 15%;">P. Atual</th>
+                                <th style="width: 15%;">Total Investido</th>
+                                <th style="width: 15%;">Saldo Atual</th>
+                                <th style="width: 15%;">Lucro/Prej.</th>
+                                <th style="width: 40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="carteira-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color); font-size: 16px; font-weight: bold;">
+                    <div>Total Investido: <span id="cart-tot-inv" style="color: var(--text-main);">R$ 0,00</span></div>
+                    <div>Saldo Atual: <span id="cart-tot-atl" style="color: var(--text-main);">R$ 0,00</span></div>
+                    <div>Rentabilidade Global: <span id="cart-tot-rent">0,00%</span></div>
+                </div>
             </div>
         </div>
 
@@ -395,6 +444,7 @@
         function goHome() {
             document.getElementById('invest-planilhas-view').style.display = 'none';
             document.getElementById('invest-acoes-view').style.display = 'none';
+            document.getElementById('invest-carteira-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
@@ -409,6 +459,16 @@
                 const home = document.getElementById('home-screen');
                 home.style.display = 'flex'; home.offsetHeight; home.style.opacity = '1';
             }, 500);
+        }
+
+        function openCarteiraResumo() {
+            document.getElementById('invest-menu-view').style.display = 'none';
+            const carteiraView = document.getElementById('invest-carteira-view');
+            carteiraView.style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'RESUMO DA CARTEIRA';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'carteira-view';
+            atualizarTabelaCarteira();
         }
 
         function openInvestPlanilhas() {
@@ -448,8 +508,9 @@
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
-            } else if (currentInvestView === 'planilhas-menu') {
+            } else if (currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view') {
                 document.getElementById('invest-planilhas-menu-view').style.display = 'none';
+                document.getElementById('invest-carteira-view').style.display = 'none';
                 document.getElementById('invest-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -468,7 +529,7 @@
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const CHART_COLORS_EXPENSES = ['#ff5252', '#c62828', '#d84315', '#ef6c00', '#546e7a', '#37474f', '#212121'];
         
-        let db = { years: {}, fiis: [], acoes: [] };
+        let db = { years: {}, fiis: [], acoes: [], carteiraAtivos: [] };
         let selectedYear = new Date().getFullYear().toString();
         let selectedMonth = MONTHS[new Date().getMonth()];
         let charts = {};
@@ -483,21 +544,24 @@
                     db = data.dados;
                     if(!db.fiis) db.fiis = [];
                     if(!db.acoes) db.acoes = [];
+                    if(!db.carteiraAtivos) db.carteiraAtivos = [];
                 } else { 
                     db.years[selectedYear] = createYearStructure(); 
                     db.fiis = [];
                     db.acoes = [];
+                    db.carteiraAtivos = [];
                     await saveDataNow(); 
                 }
                 
                 document.getElementById('sync-status').innerText = "Online";
-                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable();
+                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable(); atualizarTabelaCarteira();
             } catch (e) { 
                 document.getElementById('sync-status').innerText = "Offline (Local)";
                 if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                 if(!db.fiis) db.fiis = [];
                 if(!db.acoes) db.acoes = [];
-                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable();
+                if(!db.carteiraAtivos) db.carteiraAtivos = [];
+                renderSidebar(); updateUI(); renderFIITable(); renderAcoesTable(); atualizarTabelaCarteira();
             }
         }
 
@@ -516,6 +580,90 @@
 
         function createYearStructure() {
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
+        }
+
+        // ======= RESUMO DA CARTEIRA =======
+        function adicionarAtivoCarteira() {
+            const nome = document.getElementById('cart-ativo').value.toUpperCase();
+            const qtd = parseFloat(document.getElementById('cart-qtd').value);
+            const pm = parseFloat(document.getElementById('cart-pm').value);
+            const pa = parseFloat(document.getElementById('cart-pa').value);
+
+            if(!nome || isNaN(qtd) || isNaN(pm) || isNaN(pa)) {
+                alert("Por favor, preencha todos os campos do ativo corretamente.");
+                return;
+            }
+
+            db.carteiraAtivos.push({ nome, qtd, pm, pa });
+            atualizarTabelaCarteira();
+            scheduleSave();
+
+            document.getElementById('cart-ativo').value = '';
+            document.getElementById('cart-qtd').value = '';
+            document.getElementById('cart-pm').value = '';
+            document.getElementById('cart-pa').value = '';
+        }
+
+        function removerAtivoCarteira(index) {
+            db.carteiraAtivos.splice(index, 1);
+            atualizarTabelaCarteira();
+            scheduleSave();
+        }
+
+        function atualizarTabelaCarteira() {
+            const tbody = document.getElementById('carteira-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            let totalInvestido = 0;
+            let totalAtual = 0;
+
+            db.carteiraAtivos.forEach((ativo, index) => {
+                const tInv = ativo.qtd * ativo.pm;
+                const tAtl = ativo.qtd * ativo.pa;
+                const lucro = tAtl - tInv;
+                const rentabilidade = tInv > 0 ? ((tAtl / tInv) - 1) * 100 : 0;
+
+                totalInvestido += tInv;
+                totalAtual += tAtl;
+
+                const corLucro = lucro >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
+                const sinalLP = lucro > 0 ? '+' : '';
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 5px; color: var(--text-main); font-weight: bold;">${ativo.nome}</td>
+                        <td style="padding: 10px 5px;">${ativo.qtd}</td>
+                        <td style="padding: 10px 5px;">R$ ${ativo.pm.toFixed(2)}</td>
+                        <td style="padding: 10px 5px;">
+                            <input type="number" step="0.01" class="custom-input" style="width: 80px; color: var(--color-blue); font-weight: bold;" value="${ativo.pa}" onchange="atualizarPrecoAtivo(${index}, this.value)">
+                        </td>
+                        <td style="padding: 10px 5px;">R$ ${tInv.toFixed(2)}</td>
+                        <td style="padding: 10px 5px; font-weight: bold;">R$ ${tAtl.toFixed(2)}</td>
+                        <td style="padding: 10px 5px; color: ${corLucro};">
+                            ${sinalLP}R$ ${lucro.toFixed(2)} (${sinalLP}${rentabilidade.toFixed(2)}%)
+                        </td>
+                        <td style="padding: 10px 5px; text-align: right;">
+                            <button class="btn-remove" onclick="removerAtivoCarteira(${index})">✕</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('cart-tot-inv').innerText = `R$ ${totalInvestido.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('cart-tot-atl').innerText = `R$ ${totalAtual.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            const rentTotal = totalInvestido > 0 ? ((totalAtual / totalInvestido) - 1) * 100 : 0;
+            const rentSpan = document.getElementById('cart-tot-rent');
+
+            rentSpan.innerText = `${rentTotal >= 0 ? '+' : ''}${rentTotal.toFixed(2)}%`;
+            rentSpan.style.color = rentTotal >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
+        }
+
+        function atualizarPrecoAtivo(index, valor) {
+            db.carteiraAtivos[index].pa = parseFloat(valor) || 0;
+            atualizarTabelaCarteira();
+            scheduleSave();
         }
 
         // ======= PLANILHAS DE FIIs =======
@@ -565,14 +713,14 @@
                 
                 return `
                 <tr>
-                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${fii.ticker}" oninput="updateFII(${i}, 'ticker', this.value)" placeholder="XPML11"></td>
-                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${fii.classe || ''}" oninput="updateFII(${i}, 'classe', this.value)" placeholder="Shoppings"></td>
-                    <td><input type="number" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.qtd || ''}" oninput="updateFII(${i}, 'qtd', this.value)" placeholder="0"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.pm || ''}" oninput="updateFII(${i}, 'pm', this.value)" placeholder="0.00"></td>
+                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${fii.ticker}" onchange="updateFII(${i}, 'ticker', this.value)" placeholder="XPML11"></td>
+                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${fii.classe || ''}" onchange="updateFII(${i}, 'classe', this.value)" placeholder="Shoppings"></td>
+                    <td><input type="number" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.qtd || ''}" onchange="updateFII(${i}, 'qtd', this.value)" placeholder="0"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.pm || ''}" onchange="updateFII(${i}, 'pm', this.value)" placeholder="0.00"></td>
                     <td id="fii-investido-${i}" style="padding: 12px 5px; color: var(--text-main); font-weight: 600;">${investido.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
                     <td id="fii-perc-${i}" style="padding: 12px 5px; color: var(--text-main); font-weight: 600;">0,0%</td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.dy12 || ''}" oninput="updateFII(${i}, 'dy12', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--text-main);" value="${fii.dy1 || ''}" oninput="updateFII(${i}, 'dy1', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue); font-weight: 600;" value="${fii.dy12 || ''}" onchange="updateFII(${i}, 'dy12', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--text-main);" value="${fii.dy1 || ''}" onchange="updateFII(${i}, 'dy1', this.value)" placeholder="0.00"></td>
                     <td id="fii-renda-${i}" style="padding: 12px 5px; color: var(--color-gain); font-weight: 600;">${renda.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-move" onclick="moveFII(${i}, -1)">↑</button>
@@ -623,7 +771,7 @@
             document.getElementById('fii-kpi-dy').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
         }
 
-        // ======= PLANILHAS DE AÇÕES (NOVO COM SEM CÁLCULOS) =======
+        // ======= PLANILHAS DE AÇÕES =======
         function addAcao() {
             db.acoes.push({ ticker: '', setor: '', pl: '', roe: '', divEbitda: '', cagr: '', roic: '', pvp: '' });
             renderAcoesTable();
@@ -654,14 +802,14 @@
             const html = db.acoes.map((acao, i) => {
                 return `
                 <tr>
-                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${acao.ticker || ''}" oninput="updateAcao(${i}, 'ticker', this.value)" placeholder="VALE3"></td>
-                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${acao.setor || ''}" oninput="updateAcao(${i}, 'setor', this.value)" placeholder="Mineração"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pl || ''}" oninput="updateAcao(${i}, 'pl', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roe || ''}" oninput="updateAcao(${i}, 'roe', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.divEbitda || ''}" oninput="updateAcao(${i}, 'divEbitda', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.cagr || ''}" oninput="updateAcao(${i}, 'cagr', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roic || ''}" oninput="updateAcao(${i}, 'roic', this.value)" placeholder="0.00"></td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pvp || ''}" oninput="updateAcao(${i}, 'pvp', this.value)" placeholder="0.00"></td>
+                    <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${acao.ticker || ''}" onchange="updateAcao(${i}, 'ticker', this.value)" placeholder="VALE3"></td>
+                    <td><input type="text" class="custom-input" style="font-style: italic; color: #bbbbbb;" value="${acao.setor || ''}" onchange="updateAcao(${i}, 'setor', this.value)" placeholder="Mineração"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pl || ''}" onchange="updateAcao(${i}, 'pl', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roe || ''}" onchange="updateAcao(${i}, 'roe', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.divEbitda || ''}" onchange="updateAcao(${i}, 'divEbitda', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.cagr || ''}" onchange="updateAcao(${i}, 'cagr', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.roic || ''}" onchange="updateAcao(${i}, 'roic', this.value)" placeholder="0.00"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${acao.pvp || ''}" onchange="updateAcao(${i}, 'pvp', this.value)" placeholder="0.00"></td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-move" onclick="moveAcao(${i}, -1)">↑</button>
                         <button class="btn-move" onclick="moveAcao(${i}, 1)">↓</button>
@@ -725,9 +873,9 @@
             
             const createRows = (type, items) => items.map((item, i) => `
                 <tr>
-                    <td><input type="text" class="custom-input" value="${item.d}" oninput="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td>
-                    <td><input type="number" class="custom-input" value="${item.v}" oninput="updateVal('${type}', ${i}, 'v', this.value)" placeholder="0.00"></td>
-                    ${type === 'fix' ? `<td><input type="number" class="custom-input" value="${item.vr}" oninput="updateVal('${type}', ${i}, 'vr', this.value)" placeholder="0.00"></td>` : ''}
+                    <td><input type="text" class="custom-input" value="${item.d}" onchange="updateVal('${type}', ${i}, 'd', this.value)" placeholder="${placeholders[type]}"></td>
+                    <td><input type="number" class="custom-input" value="${item.v}" onchange="updateVal('${type}', ${i}, 'v', this.value)" placeholder="0.00"></td>
+                    ${type === 'fix' ? `<td><input type="number" class="custom-input" value="${item.vr}" onchange="updateVal('${type}', ${i}, 'vr', this.value)" placeholder="0.00"></td>` : ''}
                     <td style="text-align: right;"><button class="btn-remove" onclick="removeRow('${type}', ${i})">✕</button></td>
                 </tr>
             `).join('');
