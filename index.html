@@ -286,28 +286,33 @@
         <div id="invest-carteira-view" class="invest-scroll-area">
             <div class="fii-card" style="border-top-color: var(--color-gain);">
                 <div class="entry-title" style="color: var(--color-gain); font-size: 1.4rem; margin-bottom: 25px;">
-                    💰 Resumo da Carteira
+                    💰 Resumo e Rebalanceamento da Carteira
                 </div>
                 
                 <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
                     <input type="text" id="cart-ativo" class="custom-input" placeholder="Ativo (Ex: VGHF11)" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <input type="number" id="cart-nota" class="custom-input" placeholder="Nota (Ex: 10)" style="width: 110px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
                     <input type="number" id="cart-qtd" class="custom-input" placeholder="Qtd" style="width: 100px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
                     <input type="number" id="cart-pm" class="custom-input" placeholder="P. Médio (R$)" step="0.01" style="width: 130px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
-                    <input type="number" id="cart-pa" class="custom-input" placeholder="P. Atual (R$)" step="0.01" style="width: 130px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <input type="number" id="cart-pa" class="custom-input" placeholder="Cotação (R$)" step="0.01" style="width: 130px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 4px;">
                     <button onclick="adicionarAtivoCarteira()" class="btn-add" style="border-color: var(--color-gain); color: var(--color-gain);">+ Adicionar</button>
                 </div>
 
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 900px;">
+                    <table style="min-width: 1200px;">
                         <thead>
                             <tr>
-                                <th style="width: 15%;">Ativo</th>
-                                <th style="width: 10%;">Qtd</th>
-                                <th style="width: 15%;">P. Médio</th>
-                                <th style="width: 15%;">P. Atual</th>
-                                <th style="width: 15%;">Total Investido</th>
-                                <th style="width: 15%;">Saldo Atual</th>
-                                <th style="width: 15%;">Lucro/Prej.</th>
+                                <th style="width: 10%;">Ativo</th>
+                                <th style="width: 5%;">Nota</th>
+                                <th style="width: 5%;">Qtd</th>
+                                <th style="width: 10%;">P. Médio</th>
+                                <th style="width: 10%;">Cotação</th>
+                                <th style="width: 10%;">T. Investido</th>
+                                <th style="width: 10%;">Saldo Atual</th>
+                                <th style="width: 10%;">Lucro / Rent.</th>
+                                <th style="width: 8%;">% Ideal</th>
+                                <th style="width: 8%;">% Atual</th>
+                                <th style="width: 10%;">Status</th>
                                 <th style="width: 40px;"></th>
                             </tr>
                         </thead>
@@ -582,23 +587,25 @@
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= RESUMO DA CARTEIRA =======
+        // ======= LÓGICA: RESUMO DA CARTEIRA =======
         function adicionarAtivoCarteira() {
             const nome = document.getElementById('cart-ativo').value.toUpperCase();
+            const nota = parseFloat(document.getElementById('cart-nota').value) || 1;
             const qtd = parseFloat(document.getElementById('cart-qtd').value);
             const pm = parseFloat(document.getElementById('cart-pm').value);
             const pa = parseFloat(document.getElementById('cart-pa').value);
 
             if(!nome || isNaN(qtd) || isNaN(pm) || isNaN(pa)) {
-                alert("Por favor, preencha todos os campos do ativo corretamente.");
+                alert("Por favor, preencha todos os campos corretamente.");
                 return;
             }
 
-            db.carteiraAtivos.push({ nome, qtd, pm, pa });
+            db.carteiraAtivos.push({ nome, nota, qtd, pm, pa });
             atualizarTabelaCarteira();
             scheduleSave();
 
             document.getElementById('cart-ativo').value = '';
+            document.getElementById('cart-nota').value = '';
             document.getElementById('cart-qtd').value = '';
             document.getElementById('cart-pm').value = '';
             document.getElementById('cart-pa').value = '';
@@ -610,6 +617,12 @@
             scheduleSave();
         }
 
+        function atualizarCampoCarteira(index, campo, valor) {
+            db.carteiraAtivos[index][campo] = parseFloat(valor) || 0;
+            atualizarTabelaCarteira();
+            scheduleSave();
+        }
+
         function atualizarTabelaCarteira() {
             const tbody = document.getElementById('carteira-body');
             if(!tbody) return;
@@ -617,15 +630,29 @@
 
             let totalInvestido = 0;
             let totalAtual = 0;
+            let somaNotas = 0;
 
+            // Primeira passada: Somar valores globais e notas
+            db.carteiraAtivos.forEach((ativo) => {
+                totalAtual += (ativo.qtd || 0) * (ativo.pa || 0);
+                totalInvestido += (ativo.qtd || 0) * (ativo.pm || 0);
+                somaNotas += (ativo.nota || 0);
+            });
+
+            // Segunda passada: Calcular as métricas individuais e gerar HTML
             db.carteiraAtivos.forEach((ativo, index) => {
-                const tInv = ativo.qtd * ativo.pm;
-                const tAtl = ativo.qtd * ativo.pa;
+                const tInv = (ativo.qtd || 0) * (ativo.pm || 0);
+                const tAtl = (ativo.qtd || 0) * (ativo.pa || 0);
                 const lucro = tAtl - tInv;
                 const rentabilidade = tInv > 0 ? ((tAtl / tInv) - 1) * 100 : 0;
-
-                totalInvestido += tInv;
-                totalAtual += tAtl;
+                
+                // Lógica de Rebalanceamento
+                const percIdeal = somaNotas > 0 ? ((ativo.nota || 0) / somaNotas) * 100 : 0;
+                const percAtual = totalAtual > 0 ? (tAtl / totalAtual) * 100 : 0;
+                const comprar = percAtual < percIdeal;
+                const statusHtml = comprar 
+                    ? `<span style="color: var(--color-highlight); font-weight: bold;">Comprar 🟢</span>` 
+                    : `<span style="color: var(--text-muted); font-weight: bold;">Aguardar 🟡</span>`;
 
                 const corLucro = lucro >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
                 const sinalLP = lucro > 0 ? '+' : '';
@@ -633,16 +660,26 @@
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid var(--border-color);">
                         <td style="padding: 10px 5px; color: var(--text-main); font-weight: bold;">${ativo.nome}</td>
-                        <td style="padding: 10px 5px;">${ativo.qtd}</td>
-                        <td style="padding: 10px 5px;">R$ ${ativo.pm.toFixed(2)}</td>
                         <td style="padding: 10px 5px;">
-                            <input type="number" step="0.01" class="custom-input" style="width: 80px; color: var(--color-blue); font-weight: bold;" value="${ativo.pa}" onchange="atualizarPrecoAtivo(${index}, this.value)">
+                            <input type="number" step="0.1" class="custom-input" style="width: 60px; color: var(--text-main); font-weight: bold;" value="${ativo.nota || 1}" onchange="atualizarCampoCarteira(${index}, 'nota', this.value)">
+                        </td>
+                        <td style="padding: 10px 5px;">
+                            <input type="number" step="0.01" class="custom-input" style="width: 80px; color: var(--text-main);" value="${ativo.qtd}" onchange="atualizarCampoCarteira(${index}, 'qtd', this.value)">
+                        </td>
+                        <td style="padding: 10px 5px;">
+                            <input type="number" step="0.01" class="custom-input" style="width: 80px; color: var(--text-main);" value="${ativo.pm}" onchange="atualizarCampoCarteira(${index}, 'pm', this.value)">
+                        </td>
+                        <td style="padding: 10px 5px;">
+                            <input type="number" step="0.01" class="custom-input" style="width: 80px; color: var(--color-blue); font-weight: bold;" value="${ativo.pa}" onchange="atualizarCampoCarteira(${index}, 'pa', this.value)">
                         </td>
                         <td style="padding: 10px 5px;">R$ ${tInv.toFixed(2)}</td>
                         <td style="padding: 10px 5px; font-weight: bold;">R$ ${tAtl.toFixed(2)}</td>
                         <td style="padding: 10px 5px; color: ${corLucro};">
                             ${sinalLP}R$ ${lucro.toFixed(2)} (${sinalLP}${rentabilidade.toFixed(2)}%)
                         </td>
+                        <td style="padding: 10px 5px; color: var(--color-highlight); font-weight: bold;">${percIdeal.toFixed(2)}%</td>
+                        <td style="padding: 10px 5px; font-weight: bold;">${percAtual.toFixed(2)}%</td>
+                        <td style="padding: 10px 5px;">${statusHtml}</td>
                         <td style="padding: 10px 5px; text-align: right;">
                             <button class="btn-remove" onclick="removerAtivoCarteira(${index})">✕</button>
                         </td>
@@ -660,13 +697,7 @@
             rentSpan.style.color = rentTotal >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
         }
 
-        function atualizarPrecoAtivo(index, valor) {
-            db.carteiraAtivos[index].pa = parseFloat(valor) || 0;
-            atualizarTabelaCarteira();
-            scheduleSave();
-        }
-
-        // ======= PLANILHAS DE FIIs =======
+        // ======= LÓGICA: PLANILHA DE FIIs =======
         function addFII() {
             db.fiis.push({ ticker: '', classe: '', qtd: 0, pm: 0, dy12: 0, dy1: 0 });
             renderFIITable();
@@ -771,7 +802,7 @@
             document.getElementById('fii-kpi-dy').innerText = dy12Medio.toFixed(2).replace('.', ',') + '%';
         }
 
-        // ======= PLANILHAS DE AÇÕES =======
+        // ======= LÓGICA: PLANILHA DE AÇÕES =======
         function addAcao() {
             db.acoes.push({ ticker: '', setor: '', pl: '', roe: '', divEbitda: '', cagr: '', roic: '', pvp: '' });
             renderAcoesTable();
