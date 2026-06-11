@@ -256,7 +256,7 @@
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
-                    <h3>Minha Carteira (Broker)</h3>
+                    <h3>Minha Carteira</h3>
                 </div>
             </a>
             
@@ -383,7 +383,7 @@
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
                     📊 Avaliação e Preço Teto de FIIs
                 </div>
-                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">* FIIs de Tijolo geralmente não necessitam do IPCA na soma, enquanto os de Papel sim.</p>
+                <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; text-align: center; margin-bottom: 20px;">FIIs de Tijolo IPCA = 0 <br> FIIs de Papel IPCA = 5</p>
                 
                 <div style="overflow-x: auto;">
                     <table style="min-width: 1300px;">
@@ -571,52 +571,56 @@
 
         async function loadData() {
             try {
-                const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
-                if (data && data.dados) { 
-                    db = data.dados;
-                    if(!db.fiis) db.fiis = [];
-                    if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
-                    if(!db.acoes) db.acoes = [];
+                let localStr = localStorage.getItem('meuAppFinanceiro');
+                if(localStr) { 
+                    db = JSON.parse(localStr); 
                 } else { 
-                    db.years[selectedYear] = createYearStructure(); 
-                    db.fiis = []; db.fiisAvaliacao = []; db.acoes = [];
+                    const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
+                    if (data && data.dados) { 
+                        db = data.dados;
+                    }
                 }
-                
-                // Initialize Patrimônio Data based on CSV if empty
-                if (!db.meuPatrimonio) {
-                    db.meuPatrimonio = {
-                        atual: 8044.13, aporte: 280,
-                        categorias: [
-                            { nome: 'Ações', percIdeal: 20, percAtual: 28, ativos: ['KLBN3', 'ITSA3', 'BBSE3', 'EGIE3'] },
-                            { nome: 'Exterior', percIdeal: 20, percAtual: 16, ativos: ['Nubank', 'Inter & Co', 'Google', 'Apple'] },
-                            { nome: 'ETFs', percIdeal: 5, percAtual: 0, ativos: ['IVV', 'TFLO'] },
-                            { nome: 'FIIs', percIdeal: 25, percAtual: 0, ativos: ['BTCI11', 'VGHF11', 'XPCA11', 'GARE11'] },
-                            { nome: 'Renda Fixa', percIdeal: 25, percAtual: 0, ativos: ['PORQUINHO'] },
-                            { nome: 'Criptomoedas', percIdeal: 5, percAtual: 0, ativos: ['BITCOIN', 'ETHEREUM'] }
-                        ]
-                    };
-                }
-                // Initialize Setores Data based on CSV if empty
-                if (!db.setores) {
-                    db.setores = {
-                        acoes: [{ nome: 'BANCOS', ativos: ['ITSA3', 'BBAS3'] }, { nome: 'ENERGIA ELÉTRICA', ativos: ['EGIE3'] }],
-                        fiis: [{ nome: 'SHOPPINGS', ativos: ['XPML11'] }, { nome: 'GALPÃO LOGÍSTICO', ativos: ['GARE11', 'HGLG11'] }],
-                        exterior: [{ nome: 'TECNOLOGIA', ativos: ['Google', 'Apple', 'Meta'] }]
-                    };
-                }
-
-                document.getElementById('sync-status').innerText = "Online";
-                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
             } catch (e) { 
-                document.getElementById('sync-status').innerText = "Offline (Local)";
-                if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = [];
-                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable();
+                console.log(e); 
             }
+
+            if(!db.years) db.years = {};
+            if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+            
+            if(!db.fiis) db.fiis = [];
+            if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
+            if(!db.acoes) db.acoes = [];
+            
+            // Initialize Patrimônio Data based on CSV if empty
+            if (!db.meuPatrimonio) {
+                db.meuPatrimonio = {
+                    atual: 8044.13, aporte: 280,
+                    categorias: [
+                        { nome: 'Ações', percIdeal: 20, percAtual: 28, ativos: ['KLBN3', 'ITSA3', 'BBSE3', 'EGIE3'] },
+                        { nome: 'Exterior', percIdeal: 20, percAtual: 16, ativos: ['Nubank', 'Inter & Co', 'Google', 'Apple'] },
+                        { nome: 'ETFs', percIdeal: 5, percAtual: 0, ativos: ['IVV', 'TFLO'] },
+                        { nome: 'FIIs', percIdeal: 25, percAtual: 0, ativos: ['BTCI11', 'VGHF11', 'XPCA11', 'GARE11'] },
+                        { nome: 'Renda Fixa', percIdeal: 25, percAtual: 0, ativos: ['PORQUINHO'] },
+                        { nome: 'Criptomoedas', percIdeal: 5, percAtual: 0, ativos: ['BITCOIN', 'ETHEREUM'] }
+                    ]
+                };
+            }
+            // Initialize Setores Data based on CSV if empty
+            if (!db.setores) {
+                db.setores = {
+                    acoes: [{ nome: 'BANCOS', ativos: ['ITSA3', 'BBAS3'] }, { nome: 'ENERGIA ELÉTRICA', ativos: ['EGIE3'] }],
+                    fiis: [{ nome: 'SHOPPINGS', ativos: ['XPML11'] }, { nome: 'GALPÃO LOGÍSTICO', ativos: ['GARE11', 'HGLG11'] }],
+                    exterior: [{ nome: 'TECNOLOGIA', ativos: ['Google', 'Apple', 'Meta'] }]
+                };
+            }
+
+            document.getElementById('sync-status').innerText = "Online/Local";
+            renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
         }
 
         function scheduleSave() {
             document.getElementById('sync-status').innerText = "Salvando...";
+            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); // Salva instantaneamente no PC (Evita perda de dados)
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(saveDataNow, 1000);
         }
@@ -624,15 +628,23 @@
         async function saveDataNow() {
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
-                if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
-            } catch (e) { document.getElementById('sync-status').innerText = "Erro ao salvar"; }
+                if (!error) document.getElementById('sync-status').innerText = "Sincronizado na Nuvem";
+                else document.getElementById('sync-status').innerText = "Salvo Localmente";
+            } catch (e) { 
+                document.getElementById('sync-status').innerText = "Salvo Localmente"; 
+            }
         }
+
+        // Proteção extra ao fechar a janela
+        window.addEventListener('beforeunload', () => { 
+            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); 
+        });
 
         function createYearStructure() {
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= LÓGICA: MEU PATRIMÔNIO (REBALANCEAMENTO) =======
+        // ======= LÓGICA: MEU PATRIMÔNIO (REBALANCEAMENTO CORRIGIDO) =======
         function updatePatrimonioGeral(field, value) {
             db.meuPatrimonio[field] = parseFloat(value) || 0;
             scheduleSave();
