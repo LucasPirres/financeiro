@@ -249,15 +249,7 @@
     <div id="invest-container">
         <header style="justify-content: center;">
             <button class="btn-back-home header-left" id="btn-voltar-invest" onclick="goBackInvest()">⬅ Voltar ao Menu</button>
-            
-        <div style="display:flex; justify-content:space-between; width:100%; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:10px; margin-bottom: 15px;">
             <div id="invest-header-title" style="font-weight: 700; color: var(--text-main); font-size: 20px; letter-spacing: 2px; text-transform: uppercase;">Investimentos</div>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <input type="text" id="brapi-token" class="custom-input" placeholder="Token Brapi.dev (Opcional)" style="width: 200px; font-size:12px; background:#111;" onchange="saveBrapiToken(this.value)">
-                <button class="btn-add" style="border-color: var(--color-blue); color: var(--color-blue); padding: 5px 10px; font-size: 11px;" onclick="atualizarCotacoes()">🔄 Atualizar Cotações</button>
-            </div>
-        </div>
-
         </header>
 
         <div id="invest-menu-view" class="invest-menu-screen">
@@ -387,25 +379,56 @@
                 <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFII()">+ Adicionar Novo Fundo</button>
             </div>
 
+            
+            <div class="fii-card">
+                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
+                    📊 Configuração de Taxas para Avaliação
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">Taxa Livre de Risco (%)</label>
+                        <input type="number" step="0.1" id="val-taxa-livre" class="custom-input" style="width: 100px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('taxaLivreRisco', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🏆 Prêmio (+%)</label>
+                        <input type="number" step="0.1" id="val-premio" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('premio', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚠️ Risco (+%)</label>
+                        <input type="number" step="0.1" id="val-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('risco', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚖️ Moderado (+%)</label>
+                        <input type="number" step="0.1" id="val-moderado" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('moderado', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🛡️ Sem Risco (+%)</label>
+                        <input type="number" step="0.1" id="val-sem-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('semRisco', this.value)">
+                    </div>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                    * Indicativo padrão: Prêmio 3% | Risco 2% | Moderado 1% | Sem risco 0%
+                </p>
+            </div>
+
             <div class="fii-card">
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
                     📊 Avaliação e Preço Teto de FIIs
                 </div>
-                <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; text-align: center; margin-bottom: 20px;">FIIs de Tijolo IPCA = 0 <br> FIIs de Papel IPCA = 5</p>
+                
                 
                 <div style="overflow-x: auto;">
                     <table style="min-width: 1300px;">
                         <thead>
                             <tr>
                                 <th style="width: 10%;">Ticker</th>
-                                <th style="width: 8%;">IPCA (%)</th>
-                                <th style="width: 8%;">IPCA+ (%)</th>
-                                <th style="width: 8%;">Prêmio (%)</th>
-                                <th style="width: 10%;">Taxa Exigida</th>
-                                <th style="width: 10%;">Div. 12M (R$)</th>
+                                <th style="width: 15%;">Segmento</th>
+                                <th style="width: 15%;">Classificação</th>
+                                <th style="width: 10%;">DY Médio (12m)</th>
+                                <th style="width: 10%;">Cotação Atual</th>
+                                <th style="width: 10%;">Taxa Desconto</th>
                                 <th style="width: 10%;">Preço Teto</th>
-                                <th style="width: 10%;">Cotação (R$)</th>
-                                <th style="width: 10%;">Margem Seg.</th>
+                                <th style="width: 10%;">Margem Segurança</th>
                                 <th style="width: 10%;">Status</th>
                                 <th style="width: 90px; text-align: right;">Ações</th>
                             </tr>
@@ -560,66 +583,7 @@
             }
         }
 
-        
-        // ======= COTAÇÕES AUTOMÁTICAS E ALERTAS =======
-        function saveBrapiToken(token) {
-            db.brapiToken = token;
-            scheduleSave();
-            alert("Token salvo com sucesso!");
-        }
-
-        async function atualizarCotacoes() {
-            if (!db.brapiToken) {
-                alert("Por favor, insira o seu token gratuito do brapi.dev no campo no topo da tela para atualizar as cotações automaticamente.");
-                return;
-            }
-            
-            const btn = document.querySelector('button[onclick="atualizarCotacoes()"]');
-            btn.innerText = "Atualizando...";
-            
-            let tickersFIIs = db.fiisAvaliacao.map(f => f.ticker).filter(t => t.trim() !== '');
-            let tickersAcoes = db.acoes.map(a => a.ticker).filter(t => t.trim() !== '');
-            let allTickers = [...new Set([...tickersFIIs, ...tickersAcoes])];
-            
-            if (allTickers.length === 0) {
-                btn.innerText = "🔄 Atualizar Cotações";
-                return;
-            }
-
-            try {
-                // Junta tudo com virgula para otimizar chamada
-                let tickersStr = allTickers.join(',');
-                let url = `https://brapi.dev/api/quote/${tickersStr}?token=${db.brapiToken}`;
-                
-                let res = await fetch(url);
-                let data = await res.json();
-                
-                if (data.results) {
-                    let quotes = {};
-                    data.results.forEach(r => {
-                        quotes[r.symbol] = r.regularMarketPrice;
-                    });
-                    
-                    // Atualiza FIIs Avaliação
-                    db.fiisAvaliacao.forEach((fii, i) => {
-                        if (quotes[fii.ticker] !== undefined) {
-                            fii.cotacao = quotes[fii.ticker];
-                        }
-                    });
-                    
-                    renderFIIAvaliacaoTable();
-                    scheduleSave();
-                    alert("Cotações atualizadas com sucesso!");
-                }
-            } catch (err) {
-                alert("Erro ao buscar cotações. Verifique seu token e conexão.");
-                console.error(err);
-            }
-            
-            btn.innerText = "🔄 Atualizar Cotações";
-        }
-
-// ======= BANCO DE DADOS E INFRA =======
+        // ======= BANCO DE DADOS E INFRA =======
         const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1199,6 +1163,123 @@
 
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
         window.onload = loadData;
-    </script>
+    
+        // ======= VALUATION CONFIGURATION =======
+        function initValuationConfig() {
+            if (!db.configValuation) {
+                db.configValuation = {
+                    taxaLivreRisco: 6.0,
+                    premio: 3.0,
+                    risco: 2.0,
+                    moderado: 1.0,
+                    semRisco: 0.0
+                };
+            }
+            document.getElementById('val-taxa-livre').value = db.configValuation.taxaLivreRisco;
+            document.getElementById('val-premio').value = db.configValuation.premio;
+            document.getElementById('val-risco').value = db.configValuation.risco;
+            document.getElementById('val-moderado').value = db.configValuation.moderado;
+            document.getElementById('val-sem-risco').value = db.configValuation.semRisco;
+        }
+
+        function atualizarTaxasConfig(field, value) {
+            db.configValuation[field] = parseFloat(value) || 0;
+            scheduleSave();
+            renderFIIAvaliacaoTable(); // Re-render to calculate new margins
+        }
+
+        // Sobrescrevendo funcões antigas de FII Avaliação
+        function renderFIIAvaliacaoTable() {
+            const tbody = document.getElementById('tbody-fiis-avaliacao');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            const config = db.configValuation || {
+                taxaLivreRisco: 6.0, premio: 3.0, risco: 2.0, moderado: 1.0, semRisco: 0.0
+            };
+
+            db.fiisAvaliacao.forEach((fii, i) => {
+                let adicional = 0;
+                if (fii.classificacao === 'Prêmio') adicional = config.premio;
+                else if (fii.classificacao === 'Risco') adicional = config.risco;
+                else if (fii.classificacao === 'Moderado') adicional = config.moderado;
+                else if (fii.classificacao === 'Sem Risco') adicional = config.semRisco;
+
+                let taxaDesconto = config.taxaLivreRisco + adicional;
+                
+                let precoTeto = 0;
+                if (taxaDesconto > 0 && fii.dyMedio > 0) {
+                    precoTeto = fii.dyMedio / (taxaDesconto / 100);
+                }
+
+                let margemSeguranca = 0;
+                if (precoTeto > 0 && fii.cotacao > 0) {
+                    margemSeguranca = ((precoTeto - fii.cotacao) / precoTeto) * 100;
+                }
+
+                let statusHtml = (precoTeto > 0 && fii.cotacao <= precoTeto) 
+                    ? `<span style="background: rgba(0, 230, 118, 0.2); color: var(--color-gain); padding: 4px 8px; border-radius: 4px; font-size: 11px;">🟢 COMPRAR</span>` 
+                    : `<span style="background: rgba(255, 82, 82, 0.2); color: var(--color-expense); padding: 4px 8px; border-radius: 4px; font-size: 11px;">🔴 AGUARDAR</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${fii.ticker}</td>
+                    <td>${fii.segmento || ''}</td>
+                    <td>
+                        <select onchange="updateFiiAvaliacao(${i}, 'classificacao', this.value)" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); outline:none; padding:4px;">
+                            <option value="Sem Risco" ${fii.classificacao === 'Sem Risco' ? 'selected' : ''}>Sem Risco</option>
+                            <option value="Moderado" ${fii.classificacao === 'Moderado' ? 'selected' : ''}>Moderado</option>
+                            <option value="Risco" ${fii.classificacao === 'Risco' ? 'selected' : ''}>Risco</option>
+                            <option value="Prêmio" ${fii.classificacao === 'Prêmio' ? 'selected' : ''}>Prêmio</option>
+                        </select>
+                    </td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${fii.dyMedio || 0}" onchange="updateFiiAvaliacao(${i}, 'dyMedio', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${fii.cotacao || 0}" onchange="updateFiiAvaliacao(${i}, 'cotacao', this.value)"></td>
+                    <td style="color:var(--color-highlight); font-weight:bold;">${taxaDesconto.toFixed(2).replace('.', ',')}%</td>
+                    <td style="color:var(--text-main);">R$ ${precoTeto.toFixed(2).replace('.', ',')}</td>
+                    <td style="color:${margemSeguranca >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'}">${margemSeguranca.toFixed(2).replace('.', ',')}%</td>
+                    <td>${statusHtml}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-remove" onclick="deleteFiiAvaliacao(${i})">✖</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addFIIAvaliacao() {
+            let ticker = prompt("Digite o Ticker do FII (ex: MXRF11):");
+            if (!ticker) return;
+            let segmento = prompt("Digite o Segmento (ex: Papel, Lajes Corporativas):");
+            let dyMedio = parseFloat(prompt("Digite o DY Médio (12m) em R$ (ex: 1.20):").replace(',', '.'));
+            let cotacao = parseFloat(prompt("Digite a Cotação Atual em R$ (ex: 10.50):").replace(',', '.'));
+            
+            db.fiisAvaliacao.push({
+                ticker: ticker.toUpperCase(),
+                segmento: segmento || '',
+                classificacao: 'Moderado', // Padrão
+                dyMedio: isNaN(dyMedio) ? 0 : dyMedio,
+                cotacao: isNaN(cotacao) ? 0 : cotacao
+            });
+            scheduleSave();
+            renderFIIAvaliacaoTable();
+        }
+
+        function updateFiiAvaliacao(index, field, value) {
+            if (field === 'dyMedio' || field === 'cotacao') value = parseFloat(value) || 0;
+            db.fiisAvaliacao[index][field] = value;
+            scheduleSave();
+            renderFIIAvaliacaoTable();
+        }
+
+        function deleteFiiAvaliacao(index) {
+            if (confirm("Remover este FII da avaliação?")) {
+                db.fiisAvaliacao.splice(index, 1);
+                scheduleSave();
+                renderFIIAvaliacaoTable();
+            }
+        }
+
+</script>
 </body>
 </html>
