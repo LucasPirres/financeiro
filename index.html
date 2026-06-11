@@ -615,10 +615,6 @@
             }
 
             document.getElementById('sync-status').innerText = "Online/Local";
-            if (!db.referencias) db.referencias = { ipca: 5.00, ipcaMais: 6.50 };
-            document.getElementById('global-ipca').value = db.referencias.ipca;
-            document.getElementById('global-ipca-mais').value = db.referencias.ipcaMais;
-
             renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
         }
 
@@ -902,30 +898,8 @@
         }
 
         // ======= LÓGICA: PLANILHA DE FIIs (AVALIAÇÃO E PREÇO TETO) =======
-                function atualizarGlobais() {
-            const ipcaGlobal = parseFloat(document.getElementById('global-ipca').value) || 0;
-            const ipcaMaisGlobal = parseFloat(document.getElementById('global-ipca-mais').value) || 0;
-            if(!db.referencias) db.referencias = {};
-            db.referencias.ipca = ipcaGlobal;
-            db.referencias.ipcaMais = ipcaMaisGlobal;
-
-            db.fiisAvaliacao.forEach(fii => {
-                fii.ipcaMais = ipcaMaisGlobal;
-                if (fii.tipo === 'Papel') {
-                    fii.ipca = ipcaGlobal;
-                } else if (fii.tipo === 'Tijolo') {
-                    fii.ipca = 0;
-                }
-            });
-
-            renderFIIAvaliacaoTable();
-            scheduleSave();
-        }
-
         function addFIIAvaliacao() {
-            const ipcaGlobal = parseFloat(document.getElementById('global-ipca').value) || 0;
-            const ipcaMaisGlobal = parseFloat(document.getElementById('global-ipca-mais').value) || 0;
-            db.fiisAvaliacao.push({ ticker: '', tipo: '', ipca: 0, ipcaMais: ipcaMaisGlobal, premio: 0, div12m: 0, cotacao: 0 });
+            db.fiisAvaliacao.push({ ticker: '', ipca: 0, ipcaMais: 7.00, premio: 0, div12m: 0, cotacao: 0 });
             renderFIIAvaliacaoTable();
             scheduleSave();
         }
@@ -946,16 +920,8 @@
         }
 
         function updateFIIAvaliacao(index, field, value) {
-            if (field === 'ticker' || field === 'tipo') {
+            if (field === 'ticker') {
                 db.fiisAvaliacao[index][field] = value;
-                if (field === 'tipo') {
-                    const ipcaGlobal = parseFloat(document.getElementById('global-ipca').value) || 0;
-                    if (value === 'Papel') {
-                        db.fiisAvaliacao[index].ipca = ipcaGlobal;
-                    } else if (value === 'Tijolo') {
-                        db.fiisAvaliacao[index].ipca = 0;
-                    }
-                }
             } else {
                 let val = parseFloat(value);
                 db.fiisAvaliacao[index][field] = isNaN(val) ? 0 : val;
@@ -985,25 +951,13 @@
                     if(margem >= 0) {
                         statusHtml = `<span style="color: var(--color-gain); font-weight: bold;">Comprar 🟢</span>`;
                     } else {
-                        statusHtml = `<span style="color: var(--color-expense); font-weight: bold;">Não Comprar 🔴</span>`;
+                        statusHtml = `<span style="color: var(--color-expense); font-weight: bold;">Aguardar 🔴</span>`;
                     }
                 }
-
-                let tipoOptions = `
-                    <option value="" ${!fii.tipo ? 'selected' : ''}>-</option>
-                    <option value="Tijolo" ${fii.tipo === 'Tijolo' ? 'selected' : ''}>Tijolo</option>
-                    <option value="Papel" ${fii.tipo === 'Papel' ? 'selected' : ''}>Papel</option>
-                    <option value="Híbrido" ${fii.tipo === 'Híbrido' ? 'selected' : ''}>Híbrido</option>
-                `;
 
                 return `
                 <tr>
                     <td><input type="text" class="custom-input" style="font-weight: 700; color: var(--color-blue); text-transform: uppercase;" value="${fii.ticker || ''}" onchange="updateFIIAvaliacao(${i}, 'ticker', this.value)" placeholder="MXRF11"></td>
-                    <td>
-                        <select class="custom-input" style="color: var(--color-blue); background: #1a1a1a;" onchange="updateFIIAvaliacao(${i}, 'tipo', this.value)">
-                            ${tipoOptions}
-                        </select>
-                    </td>
                     <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${fii.ipca !== undefined ? fii.ipca : ''}" onchange="updateFIIAvaliacao(${i}, 'ipca', this.value)" placeholder="0.00"></td>
                     <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${fii.ipcaMais !== undefined ? fii.ipcaMais : '7.00'}" onchange="updateFIIAvaliacao(${i}, 'ipcaMais', this.value)" placeholder="7.00"></td>
                     <td><input type="number" step="0.01" class="custom-input" style="color: var(--color-blue);" value="${fii.premio !== undefined ? fii.premio : ''}" onchange="updateFIIAvaliacao(${i}, 'premio', this.value)" placeholder="0.00"></td>
