@@ -256,7 +256,7 @@
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
-                    <h3>Minha Carteira</h3>
+                    <h3>Minha Carteira (Broker)</h3>
                 </div>
             </a>
             
@@ -379,89 +379,37 @@
                 <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFII()">+ Adicionar Novo Fundo</button>
             </div>
 
-            
             <div class="fii-card">
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
-                    📊 Configuração de Taxas para Avaliação
+                    📊 Avaliação e Preço Teto de FIIs
                 </div>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                    <div>
-                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">Taxa Livre de Risco (%)</label>
-                        <input type="number" step="0.1" id="val-taxa-livre" class="custom-input" style="width: 100px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('taxaLivreRisco', this.value)">
-                    </div>
-                    <div>
-                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🏆 Prêmio (+%)</label>
-                        <input type="number" step="0.1" id="val-premio" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('premio', this.value)">
-                    </div>
-                    <div>
-                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚠️ Risco (+%)</label>
-                        <input type="number" step="0.1" id="val-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('risco', this.value)">
-                    </div>
-                    <div>
-                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚖️ Moderado (+%)</label>
-                        <input type="number" step="0.1" id="val-moderado" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('moderado', this.value)">
-                    </div>
-                    <div>
-                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🛡️ Sem Risco (+%)</label>
-                        <input type="number" step="0.1" id="val-sem-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('semRisco', this.value)">
-                    </div>
-                </div>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
-                    * Indicativo padrão: Prêmio 3% | Risco 2% | Moderado 1% | Sem risco 0%
-                </p>
-            </div>
-
-                        <!-- TABELA 1: TÍTULOS PÚBLICOS -->
-            <div class="fii-card" id="card-titulos">
-                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>📊 TABELA TÍTULOS PÚBLICOS</div>
-                    <button class="btn-add" onclick="addTitulo()" style="font-size: 14px; padding: 6px 12px;">+ Adicionar Título</button>
-                </div>
-                <div class="table-responsive" style="overflow-x: auto;">
-                    <table class="fii-table" style="min-width: 800px; width: 100%; border-collapse: collapse;">
+                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">* FIIs de Tijolo geralmente não necessitam do IPCA na soma, enquanto os de Papel sim.</p>
+                
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 1300px;">
                         <thead>
                             <tr>
-                                <th>TÍTULO</th>
-                                <th>IPCA (%)</th>
-                                <th>IPCA+ (%)</th>
-                                <th>BRUTO</th>
-                                <th>LÍQUIDO</th>
-                                <th>EQUIVALENTE A IPCA+</th>
-                                <th style="width: 50px; text-align: center;">Ações</th>
+                                <th style="width: 10%;">Ticker</th>
+                                <th style="width: 8%;">IPCA (%)</th>
+                                <th style="width: 8%;">IPCA+ (%)</th>
+                                <th style="width: 8%;">Prêmio (%)</th>
+                                <th style="width: 10%;">Taxa Exigida</th>
+                                <th style="width: 10%;">Div. 12M (R$)</th>
+                                <th style="width: 10%;">Preço Teto</th>
+                                <th style="width: 10%;">Cotação (R$)</th>
+                                <th style="width: 10%;">Margem Seg.</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 90px; text-align: right;">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-titulos"></tbody>
+                        <tbody id="tbody-fiis-avaliacao">
+                        </tbody>
                     </table>
                 </div>
+                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFIIAvaliacao()">+ Adicionar Fundo para Avaliação</button>
             </div>
 
-            <!-- TABELA 2: AVALIAÇÃO FIIs -->
-            <div class="fii-card" id="card-fiis-teto">
-                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>🏢 AVALIAÇÃO FIIs</div>
-                    <button class="btn-add" onclick="addFIICalc()" style="font-size: 14px; padding: 6px 12px;">+ Adicionar FII</button>
-                </div>
-                <div class="table-responsive" style="overflow-x: auto;">
-                    <table class="fii-table" style="min-width: 1000px; width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th>FII</th>
-                                <th>P/VP</th>
-                                <th>PREÇO</th>
-                                <th>DIVIDENDO 12M</th>
-                                <th>IPCA</th>
-                                <th>IPCA+</th>
-                                <th>PRÊMIO</th>
-                                <th>Rendimento</th>
-                                <th>PREÇO TETO</th>
-                                <th>M.SEG</th>
-                                <th style="width: 50px; text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-fiis-calc"></tbody>
-                    </table>
-                </div>
-            </div>
+        </div>
 
         <div id="invest-acoes-view" class="invest-scroll-area">
             
@@ -623,56 +571,52 @@
 
         async function loadData() {
             try {
-                let localStr = localStorage.getItem('meuAppFinanceiro');
-                if(localStr) { 
-                    db = JSON.parse(localStr); 
+                const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
+                if (data && data.dados) { 
+                    db = data.dados;
+                    if(!db.fiis) db.fiis = [];
+                    if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
+                    if(!db.acoes) db.acoes = [];
                 } else { 
-                    const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
-                    if (data && data.dados) { 
-                        db = data.dados;
-                    }
+                    db.years[selectedYear] = createYearStructure(); 
+                    db.fiis = []; db.fiisAvaliacao = []; db.acoes = [];
                 }
+                
+                // Initialize Patrimônio Data based on CSV if empty
+                if (!db.meuPatrimonio) {
+                    db.meuPatrimonio = {
+                        atual: 8044.13, aporte: 280,
+                        categorias: [
+                            { nome: 'Ações', percIdeal: 20, percAtual: 28, ativos: ['KLBN3', 'ITSA3', 'BBSE3', 'EGIE3'] },
+                            { nome: 'Exterior', percIdeal: 20, percAtual: 16, ativos: ['Nubank', 'Inter & Co', 'Google', 'Apple'] },
+                            { nome: 'ETFs', percIdeal: 5, percAtual: 0, ativos: ['IVV', 'TFLO'] },
+                            { nome: 'FIIs', percIdeal: 25, percAtual: 0, ativos: ['BTCI11', 'VGHF11', 'XPCA11', 'GARE11'] },
+                            { nome: 'Renda Fixa', percIdeal: 25, percAtual: 0, ativos: ['PORQUINHO'] },
+                            { nome: 'Criptomoedas', percIdeal: 5, percAtual: 0, ativos: ['BITCOIN', 'ETHEREUM'] }
+                        ]
+                    };
+                }
+                // Initialize Setores Data based on CSV if empty
+                if (!db.setores) {
+                    db.setores = {
+                        acoes: [{ nome: 'BANCOS', ativos: ['ITSA3', 'BBAS3'] }, { nome: 'ENERGIA ELÉTRICA', ativos: ['EGIE3'] }],
+                        fiis: [{ nome: 'SHOPPINGS', ativos: ['XPML11'] }, { nome: 'GALPÃO LOGÍSTICO', ativos: ['GARE11', 'HGLG11'] }],
+                        exterior: [{ nome: 'TECNOLOGIA', ativos: ['Google', 'Apple', 'Meta'] }]
+                    };
+                }
+
+                document.getElementById('sync-status').innerText = "Online";
+                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
             } catch (e) { 
-                console.log(e); 
+                document.getElementById('sync-status').innerText = "Offline (Local)";
+                if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+                if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = [];
+                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable();
             }
-
-            if(!db.years) db.years = {};
-            if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-            
-            if(!db.fiis) db.fiis = [];
-            if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
-            if(!db.acoes) db.acoes = [];
-            
-            // Initialize Patrimônio Data based on CSV if empty
-            if (!db.meuPatrimonio) {
-                db.meuPatrimonio = {
-                    atual: 8044.13, aporte: 280,
-                    categorias: [
-                        { nome: 'Ações', percIdeal: 20, percAtual: 28, ativos: ['KLBN3', 'ITSA3', 'BBSE3', 'EGIE3'] },
-                        { nome: 'Exterior', percIdeal: 20, percAtual: 16, ativos: ['Nubank', 'Inter & Co', 'Google', 'Apple'] },
-                        { nome: 'ETFs', percIdeal: 5, percAtual: 0, ativos: ['IVV', 'TFLO'] },
-                        { nome: 'FIIs', percIdeal: 25, percAtual: 0, ativos: ['BTCI11', 'VGHF11', 'XPCA11', 'GARE11'] },
-                        { nome: 'Renda Fixa', percIdeal: 25, percAtual: 0, ativos: ['PORQUINHO'] },
-                        { nome: 'Criptomoedas', percIdeal: 5, percAtual: 0, ativos: ['BITCOIN', 'ETHEREUM'] }
-                    ]
-                };
-            }
-            // Initialize Setores Data based on CSV if empty
-            if (!db.setores) {
-                db.setores = {
-                    acoes: [{ nome: 'BANCOS', ativos: ['ITSA3', 'BBAS3'] }, { nome: 'ENERGIA ELÉTRICA', ativos: ['EGIE3'] }],
-                    fiis: [{ nome: 'SHOPPINGS', ativos: ['XPML11'] }, { nome: 'GALPÃO LOGÍSTICO', ativos: ['GARE11', 'HGLG11'] }],
-                    exterior: [{ nome: 'TECNOLOGIA', ativos: ['Google', 'Apple', 'Meta'] }]
-                };
-            }
-
-            document.getElementById('sync-status').innerText = "Online/Local";
-            renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
         }
 
         function scheduleSave() {
             document.getElementById('sync-status').innerText = "Salvando...";
-            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); // Salva instantaneamente no PC (Evita perda de dados)
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(saveDataNow, 1000);
         }
@@ -680,23 +624,15 @@
         async function saveDataNow() {
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
-                if (!error) document.getElementById('sync-status').innerText = "Sincronizado na Nuvem";
-                else document.getElementById('sync-status').innerText = "Salvo Localmente";
-            } catch (e) { 
-                document.getElementById('sync-status').innerText = "Salvo Localmente"; 
-            }
+                if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
+            } catch (e) { document.getElementById('sync-status').innerText = "Erro ao salvar"; }
         }
-
-        // Proteção extra ao fechar a janela
-        window.addEventListener('beforeunload', () => { 
-            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); 
-        });
 
         function createYearStructure() {
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
         }
 
-        // ======= LÓGICA: MEU PATRIMÔNIO (REBALANCEAMENTO CORRIGIDO) =======
+        // ======= LÓGICA: MEU PATRIMÔNIO (REBALANCEAMENTO) =======
         function updatePatrimonioGeral(field, value) {
             db.meuPatrimonio[field] = parseFloat(value) || 0;
             scheduleSave();
@@ -1145,10 +1081,7 @@
             document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
         }
 
-        function updateUI() { renderTables(); updateDashboard(); 
-            renderTitulos();
-            renderFIISCalc();
-}
+        function updateUI() { renderTables(); updateDashboard(); }
 
         function updateDashboard() {
             if(document.getElementById('app-container').style.display === 'none') return;
@@ -1187,286 +1120,6 @@
 
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
         window.onload = loadData;
-    
-        // ======= NOVA LÓGICA DE VALUATION =======
-        function initValuationConfig() {
-            if (!db.titulos) db.titulos = [];
-            if (!db.fiisCalc) db.fiisCalc = [];
-            
-            // Renderizar tabelas
-            renderTitulos();
-            renderFIISCalc();
-        }
-
-        // --- TABELA 1: TÍTULOS ---
-        function renderTitulos() {
-            const tbody = document.getElementById('tbody-titulos');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            db.titulos.forEach((t, i) => {
-                let ipca = parseFloat(t.ipca) || 0;
-                let ipcaPlus = parseFloat(t.ipcaPlus) || 0;
-
-                // Fórmulas Exatas
-                // BRUTO = (1+IPCA)*(1+IPCA+) - 1
-                let bruto = ((1 + ipca/100) * (1 + ipcaPlus/100)) - 1;
-                
-                // LÍQUIDO = BRUTO * 0.85
-                let liquido = bruto * 0.85;
-
-                // EQUIVALENTE A IPCA+ = (1+LÍQUIDO)/(1+IPCA) - 1
-                let equivalente = ((1 + liquido) / (1 + ipca/100)) - 1;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" class="custom-input" value="${t.nome || ''}" onchange="updateTitulo(${i}, 'nome', this.value)" style="width: 150px;"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateTitulo(${i}, 'ipca', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateTitulo(${i}, 'ipcaPlus', this.value)"></td>
-                    <td style="color:var(--text-main); font-weight:bold;">${(bruto * 100).toFixed(2).replace('.', ',')}%</td>
-                    <td style="color:var(--text-main); font-weight:bold;">${(liquido * 100).toFixed(2).replace('.', ',')}%</td>
-                    <td style="color:var(--color-highlight); font-weight:bold;">${(equivalente * 100).toFixed(2).replace('.', ',')}%</td>
-                    <td style="text-align: center;">
-                        <button class="btn-remove" onclick="deleteTitulo(${i})">✖</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addTitulo() {
-            db.titulos.push({ nome: 'Tesouro IPCA+', ipca: 4.62, ipcaPlus: 6.00 });
-            scheduleSave();
-            renderTitulos();
-        }
-
-        function updateTitulo(index, field, value) {
-            if(field === 'ipca' || field === 'ipcaPlus') value = parseFloat(value) || 0;
-            db.titulos[index][field] = value;
-            scheduleSave();
-            renderTitulos();
-        }
-
-        function deleteTitulo(index) {
-            if(confirm('Remover este título?')) {
-                db.titulos.splice(index, 1);
-                scheduleSave();
-                renderTitulos();
-            }
-        }
-
-        // --- TABELA 2: FIIS ---
-        function renderFIISCalc() {
-            const tbody = document.getElementById('tbody-fiis-calc');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            db.fiisCalc.forEach((f, i) => {
-                let preco = parseFloat(f.preco) || 0;
-                let div12m = parseFloat(f.div12m) || 0;
-                let ipca = parseFloat(f.ipca) || 0;
-                let ipcaPlus = parseFloat(f.ipcaPlus) || 0;
-                let premio = parseFloat(f.premio) || 0;
-
-                // Rendimento = (1+IPCA)*(1+IPCA+)*(1+PRÊMIO) - 1
-                let rendimento = ((1 + ipca/100) * (1 + ipcaPlus/100) * (1 + premio/100)) - 1;
-
-                // PREÇO TETO = DIVIDENDO 12M / Rendimento
-                let precoTeto = 0;
-                if(rendimento > 0) {
-                    precoTeto = div12m / rendimento;
-                }
-
-                // M.SEG = (PREÇO TETO - PREÇO) / PREÇO
-                let mseg = 0;
-                if(preco > 0 && precoTeto > 0) {
-                    mseg = (precoTeto - preco) / preco;
-                }
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" class="custom-input" value="${f.nome || ''}" onchange="updateFII(${i}, 'nome', this.value)" style="width: 80px;"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${(f.pvp || 0).toFixed(2)}" onchange="updateFII(${i}, 'pvp', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${preco.toFixed(2)}" onchange="updateFII(${i}, 'preco', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${div12m.toFixed(2)}" onchange="updateFII(${i}, 'div12m', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateFII(${i}, 'ipca', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateFII(${i}, 'ipcaPlus', this.value)"></td>
-                    <td><input type="number" step="0.01" class="custom-input" value="${premio.toFixed(2)}" onchange="updateFII(${i}, 'premio', this.value)"></td>
-                    
-                    <td style="color:var(--text-main); font-weight:bold;">${(rendimento * 100).toFixed(2).replace('.', ',')}%</td>
-                    <td style="color:var(--color-highlight); font-weight:bold;">R$ ${precoTeto.toFixed(2).replace('.', ',')}</td>
-                    <td style="color:${mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'}; font-weight:bold;">${(mseg * 100).toFixed(2).replace('.', ',')}%</td>
-                    
-                    <td style="text-align: center;">
-                        <button class="btn-remove" onclick="deleteFII(${i})">✖</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addFIICalc() {
-            db.fiisCalc.push({
-                nome: 'MXRF11', pvp: 1.00, preco: 10.00, div12m: 1.20, ipca: 4.62, ipcaPlus: 6.00, premio: 3.00
-            });
-            scheduleSave();
-            renderFIISCalc();
-        }
-
-        function updateFII(index, field, value) {
-            if(field !== 'nome') value = parseFloat(value) || 0;
-            db.fiisCalc[index][field] = value;
-            scheduleSave();
-            renderFIISCalc();
-        }
-
-        function deleteFII(index) {
-            if(confirm('Remover este FII?')) {
-                db.fiisCalc.splice(index, 1);
-                scheduleSave();
-                renderFIISCalc();
-            }
-        }
-        // ========================================
-
-// ======= LÓGICA DE VALUATION E PREÇO TETO =======
-
-// Tabela 1: Títulos
-function renderTitulos() {
-    const tbody = document.getElementById('tbody-titulos');
-    if(!tbody) return;
-    tbody.innerHTML = '';
-
-    // PROTEÇÃO: Evita travar a página se o DB não carregou
-    if (!window.db) return;
-    if (!db.titulos) db.titulos = [];
-
-    db.titulos.forEach((t, i) => {
-        let ipca = parseFloat(t.ipca) || 0;
-        let ipcaPlus = parseFloat(t.ipcaPlus) || 0;
-
-        let bruto = ((1 + ipca/100) * (1 + ipcaPlus/100)) - 1;
-        let liquido = bruto * 0.85;
-        let equivalente = ((1 + liquido) / (1 + ipca/100)) - 1;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" class="custom-input" value="${t.nome || ''}" onchange="updateTitulo(${i}, 'nome', this.value)" style="width: 150px;"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateTitulo(${i}, 'ipca', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateTitulo(${i}, 'ipcaPlus', this.value)"></td>
-            <td style="color:var(--text-main); font-weight:bold;">${(bruto * 100).toFixed(2).replace('.', ',')}%</td>
-            <td style="color:var(--text-main); font-weight:bold;">${(liquido * 100).toFixed(2).replace('.', ',')}%</td>
-            <td style="color:var(--color-highlight); font-weight:bold;">${(equivalente * 100).toFixed(2).replace('.', ',')}%</td>
-            <td style="text-align: center;">
-                <button class="btn-remove" onclick="deleteTitulo(${i})">✖</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function addTitulo() {
-    if (!window.db) return;
-    if (!db.titulos) db.titulos = [];
-    db.titulos.push({ nome: 'Tesouro IPCA+', ipca: 4.62, ipcaPlus: 6.00 });
-    if (typeof scheduleSave === "function") scheduleSave();
-    renderTitulos();
-}
-
-function updateTitulo(index, field, value) {
-    if (!window.db || !db.titulos) return;
-    if(field === 'ipca' || field === 'ipcaPlus') value = parseFloat(value) || 0;
-    db.titulos[index][field] = value;
-    if (typeof scheduleSave === "function") scheduleSave();
-    renderTitulos();
-}
-
-function deleteTitulo(index) {
-    if (!window.db || !db.titulos) return;
-    if(confirm('Remover este título?')) {
-        db.titulos.splice(index, 1);
-        if (typeof scheduleSave === "function") scheduleSave();
-        renderTitulos();
-    }
-}
-
-// Tabela 2: FIIs
-function renderFIISCalc() {
-    const tbody = document.getElementById('tbody-fiis-calc');
-    if(!tbody) return;
-    tbody.innerHTML = '';
-
-    if (!window.db) return;
-    if (!db.fiisCalc) db.fiisCalc = [];
-
-    db.fiisCalc.forEach((f, i) => {
-        let preco = parseFloat(f.preco) || 0;
-        let div12m = parseFloat(f.div12m) || 0;
-        let ipca = parseFloat(f.ipca) || 0;
-        let ipcaPlus = parseFloat(f.ipcaPlus) || 0;
-        let premio = parseFloat(f.premio) || 0;
-
-        let rendimento = ((1 + ipca/100) * (1 + ipcaPlus/100) * (1 + premio/100)) - 1;
-
-        let precoTeto = 0;
-        if(rendimento > 0) {
-            precoTeto = div12m / rendimento;
-        }
-
-        let mseg = 0;
-        if(preco > 0 && precoTeto > 0) {
-            mseg = (precoTeto - preco) / preco;
-        }
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" class="custom-input" value="${f.nome || ''}" onchange="updateFII(${i}, 'nome', this.value)" style="width: 80px;"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${(f.pvp || 0).toFixed(2)}" onchange="updateFII(${i}, 'pvp', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${preco.toFixed(2)}" onchange="updateFII(${i}, 'preco', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${div12m.toFixed(2)}" onchange="updateFII(${i}, 'div12m', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateFII(${i}, 'ipca', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateFII(${i}, 'ipcaPlus', this.value)"></td>
-            <td><input type="number" step="0.01" class="custom-input" value="${premio.toFixed(2)}" onchange="updateFII(${i}, 'premio', this.value)"></td>
-            
-            <td style="color:var(--text-main); font-weight:bold;">${(rendimento * 100).toFixed(2).replace('.', ',')}%</td>
-            <td style="color:var(--color-highlight); font-weight:bold;">R$ ${precoTeto.toFixed(2).replace('.', ',')}</td>
-            <td style="color:${mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'}; font-weight:bold;">${(mseg * 100).toFixed(2).replace('.', ',')}%</td>
-            
-            <td style="text-align: center;">
-                <button class="btn-remove" onclick="deleteFII(${i})">✖</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function addFIICalc() {
-    if (!window.db) return;
-    if(!db.fiisCalc) db.fiisCalc = [];
-    db.fiisCalc.push({
-        nome: 'MXRF11', pvp: 1.00, preco: 10.00, div12m: 1.20, ipca: 4.62, ipcaPlus: 6.00, premio: 3.00
-    });
-    if (typeof scheduleSave === "function") scheduleSave();
-    renderFIISCalc();
-}
-
-function updateFII(index, field, value) {
-    if (!window.db || !db.fiisCalc) return;
-    if(field !== 'nome') value = parseFloat(value) || 0;
-    db.fiisCalc[index][field] = value;
-    if (typeof scheduleSave === "function") scheduleSave();
-    renderFIISCalc();
-}
-
-function deleteFII(index) {
-    if (!window.db || !db.fiisCalc) return;
-    if(confirm('Remover este FII?')) {
-        db.fiisCalc.splice(index, 1);
-        if (typeof scheduleSave === "function") scheduleSave();
-        renderFIISCalc();
-    }
-}
-
-</script>
+    </script>
 </body>
 </html>
