@@ -31,10 +31,11 @@
         .btn-back-home { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; } .btn-back-home:hover { background: var(--border-color); } .btn-back-home.header-left { position: absolute; left: 30px; }
         main { flex: 1; padding: 25px 30px; overflow-y: auto; } .view { display: none; } .view.active { display: block; animation: fadeIn 0.4s; }
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; grid-auto-rows: minmax(150px, auto); }
-        .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+        .card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card-title { color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; } .card-value { font-size: 28px; font-weight: 700; letter-spacing: 0.5px; }
         .card-kpi { grid-column: span 1; } .card-donut { grid-column: span 1; grid-row: span 2; align-items: center; } .card-horizontal { grid-column: span 2; grid-row: span 2; } .card-bar-full { grid-column: span 4; grid-row: span 2; }
-        .entry-section { background: var(--bg-card); border-radius: 8px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+        .entry-section { background: var(--bg-card); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.4); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .entry-section:hover { box-shadow: 0 14px 35px rgba(0,0,0,0.6); }
         .entry-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
         table { width: 100%; border-collapse: collapse; text-align: left; } th { color: var(--text-muted); font-weight: 600; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 0.5px; } td { padding: 12px 5px; border-bottom: 1px solid #1a1a1a; }
         .custom-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 14px; padding: 8px 5px; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; } .custom-input:focus { border-bottom: 1px solid var(--text-muted); background: #1a1a1a; border-radius: 4px 4px 0 0; }
@@ -65,6 +66,9 @@
             <div class="logo-area"><div class="logo-icon">▲</div><div style="font-size: 15px;">Dashboard<br><span style="color: var(--text-muted); font-weight: 400; font-size: 12px;">Plano Financeiro</span></div></div>
             <div class="nav-section">Anos</div><div id="years-list"></div><div style="padding: 0 20px;"><button class="btn-add" style="width: 100%; margin-top: 5px;" onclick="addYear()">+ Novo Ano</button></div>
             <div class="nav-section" style="margin-top: 30px;">Meses</div><div id="months-list"></div>
+            <div style="padding: 20px; margin-top: auto;">
+                <button class="btn-add" style="width: 100%; border-color: var(--color-highlight); color: var(--color-highlight); font-size: 11px;" onclick="exportBackup()">📥 Exportar Backup (.json)</button>
+            </div>
         </aside>
         <div class="main-wrapper">
             <header style="justify-content: space-between; padding: 0 30px;">
@@ -148,17 +152,18 @@
                     <table style="min-width: 1200px;">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">Ticker</th>
-                                <th style="width: 10%;">Tipo</th>
-                                <th style="width: 8%;">IPCA (%)</th>
-                                <th style="width: 8%;">IPCA+ (%)</th>
-                                <th style="width: 8%;">Prêmio (%)</th>
-                                <th style="width: 10%;">Taxa Exigida</th>
-                                <th style="width: 10%;">Div. 12M (R$)</th>
-                                <th style="width: 10%;">Preço Teto</th>
+                                <th style="width: 8%;">Ticker</th>
+                                <th style="width: 8%;">P/VP</th>
                                 <th style="width: 10%;">Cotação (R$)</th>
-                                <th style="width: 10%;">Margem Seg.</th>
-                                <th style="width: 10%;">Status</th>
+                                <th style="width: 10%;">Tipo</th>
+                                <th style="width: 7%;">IPCA (%)</th>
+                                <th style="width: 7%;">IPCA+ (%)</th>
+                                <th style="width: 7%;">Prêmio (%)</th>
+                                <th style="width: 9%;">Taxa Exigida</th>
+                                <th style="width: 9%;">Div. 12M (R$)</th>
+                                <th style="width: 9%;">Preço Teto</th>
+                                <th style="width: 9%;">Margem Seg.</th>
+                                <th style="width: 9%;">Status</th>
                                 <th style="width: 60px; text-align: right;">Ações</th>
                             </tr>
                         </thead>
@@ -182,7 +187,7 @@
         let currentInvestView = 'menu';
         function openApp(app) { document.getElementById('home-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('home-screen').style.display = 'none'; document.getElementById(app === 'plano' ? 'app-container' : 'invest-container').style.display = 'flex'; document.getElementById(app === 'plano' ? 'app-container' : 'invest-container').style.opacity = '1'; if(app==='plano' && db.years[selectedYear]) updateDashboard(); }, 500); }
         function goHome() { ['invest-planilhas-view','invest-acoes-view','invest-carteira-view','invest-planilhas-menu-view'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('invest-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar ao Menu'; currentInvestView='menu'; document.getElementById('app-container').style.opacity='0'; document.getElementById('invest-container').style.opacity='0'; setTimeout(() => { document.getElementById('app-container').style.display='none'; document.getElementById('invest-container').style.display='none'; document.getElementById('home-screen').style.display='flex'; document.getElementById('home-screen').style.opacity='1'; }, 500); }
-        function goBackInvest() { if (['planilhas-table','acoes-table'].includes(currentInvestView)) { document.getElementById('invest-planilhas-view').style.display='none'; document.getElementById('invest-acoes-view').style.display='none'; document.getElementById('invest-planilhas-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar'; currentInvestView='planilhas-menu'; } else if (['planilhas-menu','carteira-view'].includes(currentInvestView)) { document.getElementById('invest-planilhas-menu-view').style.display='none'; document.getElementById('invest-carteira-view').style.display='none'; document.getElementById('invest-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar ao Menu'; currentInvestView='menu'; } else { goHome(); } }
+        function goBackInvest() { if (['planilhas-table','acoes-table'].includes(currentInvestView)) { document.getElementById('invest-planilhas-view').style.display='none'; document.getElementById('invest-acoes-view').style.display='none'; document.getElementById('invest-planilhas-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar'; currentInvestView='planilhas-menu'; } else if (['planilhas-menu','carteira-view'].includes(currentInvestView)) { document.getElementById('invest-planilhas-menu-view').style.display='none'; document.getElementById('invest-carteira-view').style.display='flex'; document.getElementById('invest-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar ao Menu'; currentInvestView='menu'; } else { goHome(); } }
         function openCarteiraResumo() { document.getElementById('invest-menu-view').style.display='none'; document.getElementById('invest-carteira-view').style.display='flex'; document.getElementById('invest-header-title').innerText='RESUMO DA CARTEIRA'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar'; currentInvestView='carteira-view'; renderMeuPatrimonio(); renderSetores(); }
         function openInvestPlanilhas() { document.getElementById('invest-menu-view').style.display='none'; document.getElementById('invest-planilhas-menu-view').style.display='flex'; document.getElementById('invest-header-title').innerText='INVESTIMENTOS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar'; currentInvestView='planilhas-menu'; }
         function openFiiTable() { document.getElementById('invest-planilhas-menu-view').style.display='none'; document.getElementById('invest-planilhas-view').style.display='flex'; document.getElementById('invest-header-title').innerText='PLANILHA DE FIIS'; document.getElementById('btn-voltar-invest').innerText='⬅ Voltar'; currentInvestView='planilhas-table'; renderFIITable(); renderFIIAvaliacaoTable(); }
@@ -194,10 +199,47 @@
         let db = { years: {}, fiis: [], fiisAvaliacao: [], acoes: [], meuPatrimonio: null, setores: null, globais: null }, selectedYear = new Date().getFullYear().toString(), selectedMonth = MONTHS[new Date().getMonth()], charts = {}, syncTimeout;
 
         async function loadData() {
+            let blockAutoSave = false;
             try {
                 let localStr = localStorage.getItem('meuAppFinanceiro');
-                if(localStr) { db = JSON.parse(localStr); } 
-                else { const { data } = await _supabase.from('financeiro').select('dados').eq('id', 1).single(); if(data && data.dados) { db = data.dados; } }
+                let shadowStr = localStorage.getItem('meuAppFinanceiro_shadow');
+                
+                if(!localStr && shadowStr) {
+                    localStr = shadowStr;
+                    localStorage.setItem('meuAppFinanceiro', localStr);
+                } else if(localStr && !shadowStr) {
+                    localStorage.setItem('meuAppFinanceiro_shadow', localStr);
+                }
+
+                const { data } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
+
+                if(localStr) { 
+                    db = JSON.parse(localStr); 
+                    let localHasData = Object.keys(db.years || {}).some(y => {
+                        return Object.keys(db.years[y]).some(m => db.years[y][m].inc.length > 0 || db.years[y][m].fix.length > 0 || db.years[y][m].exp.length > 0);
+                    });
+                    
+                    if(!localHasData && data && data.dados) {
+                        let cloudHasData = Object.keys(data.dados.years || {}).some(y => {
+                            return Object.keys(data.dados.years[y]).some(m => data.dados.years[y][m].inc.length > 0 || data.dados.years[y][m].fix.length > 0 || data.dados.years[y][m].exp.length > 0);
+                        });
+                        if(cloudHasData) {
+                            if(confirm("Seus dados locais sumiram. Deseja restaurar o backup da nuvem?")) {
+                                db = data.dados;
+                                localStorage.setItem('meuAppFinanceiro', JSON.stringify(db));
+                                localStorage.setItem('meuAppFinanceiro_shadow', JSON.stringify(db));
+                            } else {
+                                blockAutoSave = true;
+                            }
+                        }
+                    }
+                } else { 
+                    if(data && data.dados) { 
+                        db = data.dados; 
+                        localStorage.setItem('meuAppFinanceiro', JSON.stringify(db));
+                        localStorage.setItem('meuAppFinanceiro_shadow', JSON.stringify(db));
+                    } 
+                }
             } catch(e) { console.log(e); }
 
             if(!db.years) db.years={}; if(!db.years[selectedYear]) db.years[selectedYear]=createYearStructure();
@@ -206,13 +248,18 @@
             if(!db.meuPatrimonio) db.meuPatrimonio={ atual:8044.13, aporte:280, categorias:[{nome:'Ações',percIdeal:20,percAtual:0,ativos:[]},{nome:'Exterior',percIdeal:20,percAtual:0,ativos:[]},{nome:'ETFs',percIdeal:5,percAtual:0,ativos:[]},{nome:'FIIs',percIdeal:25,percAtual:0,ativos:[]},{nome:'Renda Fixa',percIdeal:25,percAtual:0,ativos:[]},{nome:'Cripto',percIdeal:5,percAtual:0,ativos:[]}] };
             if(!db.setores) db.setores={ acoes:[{nome:'BANCOS',ativos:[]}], fiis:[{nome:'SHOPPINGS',ativos:[]}], exterior:[{nome:'TEC',ativos:[]}] };
 
-            document.getElementById('sync-status').innerText="Online/Local";
+            if(db.fiisAvaliacao) {
+                db.fiisAvaliacao.forEach(f => { if(f.pvp === undefined) f.pvp = 1.00; });
+            }
+
+            document.getElementById('sync-status').innerText = blockAutoSave ? "Auto-salvamento suspenso" : "Online/Local";
             renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderMeuPatrimonio(); renderSetores();
         }
 
         function scheduleSave() {
             document.getElementById('sync-status').innerText="Salvando...";
-            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); // Salva localmente
+            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db));
+            localStorage.setItem('meuAppFinanceiro_shadow', JSON.stringify(db));
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(async()=>{
                 try{ await _supabase.from('financeiro').upsert({id:1,dados:db}); document.getElementById('sync-status').innerText="Sincronizado na Nuvem";
@@ -220,7 +267,20 @@
             }, 1000);
         }
         
-        window.addEventListener('beforeunload', () => { localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); });
+        window.addEventListener('beforeunload', () => { 
+            localStorage.setItem('meuAppFinanceiro', JSON.stringify(db)); 
+            localStorage.setItem('meuAppFinanceiro_shadow', JSON.stringify(db)); 
+        });
+
+        function exportBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `backup_financeiro_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
 
         function createYearStructure() { let s={}; MONTHS.forEach(m=>s[m]={inc:[],fix:[],exp:[]}); return s; }
 
@@ -249,10 +309,9 @@
         function addFII(){db.fiis.push({ticker:'',classe:'',qtd:0,pm:0,dy12:0,dy1:0});renderFIITable();scheduleSave();} function removeFII(i){db.fiis.splice(i,1);renderFIITable();scheduleSave();} function moveFII(i,d){if(i+d<0||i+d>=db.fiis.length)return;let t=db.fiis[i];db.fiis[i]=db.fiis[i+d];db.fiis[i+d]=t;renderFIITable();scheduleSave();} function updateFII(i,f,v){db.fiis[i][f]=(f==='ticker'||f==='classe')?v:(parseFloat(v)||0);renderFIITable();scheduleSave();}
         function renderFIITable(){let h='',tInv=0,tRenda=0,tCotas=0,sDY=0;db.fiis.forEach((f,i)=>{let inv=(f.qtd||0)*(f.pm||0),ren=inv*((f.dy12||0)/100)/12;tInv+=inv;tRenda+=ren;tCotas+=parseFloat(f.qtd)||0;sDY+=inv*((f.dy1||0)/100);h+=`<tr><td><input type="text" class="custom-input" style="font-weight:700;color:var(--color-blue);text-transform:uppercase;" value="${f.ticker||''}" onchange="updateFII(${i},'ticker',this.value)"></td><td><input type="text" class="custom-input" style="font-style:italic;color:#bbb;" value="${f.classe||''}" onchange="updateFII(${i},'classe',this.value)"></td><td><input type="number" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.qtd||''}" onchange="updateFII(${i},'qtd',this.value)"></td><td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.pm||''}" onchange="updateFII(${i},'pm',this.value)"></td><td style="font-weight:600;">${inv.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td><td id="fii-perc-${i}" style="font-weight:600;">0%</td><td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.dy12||''}" onchange="updateFII(${i},'dy12',this.value)"></td><td><input type="number" step="0.01" class="custom-input" value="${f.dy1||''}" onchange="updateFII(${i},'dy1',this.value)"></td><td style="color:var(--color-gain);font-weight:600;">${ren.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td><td style="text-align:right;"><button class="btn-move" onclick="moveFII(${i},-1)">↑</button><button class="btn-move" onclick="moveFII(${i},1)">↓</button><button class="btn-remove" onclick="removeFII(${i})">✕</button></td></tr>`;});document.getElementById('tbody-fiis').innerHTML=h;db.fiis.forEach((f,i)=>{let p=tInv>0?(((f.qtd||0)*(f.pm||0))/tInv)*100:0;let e=document.getElementById(`fii-perc-${i}`);if(e)e.innerText=p.toFixed(1)+'%';});let d12=tInv>0?((tRenda*12)/tInv)*100:0;document.getElementById('fii-tot-cotas').innerText=tCotas;document.getElementById('fii-tot-investido').innerText=tInv.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('fii-tot-dy12').innerText=d12.toFixed(2)+'%';document.getElementById('fii-tot-dy1').innerText=(tInv>0?(sDY/tInv)*100:0).toFixed(2)+'%';document.getElementById('fii-tot-renda').innerText=tRenda.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('fii-kpi-total').innerText=tInv.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('fii-kpi-renda').innerText=tRenda.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('fii-kpi-dy').innerText=d12.toFixed(2)+'%';}
 
-        // ======= TABELA 2: AVALIAÇÃO COM LÓGICA AUTOMÁTICA =======
         function updateGlobais(f, v) { db.globais[f] = parseFloat(v)||0; scheduleSave(); renderFIIAvaliacaoTable(); }
 
-        function addFIIAvaliacao(){db.fiisAvaliacao.push({ticker:'', tipo:'Tijolo', ipca:0, ipcaMais:db.globais.ipcaMais, premio:2, div12m:0, cotacao:0}); renderFIIAvaliacaoTable(); scheduleSave();} 
+        function addFIIAvaliacao(){db.fiisAvaliacao.push({ticker:'', pvp:1.00, cotacao:0, tipo:'Tijolo', ipca:0, ipcaMais:db.globais.ipcaMais, premio:2, div12m:0}); renderFIIAvaliacaoTable(); scheduleSave();} 
         function removeFIIAvaliacao(i){db.fiisAvaliacao.splice(i,1); renderFIIAvaliacaoTable(); scheduleSave();} 
         function moveFIIAvaliacao(i,d){if(i+d<0||i+d>=db.fiisAvaliacao.length)return; let t=db.fiisAvaliacao[i]; db.fiisAvaliacao[i]=db.fiisAvaliacao[i+d]; db.fiisAvaliacao[i+d]=t; renderFIIAvaliacaoTable(); scheduleSave();} 
         function updateFIIAvaliacao(i,f,v){db.fiisAvaliacao[i][f] = (f==='ticker'||f==='tipo') ? v : (parseFloat(v)||0); renderFIIAvaliacaoTable(); scheduleSave();}
@@ -280,6 +339,8 @@
 
                 return `<tr>
                     <td><input type="text" class="custom-input" style="font-weight:700;color:var(--color-blue);text-transform:uppercase;" value="${f.ticker||''}" onchange="updateFIIAvaliacao(${i},'ticker',this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);" value="${f.pvp!==undefined?f.pvp:''}" onchange="updateFIIAvaliacao(${i},'pvp',this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.cotacao!==undefined?f.cotacao:''}" onchange="updateFIIAvaliacao(${i},'cotacao',this.value)"></td>
                     <td>
                         <select class="custom-input" style="color:var(--color-blue); background:#111; padding:5px; border-radius:4px;" onchange="updateFIIAvaliacao(${i},'tipo',this.value)">
                             <option value="Tijolo" ${f.tipo==='Tijolo'?'selected':''}>Tijolo</option>
@@ -292,7 +353,6 @@
                     <td style="font-weight:600;">${tx.toFixed(2)}%</td>
                     <td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.div12m!==undefined?f.div12m:''}" onchange="updateFIIAvaliacao(${i},'div12m',this.value)"></td>
                     <td style="font-weight:600; color:var(--color-highlight); background: rgba(255, 179, 0, 0.1); border-radius: 4px; padding: 12px 5px; text-align: center;">R$ ${pt.toFixed(2)}</td>
-                    <td><input type="number" step="0.01" class="custom-input" style="color:var(--color-blue);font-weight:600;" value="${f.cotacao!==undefined?f.cotacao:''}" onchange="updateFIIAvaliacao(${i},'cotacao',this.value)"></td>
                     <td style="font-weight:600;color:${mg>=0?'var(--color-gain)':'var(--color-expense)'};">${cot > 0 ? mg.toFixed(2) + '%' : '-'}</td>
                     <td>${st}</td>
                     <td style="text-align:right;"><button class="btn-move" onclick="moveFIIAvaliacao(${i},-1)">↑</button><button class="btn-move" onclick="moveFIIAvaliacao(${i},1)">↓</button><button class="btn-remove" onclick="removeFIIAvaliacao(${i})">✕</button></td>
@@ -309,7 +369,8 @@
         function renderTables(){document.getElementById('lbl-mes-ano').innerText=`${selectedMonth} / ${selectedYear}`;let d=db.years[selectedYear][selectedMonth],p={'inc':'Receita...','fix':'Aluguel...','exp':'Alimentação...'};const c=(t,i)=>i.map((x,j)=>`<tr><td><input type="text" class="custom-input" value="${x.d}" onchange="updateVal('${t}',${j},'d',this.value)" placeholder="${p[t]}"></td><td><input type="number" class="custom-input" value="${x.v}" onchange="updateVal('${t}',${j},'v',this.value)"></td>${t==='fix'?`<td><input type="number" class="custom-input" value="${x.vr}" onchange="updateVal('${t}',${j},'vr',this.value)"></td>`:''}<td><button class="btn-remove" onclick="removeRow('${t}',${j})">✕</button></td></tr>`).join('');document.getElementById('tbody-ganhos').innerHTML=c('inc',d.inc);document.getElementById('tbody-fixos').innerHTML=c('fix',d.fix);document.getElementById('tbody-variaveis').innerHTML=c('exp',d.exp);}
         function updateUI(){renderTables();updateDashboard();}
         function updateDashboard(){if(document.getElementById('app-container').style.display==='none')return;let d=db.years[selectedYear][selectedMonth],gM=d.inc.reduce((a,c)=>a+c.v,0),fM=d.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v),0),vM=d.exp.reduce((a,c)=>a+c.v,0),dsM=fM+vM,sM=gM-dsM;let eS=document.getElementById('kpi-saldo');eS.innerText=sM.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});eS.style.color=sM>=0?'var(--color-gain)':'var(--color-expense)';document.getElementById('kpi-despesas').innerText=dsM.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});renderCharts(d);}
-        function renderCharts(mD){let cD={};mD.fix.forEach(i=>{let v=i.vr>0?i.vr:i.v;if(v>0)cD[i.d||'S/N']=(cD[i.d||'S/N']||0)+v;});mD.exp.forEach(i=>{if(i.v>0)cD[i.d||'S/N']=(cD[i.d||'S/N']||0)+i.v;});destroyChart('chartDonutMes');charts['chartDonutMes']=new Chart(document.getElementById('chartDonutMes'),{type:'doughnut',data:{labels:Object.keys(cD),datasets:[{data:Object.values(cD),backgroundColor:CHART_COLORS_EXPENSES,borderWidth:1,borderColor:'#141414',cutout:'75%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#888',boxWidth:10}}}}});let dDA=Object.keys(cD).map(k=>({l:k,v:cD[k]})).sort((a,b)=>b.v-a.v);destroyChart('chartHorizontalMes');charts['chartHorizontalMes']=new Chart(document.getElementById('chartHorizontalMes'),{type:'bar',data:{labels:dDA.map(d=>d.l),datasets:[{data:dDA.map(d=>d.v),backgroundColor:'#ff5252',borderRadius:2}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{grid:{display:false}}}}});let cG={};mD.inc.forEach(i=>{if(i.v>0)cG[i.d||'S/N']=(cG[i.d||'S/N']||0)+i.v;});let dGA=Object.keys(cG).map(k=>({l:k,v:cG[k]})).sort((a,b)=>b.v-a.v);destroyChart('chartHorizontalGanhos');charts['chartHorizontalGanhos']=new Chart(document.getElementById('chartHorizontalGanhos'),{type:'bar',data:{labels:dGA.map(d=>d.l),datasets:[{data:dGA.map(d=>d.v),backgroundColor:'#00e676',borderRadius:2}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{grid:{display:false}}}}});let gA=[],dsA=[],cA={};MONTHS.forEach(m=>{let md=db.years[selectedYear][m];gA.push(md.inc.reduce((a,c)=>a+c.v,0));dsA.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v),0)+md.exp.reduce((a,c)=>a+c.v,0));md.fix.forEach(i=>{let v=i.vr>0?i.vr:i.v;if(v>0)cA[i.d||'S/N']=(cA[i.d||'S/N']||0)+v;});md.exp.forEach(i=>{if(i.v>0)cA[i.d||'S/N']=(cA[i.d||'S/N']||0)+i.v;});});destroyChart('chartDonutAno');charts['chartDonutAno']=new Chart(document.getElementById('chartDonutAno'),{type:'doughnut',data:{labels:Object.keys(cA),datasets:[{data:Object.values(cA),backgroundColor:CHART_COLORS_EXPENSES,borderWidth:1,borderColor:'#141414',cutout:'75%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#888',boxWidth:10}}}}});destroyChart('chartBarAnual');charts['chartBarAnual']=new Chart(document.getElementById('chartBarAnual'),{type:'bar',data:{labels:MONTHS.map(m=>m.substring(0,3)),datasets:[{label:'Entradas',data:gA,backgroundColor:'#00e676',borderRadius:2},{label:'Saídas',data:dsA,backgroundColor:'#ff5252',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#888',usePointStyle:true,boxWidth:8}}},scales:{x:{grid:{display:false}},y:{border:{dash:[2,4]}}}}});}
+        function renderCharts(mD){let cD={};mD.fix.forEach(i=>{let v=i.vr>0?i.vr:i.v;if(v>0)cD[i.d||'S/N']=(cD[i.d||'S/N']||0)+v;});mD.exp.forEach(i=>{if(i.v>0)cD[i.d||'S/N']=(cD[i.d||'S/N']||0)+i.v;});destroyChart('chartDonutMes');charts['chartDonutMes']=new Chart(document.getElementById('chartDonutMes'),{type:'doughnut',data:{labels:Object.keys(cD),datasets:[{data:Object.values(cD),backgroundColor:['#ff5252', '#ff7b7b', '#ffb300', '#7b1fa2', '#4da6ff', '#00e676'],borderWidth:1,borderColor:'#141414',cutout:'75%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#888',boxWidth:10}}}}});let dDA=Object.keys(cD).map(k=>({l:k,v:cD[k]})).sort((a,b)=>b.v-a.v);destroyChart('chartHorizontalMes');charts['chartHorizontalMes']=new Chart(document.getElementById('chartHorizontalMes'),{type:'bar',data:{labels:dDA.map(d=>d.l),datasets:[{data:dDA.map(d=>d.v),backgroundColor:'#ff5252',borderRadius:2}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{grid:{display:false}}}}});let cG={};mD.inc.forEach(i=>{if(i.v>0)cG[i.d||'S/N']=(cG[i.d||'S/N']||0)+i.v;});let dGA=Object.keys(cG).map(k=>({l:k,v:cG[k]})).sort((a,b)=>b.v-a.v);destroyChart('chartHorizontalGanhos');charts['chartHorizontalGanhos']=new Chart(document.getElementById('chartHorizontalGanhos'),{type:'bar',data:{labels:dGA.map(d=>d.l),datasets:[{data:dGA.map(d=>d.v),backgroundColor:'#00e676',borderRadius:2}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{grid:{display:false}}}}});let gA=[],dsA=[],cA={};MONTHS.forEach(m=>{let md=db.years[selectedYear][m];gA.push(md.inc.reduce((a,c)=>a+c.v,0));dsA.push(md.fix.reduce((a,c)=>a+(c.vr>0?c.vr:c.v),0)+md.exp.reduce((a,c)=>a+c.v,0));md.fix.forEach(i=>{let v=i.vr>0?i.vr:i.v;if(v>0)cA[i.d||'S/N']=(cA[i.d||'S/N']||0)+v;});md.exp.forEach(i=>{if(i.v>0)cA[i.d||'S/N']=(cA[i.d||'S/N']||0)+i.v;});});destroyChart('chartDonutAno');charts['chartDonutAno']=new Chart(document.getElementById('chartDonutAno'),{type:'doughnut',data:{labels:Object.keys(cA),datasets:[{data:Object.values(cA),backgroundColor:['#ff5252', '#ff7b7b', '#ffb300', '#7b1fa2', '#4da6ff', '#00e676'],borderWidth:1,borderColor:'#141414',cutout:'75%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#888',boxWidth:10}}}}});destroyChart('chartBarAnual');charts['chartBarAnual']=new Chart(document.getElementById('chartBarAnual'),{type:'bar',data:{labels:MONTHS.map(m=>m.substring(0,3)),datasets:[{label:'Entradas',data:gA,backgroundColor:'#00e676',borderRadius:2},{label:'Saídas',data:dsA,backgroundColor:'#ff5252',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#888',usePointStyle:true,boxWidth:8}}},scales:{x:{grid:{display:false}},y:{border:{dash:[2,4]}}}}});}
+        function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
         window.onload=loadData;
     </script>
 </body>
