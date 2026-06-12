@@ -380,71 +380,67 @@
             </div>
 
             
-            
             <div class="fii-card">
                 <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
-
-            <div class="fii-card">
-                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
-                    📊 PREMISSA DE CÁLCULO
+                    📊 Configuração de Taxas para Avaliação
                 </div>
-                
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: center;">
-                        <thead>
-                            <tr style="background: #111;">
-                                <th style="padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);"></th>
-                                <th style="padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">IPCA</th>
-                                <th style="padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">IPCA+</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">Bruto</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">Líquido</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">Equivalente a IPCA+</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="background: #7b1fa2; color: white; font-weight: bold; padding: 10px;">Título IPCA+</td>
-                                <td><input type="number" step="0.01" id="prem-ipca" class="fii-input" style="width: 80px;" value="4.39" oninput="calcPremissas()"> %</td>
-                                <td><input type="number" step="0.01" id="prem-ipcaplus" class="fii-input" style="width: 80px;" value="8.36" oninput="calcPremissas()"> %</td>
-                                <td id="prem-bruto" style="font-weight: bold; font-family: monospace; font-size: 15px;">13.12%</td>
-                                <td id="prem-liquido" style="font-weight: bold; font-family: monospace; font-size: 15px;">11.15%</td>
-                                <td id="prem-equiv" style="font-weight: bold; color: var(--color-gain); font-family: monospace; font-size: 15px;">6.48%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">Taxa Livre de Risco (%)</label>
+                        <input type="number" step="0.1" id="val-taxa-livre" class="custom-input" style="width: 100px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('taxaLivreRisco', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🏆 Prêmio (+%)</label>
+                        <input type="number" step="0.1" id="val-premio" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('premio', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚠️ Risco (+%)</label>
+                        <input type="number" step="0.1" id="val-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('risco', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">⚖️ Moderado (+%)</label>
+                        <input type="number" step="0.1" id="val-moderado" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('moderado', this.value)">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">🛡️ Sem Risco (+%)</label>
+                        <input type="number" step="0.1" id="val-sem-risco" class="custom-input" style="width: 80px; background:#1a1a1a; padding:5px; border-radius:4px; border:1px solid var(--border-color);" onchange="atualizarTaxasConfig('semRisco', this.value)">
+                    </div>
                 </div>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                    * Indicativo padrão: Prêmio 3% | Risco 2% | Moderado 1% | Sem risco 0%
+                </p>
             </div>
 
             <div class="fii-card">
-                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                    📊 PREÇO TETO DE FIIS
-                    <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;">Risco: Prêmio 3% | Risco 2% | Moderado 1% | Sem risco 0%</span>
+                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
+                    📊 Avaliação e Preço Teto de FIIs
                 </div>
                 
+                
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 1200px; text-align: center; border-collapse: collapse;">
+                    <table style="min-width: 1300px;">
                         <thead>
-                            <tr style="background: #111;">
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">FII</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">P/VP</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">PREÇO (R$)</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">DIVIDENDO 12M</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">IPCA (%)</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">IPCA+ (%)</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color);">PRÊMIO (%)</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">Rendimento</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">PREÇO TETO</th>
-                                <th style="padding: 12px; background: #cca000; color: black; border-bottom: 1px solid var(--border-color);">M.SEG</th>
-                                <th style="padding: 12px; border-bottom: 1px solid var(--border-color); width: 80px;">AÇÕES</th>
+                            <tr>
+                                <th style="width: 10%;">Ticker</th>
+                                <th style="width: 15%;">Segmento</th>
+                                <th style="width: 15%;">Classificação</th>
+                                <th style="width: 10%;">DY Médio (12m)</th>
+                                <th style="width: 10%;">Cotação Atual</th>
+                                <th style="width: 10%;">Taxa Desconto</th>
+                                <th style="width: 10%;">Preço Teto</th>
+                                <th style="width: 10%;">Margem Segurança</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 90px; text-align: right;">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-fiis-avaliacao">
                         </tbody>
                     </table>
                 </div>
-                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFIIAvaliacao()">+ ADICIONAR FUNDO PARA AVALIAÇÃO</button>
+                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFIIAvaliacao()">+ Adicionar Fundo para Avaliação</button>
             </div>
-iv>
+
+        </div>
 
         <div id="invest-acoes-view" class="invest-scroll-area">
             
@@ -455,62 +451,33 @@ iv>
                 <img src="Gemini_Generated_Image_ld3kvxld3kvxld3k.jpg" alt="Critérios para escolher Ações" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
             </div>
 
-            
-<div id="valuation-container" class="fii-card" style="padding: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;">
-    <!-- Tabela 1: Premissas -->
-    <div style="margin-bottom: 30px;">
-        <h3 style="color: var(--color-highlight); margin-bottom: 15px;">📊 PREMISSA DE CÁLCULO</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: center; color: var(--text-main);">
-            <thead>
-                <tr style="border-bottom: 1px solid var(--border-color);">
-                    <th style="padding: 10px;">Item</th>
-                    <th style="padding: 10px;">IPCA (%)</th>
-                    <th style="padding: 10px;">IPCA+ (%)</th>
-                    <th style="padding: 10px;">Bruto (%)</th>
-                    <th style="padding: 10px;">Líquido (%)</th>
-                    <th style="padding: 10px;">Equiv. IPCA+ (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding: 10px; font-weight: bold;">Título IPCA+</td>
-                    <td style="padding: 10px;"><input type="number" id="inp-ipca" value="4.39" step="0.01" style="width: 60px; background: #222; border: 1px solid var(--border-color); color: white; padding: 5px;"></td>
-                    <td style="padding: 10px;"><input type="number" id="inp-ipcaplus" value="8.36" step="0.01" style="width: 60px; background: #222; border: 1px solid var(--border-color); color: white; padding: 5px;"></td>
-                    <td id="res-bruto" style="padding: 10px;">-</td>
-                    <td id="res-liquido" style="padding: 10px;">-</td>
-                    <td id="res-equiv" style="padding: 10px;">-</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Tabela 2: FIIs -->
-    <div>
-        <h3 style="color: var(--color-highlight); margin-bottom: 15px;">📊 PREÇO TETO DE FIIS</h3>
-        <div style="overflow-x: auto;">
-            <table id="table-fiis" style="width: 100%; border-collapse: collapse; text-align: center; color: var(--text-main); font-size: 0.9rem;">
-                <thead>
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <th style="padding: 10px;">FII</th>
-                        <th style="padding: 10px;">P/VP</th>
-                        <th style="padding: 10px;">Preço (R$)</th>
-                        <th style="padding: 10px;">Div. 12M</th>
-                        <th style="padding: 10px;">IPCA</th>
-                        <th style="padding: 10px;">IPCA+</th>
-                        <th style="padding: 10px;">Risco (%)</th>
-                        <th style="padding: 10px;">Rendimento</th>
-                        <th style="padding: 10px;">Preço Teto</th>
-                        <th style="padding: 10px;">M.SEG</th>
-                        <th style="padding: 10px;">Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-fiis"></tbody>
-            </table>
+            <div class="fii-card" style="border-top-color: var(--color-blue);">
+                <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 25px;">
+                    📈 Ações (Brasil)
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 1100px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Ticker</th>
+                                <th style="width: 15%;">Setor</th>
+                                <th style="width: 10%;">P/L</th>
+                                <th style="width: 10%;">ROE (%)</th>
+                                <th style="width: 12%;">Dívida Liq/EBITDA</th>
+                                <th style="width: 10%;">CAGR (%)</th>
+                                <th style="width: 10%;">ROIC (%)</th>
+                                <th style="width: 10%;">P/VP</th>
+                                <th style="width: 90px; text-align: right;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-acoes">
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-blue); color: var(--color-blue);" onclick="addAcao()">+ Adicionar Nova Ação</button>
+            </div>
         </div>
-        <button onclick="addFII()" style="margin-top: 15px; padding: 10px 20px; background: var(--color-highlight); border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">+ ADICIONAR FUNDO</button>
-    </div>
-</div>
->
 
     </div>
 
@@ -1197,197 +1164,147 @@ iv>
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
         window.onload = loadData;
     
-        // ======= VALUATION CONFIGURATION =======
+        // ======= NOVA LÓGICA DE VALUATION =======
         function initValuationConfig() {
-            if (!db.configValuation) {
-                db.configValuation = { ipca: 4.39, ipcaplus: 8.36 };
-            }
-            if(db.configValuation.ipca === undefined) db.configValuation.ipca = 4.39;
-            if(db.configValuation.ipcaplus === undefined) db.configValuation.ipcaplus = 8.36;
-
-            document.getElementById('prem-ipca').value = db.configValuation.ipca;
-            document.getElementById('prem-ipcaplus').value = db.configValuation.ipcaplus;
-            calcPremissas();
+            if (!db.titulos) db.titulos = [];
+            if (!db.fiisCalc) db.fiisCalc = [];
+            
+            // Renderizar tabelas
+            renderTitulos();
+            renderFIISCalc();
         }
 
-        function calcPremissas() {
-            let ipca_val = parseFloat(document.getElementById('prem-ipca').value) || 0;
-            let ipcaP_val = parseFloat(document.getElementById('prem-ipcaplus').value) || 0;
-            
-            db.configValuation.ipca = ipca_val;
-            db.configValuation.ipcaplus = ipcaP_val;
-            scheduleSave();
-
-            let B2 = ipca_val / 100;
-            let C2 = ipcaP_val / 100;
-            
-            let bruto = ((1 + B2) * (1 + C2)) - 1;
-            let liquido = bruto * 0.85;
-            let equiv = ((1 + liquido) / (1 + B2)) - 1;
-            
-            document.getElementById('prem-bruto').innerText = (bruto * 100).toFixed(2) + '%';
-            document.getElementById('prem-liquido').innerText = (liquido * 100).toFixed(2) + '%';
-            document.getElementById('prem-equiv').innerText = (equiv * 100).toFixed(2) + '%';
-
-            renderFIIAvaliacaoTable();
-        }
-
-        function renderFIIAvaliacaoTable() {
-            const tbody = document.getElementById('tbody-fiis-avaliacao');
+        // --- TABELA 1: TÍTULOS ---
+        function renderTitulos() {
+            const tbody = document.getElementById('tbody-titulos');
             if(!tbody) return;
             tbody.innerHTML = '';
-            
-            // Variável global EQUIVALENTE A IPCA+
-            let B2 = (db.configValuation.ipca || 0) / 100;
-            let C2 = (db.configValuation.ipcaplus || 0) / 100;
-            let bruto = ((1 + B2) * (1 + C2)) - 1;
-            let liquido = bruto * 0.85;
-            let equiv = ((1 + liquido) / (1 + B2)) - 1;
-            let equivPercent = (equiv * 100).toFixed(2);
 
-            db.fiisAvaliacao.forEach((fii, i) => {
-                let E7 = parseFloat(fii.ipca) / 100 || 0;
-                let F7 = parseFloat(fii.ipcaMais) / 100 || 0;
-                let G7 = parseFloat(fii.premio) / 100 || 0;
-                let C7 = parseFloat(fii.cotacao) || 0;
-                let D7 = parseFloat(fii.div12m) || 0;
+            db.titulos.forEach((t, i) => {
+                let ipca = parseFloat(t.ipca) || 0;
+                let ipcaPlus = parseFloat(t.ipcaPlus) || 0;
 
-                let rendimento = ((1 + E7) * (1 + F7) * (1 + G7)) - 1;
-                let precoTeto = 0;
-                if (rendimento > 0) precoTeto = D7 / (((1 + F7) * (1 + G7) * (1 + E7)) - 1);
+                // Fórmulas Exatas
+                // BRUTO = (1+IPCA)*(1+IPCA+) - 1
+                let bruto = ((1 + ipca/100) * (1 + ipcaPlus/100)) - 1;
                 
-                let mseg = 0;
-                if (C7 > 0) mseg = (precoTeto - C7) / C7;
+                // LÍQUIDO = BRUTO * 0.85
+                let liquido = bruto * 0.85;
 
-                let colorMseg = mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
-                let bgMseg = mseg >= 0 ? 'rgba(0, 230, 118, 0.2)' : 'rgba(255, 82, 82, 0.2)';
+                // EQUIVALENTE A IPCA+ = (1+LÍQUIDO)/(1+IPCA) - 1
+                let equivalente = ((1 + liquido) / (1 + ipca/100)) - 1;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><input type="text" class="fii-input-text" value="${fii.ativo || ''}" onchange="updateFiiAvaliacao(${i}, 'ativo', this.value)" style="width: 90px; text-transform: uppercase;"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.pvp || ''}" onchange="updateFiiAvaliacao(${i}, 'pvp', this.value)"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.cotacao || ''}" onchange="updateFiiAvaliacao(${i}, 'cotacao', this.value)"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.div12m || ''}" onchange="updateFiiAvaliacao(${i}, 'div12m', this.value)"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.ipca !== undefined ? fii.ipca : db.configValuation.ipca}" onchange="updateFiiAvaliacao(${i}, 'ipca', this.value)"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.ipcaMais !== undefined ? fii.ipcaMais : equivPercent}" onchange="updateFiiAvaliacao(${i}, 'ipcaMais', this.value)"></td>
-                    <td><input type="number" step="0.01" class="fii-input" value="${fii.premio !== undefined ? fii.premio : 3.00}" onchange="updateFiiAvaliacao(${i}, 'premio', this.value)"></td>
-                    <td style="font-family: monospace; font-weight: bold; font-size: 14px;">${(rendimento * 100).toFixed(2)}%</td>
-                    <td style="font-family: monospace; font-weight: bold; font-size: 14px;">R$ ${precoTeto.toFixed(2)}</td>
-                    <td style="background: ${bgMseg}; color: ${colorMseg}; font-family: monospace; font-weight: bold; font-size: 14px;">${(mseg * 100).toFixed(2)}%</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-move" onclick="moveFIIAvaliacao(${i}, -1)">↑</button>
-                        <button class="btn-move" onclick="moveFIIAvaliacao(${i}, 1)">↓</button>
-                        <button class="btn-remove" onclick="deleteFiiAvaliacao(${i})">✕</button>
+                    <td><input type="text" class="custom-input" value="${t.nome || ''}" onchange="updateTitulo(${i}, 'nome', this.value)" style="width: 150px;"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateTitulo(${i}, 'ipca', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateTitulo(${i}, 'ipcaPlus', this.value)"></td>
+                    <td style="color:var(--text-main); font-weight:bold;">${(bruto * 100).toFixed(2).replace('.', ',')}%</td>
+                    <td style="color:var(--text-main); font-weight:bold;">${(liquido * 100).toFixed(2).replace('.', ',')}%</td>
+                    <td style="color:var(--color-highlight); font-weight:bold;">${(equivalente * 100).toFixed(2).replace('.', ',')}%</td>
+                    <td style="text-align: center;">
+                        <button class="btn-remove" onclick="deleteTitulo(${i})">✖</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function addFIIAvaliacao() {
-            let B2 = (db.configValuation.ipca || 0) / 100;
-            let C2 = (db.configValuation.ipcaplus || 0) / 100;
-            let bruto = ((1 + B2) * (1 + C2)) - 1;
-            let liquido = bruto * 0.85;
-            let equiv = ((1 + liquido) / (1 + B2)) - 1;
-            let defaultEquiv = parseFloat((equiv * 100).toFixed(2));
+        function addTitulo() {
+            db.titulos.push({ nome: 'Tesouro IPCA+', ipca: 4.62, ipcaPlus: 6.00 });
+            scheduleSave();
+            renderTitulos();
+        }
 
-            db.fiisAvaliacao.push({
-                ativo: 'NOVO11',
-                pvp: 1.00,
-                cotacao: 100.00,
-                div12m: 10.00,
-                ipca: db.configValuation.ipca || 0,
-                ipcaMais: defaultEquiv,
-                premio: 3.00
+        function updateTitulo(index, field, value) {
+            if(field === 'ipca' || field === 'ipcaPlus') value = parseFloat(value) || 0;
+            db.titulos[index][field] = value;
+            scheduleSave();
+            renderTitulos();
+        }
+
+        function deleteTitulo(index) {
+            if(confirm('Remover este título?')) {
+                db.titulos.splice(index, 1);
+                scheduleSave();
+                renderTitulos();
+            }
+        }
+
+        // --- TABELA 2: FIIS ---
+        function renderFIISCalc() {
+            const tbody = document.getElementById('tbody-fiis-calc');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            db.fiisCalc.forEach((f, i) => {
+                let preco = parseFloat(f.preco) || 0;
+                let div12m = parseFloat(f.div12m) || 0;
+                let ipca = parseFloat(f.ipca) || 0;
+                let ipcaPlus = parseFloat(f.ipcaPlus) || 0;
+                let premio = parseFloat(f.premio) || 0;
+
+                // Rendimento = (1+IPCA)*(1+IPCA+)*(1+PRÊMIO) - 1
+                let rendimento = ((1 + ipca/100) * (1 + ipcaPlus/100) * (1 + premio/100)) - 1;
+
+                // PREÇO TETO = DIVIDENDO 12M / Rendimento
+                let precoTeto = 0;
+                if(rendimento > 0) {
+                    precoTeto = div12m / rendimento;
+                }
+
+                // M.SEG = (PREÇO TETO - PREÇO) / PREÇO
+                let mseg = 0;
+                if(preco > 0 && precoTeto > 0) {
+                    mseg = (precoTeto - preco) / preco;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="custom-input" value="${f.nome || ''}" onchange="updateFII(${i}, 'nome', this.value)" style="width: 80px;"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${(f.pvp || 0).toFixed(2)}" onchange="updateFII(${i}, 'pvp', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${preco.toFixed(2)}" onchange="updateFII(${i}, 'preco', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${div12m.toFixed(2)}" onchange="updateFII(${i}, 'div12m', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateFII(${i}, 'ipca', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateFII(${i}, 'ipcaPlus', this.value)"></td>
+                    <td><input type="number" step="0.01" class="custom-input" value="${premio.toFixed(2)}" onchange="updateFII(${i}, 'premio', this.value)"></td>
+                    
+                    <td style="color:var(--text-main); font-weight:bold;">${(rendimento * 100).toFixed(2).replace('.', ',')}%</td>
+                    <td style="color:var(--color-highlight); font-weight:bold;">R$ ${precoTeto.toFixed(2).replace('.', ',')}</td>
+                    <td style="color:${mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'}; font-weight:bold;">${(mseg * 100).toFixed(2).replace('.', ',')}%</td>
+                    
+                    <td style="text-align: center;">
+                        <button class="btn-remove" onclick="deleteFII(${i})">✖</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addFIICalc() {
+            db.fiisCalc.push({
+                nome: 'MXRF11', pvp: 1.00, preco: 10.00, div12m: 1.20, ipca: 4.62, ipcaPlus: 6.00, premio: 3.00
             });
             scheduleSave();
-            renderFIIAvaliacaoTable();
+            renderFIISCalc();
         }
 
-        function updateFiiAvaliacao(index, field, value) {
-            if (field === 'ativo') {
-                db.fiisAvaliacao[index][field] = value.toUpperCase();
-            } else {
-                db.fiisAvaliacao[index][field] = parseFloat(value) || 0;
-            }
+        function updateFII(index, field, value) {
+            if(field !== 'nome') value = parseFloat(value) || 0;
+            db.fiisCalc[index][field] = value;
             scheduleSave();
-            renderFIIAvaliacaoTable();
+            renderFIISCalc();
         }
 
-        function deleteFiiAvaliacao(index) {
-            if (confirm("Remover este FII da avaliação?")) {
-                db.fiisAvaliacao.splice(index, 1);
+        function deleteFII(index) {
+            if(confirm('Remover este FII?')) {
+                db.fiisCalc.splice(index, 1);
                 scheduleSave();
-                renderFIIAvaliacaoTable();
+                renderFIISCalc();
             }
         }
-
-        function moveFIIAvaliacao(index, direction) {
-            if (index + direction < 0 || index + direction >= db.fiisAvaliacao.length) return;
-            const temp = db.fiisAvaliacao[index];
-            db.fiisAvaliacao[index] = db.fiisAvaliacao[index + direction];
-            db.fiisAvaliacao[index + direction] = temp;
-            renderFIIAvaliacaoTable();
-            scheduleSave();
-        }
-
-        // Initialize when app loads
-        const originalOpenInvestSub = openInvestSub;
-        openInvestSub = function(subView) {
-            originalOpenInvestSub(subView);
-            if (subView === 'avaliacao') {
-                initValuationConfig();
-            }
-        };
-        
-        // Also call it after data is loaded so it doesn't break if it starts there
-        const originalLoadData = loadData;
-        loadData = async function() {
-            await originalLoadData();
-            initValuationConfig();
-        };
+        // ========================================
 
 </script>
-
-<script>
-    function calcValuation() {
-        const ipca = parseFloat(document.getElementById('inp-ipca').value) / 100;
-        const ipcaplus = parseFloat(document.getElementById('inp-ipcaplus').value) / 100;
-        
-        const bruto = ((1 + ipca) * (1 + ipcaplus)) - 1;
-        const liquido = bruto * 0.85;
-        const equiv = ((1 + liquido) / (1 + ipca)) - 1;
-        
-        document.getElementById('res-bruto').innerText = (bruto * 100).toFixed(2) + '%';
-        document.getElementById('res-liquido').innerText = (liquido * 100).toFixed(2) + '%';
-        document.getElementById('res-equiv').innerText = (equiv * 100).toFixed(2) + '%';
-    }
-    
-    document.getElementById('inp-ipca').addEventListener('input', calcValuation);
-    document.getElementById('inp-ipcaplus').addEventListener('input', calcValuation);
-    calcValuation();
-    
-    // Função para adicionar linha
-    function addFII() {
-        const tbody = document.getElementById('tbody-fiis');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" style="width: 60px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><input type="number" style="width: 50px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><input type="number" style="width: 60px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><input type="number" style="width: 60px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><input type="number" style="width: 50px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><input type="number" style="width: 50px; background: #222; border: 1px solid #444; color: white;"></td>
-            <td><select style="background: #222; color: white; border: 1px solid #444;"><option>Risco</option><option>Moderado</option><option>Sem Risco</option></select></td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td><button onclick="this.parentElement.parentElement.remove()" style="background: red; border: none; color: white; cursor: pointer;">X</button></td>
-        `;
-        tbody.appendChild(tr);
-    }
-</script>
-
 </body>
 </html>
