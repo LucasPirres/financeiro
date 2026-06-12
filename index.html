@@ -1329,6 +1329,144 @@
         }
         // ========================================
 
+// ======= LÓGICA DE VALUATION E PREÇO TETO =======
+
+// Tabela 1: Títulos
+function renderTitulos() {
+    const tbody = document.getElementById('tbody-titulos');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+
+    // PROTEÇÃO: Evita travar a página se o DB não carregou
+    if (!window.db) return;
+    if (!db.titulos) db.titulos = [];
+
+    db.titulos.forEach((t, i) => {
+        let ipca = parseFloat(t.ipca) || 0;
+        let ipcaPlus = parseFloat(t.ipcaPlus) || 0;
+
+        let bruto = ((1 + ipca/100) * (1 + ipcaPlus/100)) - 1;
+        let liquido = bruto * 0.85;
+        let equivalente = ((1 + liquido) / (1 + ipca/100)) - 1;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="custom-input" value="${t.nome || ''}" onchange="updateTitulo(${i}, 'nome', this.value)" style="width: 150px;"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateTitulo(${i}, 'ipca', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateTitulo(${i}, 'ipcaPlus', this.value)"></td>
+            <td style="color:var(--text-main); font-weight:bold;">${(bruto * 100).toFixed(2).replace('.', ',')}%</td>
+            <td style="color:var(--text-main); font-weight:bold;">${(liquido * 100).toFixed(2).replace('.', ',')}%</td>
+            <td style="color:var(--color-highlight); font-weight:bold;">${(equivalente * 100).toFixed(2).replace('.', ',')}%</td>
+            <td style="text-align: center;">
+                <button class="btn-remove" onclick="deleteTitulo(${i})">✖</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function addTitulo() {
+    if (!window.db) return;
+    if (!db.titulos) db.titulos = [];
+    db.titulos.push({ nome: 'Tesouro IPCA+', ipca: 4.62, ipcaPlus: 6.00 });
+    if (typeof scheduleSave === "function") scheduleSave();
+    renderTitulos();
+}
+
+function updateTitulo(index, field, value) {
+    if (!window.db || !db.titulos) return;
+    if(field === 'ipca' || field === 'ipcaPlus') value = parseFloat(value) || 0;
+    db.titulos[index][field] = value;
+    if (typeof scheduleSave === "function") scheduleSave();
+    renderTitulos();
+}
+
+function deleteTitulo(index) {
+    if (!window.db || !db.titulos) return;
+    if(confirm('Remover este título?')) {
+        db.titulos.splice(index, 1);
+        if (typeof scheduleSave === "function") scheduleSave();
+        renderTitulos();
+    }
+}
+
+// Tabela 2: FIIs
+function renderFIISCalc() {
+    const tbody = document.getElementById('tbody-fiis-calc');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!window.db) return;
+    if (!db.fiisCalc) db.fiisCalc = [];
+
+    db.fiisCalc.forEach((f, i) => {
+        let preco = parseFloat(f.preco) || 0;
+        let div12m = parseFloat(f.div12m) || 0;
+        let ipca = parseFloat(f.ipca) || 0;
+        let ipcaPlus = parseFloat(f.ipcaPlus) || 0;
+        let premio = parseFloat(f.premio) || 0;
+
+        let rendimento = ((1 + ipca/100) * (1 + ipcaPlus/100) * (1 + premio/100)) - 1;
+
+        let precoTeto = 0;
+        if(rendimento > 0) {
+            precoTeto = div12m / rendimento;
+        }
+
+        let mseg = 0;
+        if(preco > 0 && precoTeto > 0) {
+            mseg = (precoTeto - preco) / preco;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="custom-input" value="${f.nome || ''}" onchange="updateFII(${i}, 'nome', this.value)" style="width: 80px;"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${(f.pvp || 0).toFixed(2)}" onchange="updateFII(${i}, 'pvp', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${preco.toFixed(2)}" onchange="updateFII(${i}, 'preco', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${div12m.toFixed(2)}" onchange="updateFII(${i}, 'div12m', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${ipca.toFixed(2)}" onchange="updateFII(${i}, 'ipca', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${ipcaPlus.toFixed(2)}" onchange="updateFII(${i}, 'ipcaPlus', this.value)"></td>
+            <td><input type="number" step="0.01" class="custom-input" value="${premio.toFixed(2)}" onchange="updateFII(${i}, 'premio', this.value)"></td>
+            
+            <td style="color:var(--text-main); font-weight:bold;">${(rendimento * 100).toFixed(2).replace('.', ',')}%</td>
+            <td style="color:var(--color-highlight); font-weight:bold;">R$ ${precoTeto.toFixed(2).replace('.', ',')}</td>
+            <td style="color:${mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'}; font-weight:bold;">${(mseg * 100).toFixed(2).replace('.', ',')}%</td>
+            
+            <td style="text-align: center;">
+                <button class="btn-remove" onclick="deleteFII(${i})">✖</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function addFIICalc() {
+    if (!window.db) return;
+    if(!db.fiisCalc) db.fiisCalc = [];
+    db.fiisCalc.push({
+        nome: 'MXRF11', pvp: 1.00, preco: 10.00, div12m: 1.20, ipca: 4.62, ipcaPlus: 6.00, premio: 3.00
+    });
+    if (typeof scheduleSave === "function") scheduleSave();
+    renderFIISCalc();
+}
+
+function updateFII(index, field, value) {
+    if (!window.db || !db.fiisCalc) return;
+    if(field !== 'nome') value = parseFloat(value) || 0;
+    db.fiisCalc[index][field] = value;
+    if (typeof scheduleSave === "function") scheduleSave();
+    renderFIISCalc();
+}
+
+function deleteFII(index) {
+    if (!window.db || !db.fiisCalc) return;
+    if(confirm('Remover este FII?')) {
+        db.fiisCalc.splice(index, 1);
+        if (typeof scheduleSave === "function") scheduleSave();
+        renderFIISCalc();
+    }
+}
+
 </script>
 </body>
 </html>
