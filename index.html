@@ -411,36 +411,57 @@
                 </p>
             </div>
 
-            <div class="fii-card">
-                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 25px;">
-                    📊 Avaliação e Preço Teto de FIIs
+                        <!-- TABELA 1: TÍTULOS PÚBLICOS -->
+            <div class="fii-card" id="card-titulos">
+                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>📊 TABELA TÍTULOS PÚBLICOS</div>
+                    <button class="btn-add" onclick="addTitulo()" style="font-size: 14px; padding: 6px 12px;">+ Adicionar Título</button>
                 </div>
-                
-                
-                <div style="overflow-x: auto;">
-                    <table style="min-width: 1300px;">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="fii-table" style="min-width: 800px; width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">Ticker</th>
-                                <th style="width: 15%;">Segmento</th>
-                                <th style="width: 15%;">Classificação</th>
-                                <th style="width: 10%;">DY Médio (12m)</th>
-                                <th style="width: 10%;">Cotação Atual</th>
-                                <th style="width: 10%;">Taxa Desconto</th>
-                                <th style="width: 10%;">Preço Teto</th>
-                                <th style="width: 10%;">Margem Segurança</th>
-                                <th style="width: 10%;">Status</th>
-                                <th style="width: 90px; text-align: right;">Ações</th>
+                                <th>TÍTULO</th>
+                                <th>IPCA (%)</th>
+                                <th>IPCA+ (%)</th>
+                                <th>BRUTO</th>
+                                <th>LÍQUIDO</th>
+                                <th>EQUIVALENTE A IPCA+</th>
+                                <th style="width: 50px; text-align: center;">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-fiis-avaliacao">
-                        </tbody>
+                        <tbody id="tbody-titulos"></tbody>
                     </table>
                 </div>
-                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-highlight); color: var(--color-highlight);" onclick="addFIIAvaliacao()">+ Adicionar Fundo para Avaliação</button>
             </div>
 
-        </div>
+            <!-- TABELA 2: AVALIAÇÃO FIIs -->
+            <div class="fii-card" id="card-fiis-teto">
+                <div class="entry-title" style="color: var(--color-highlight); font-size: 1.4rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>🏢 AVALIAÇÃO FIIs</div>
+                    <button class="btn-add" onclick="addFIICalc()" style="font-size: 14px; padding: 6px 12px;">+ Adicionar FII</button>
+                </div>
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="fii-table" style="min-width: 1000px; width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>FII</th>
+                                <th>P/VP</th>
+                                <th>PREÇO</th>
+                                <th>DIVIDENDO 12M</th>
+                                <th>IPCA</th>
+                                <th>IPCA+</th>
+                                <th>PRÊMIO</th>
+                                <th>Rendimento</th>
+                                <th>PREÇO TETO</th>
+                                <th>M.SEG</th>
+                                <th style="width: 50px; text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-fiis-calc"></tbody>
+                    </table>
+                </div>
+            </div>
 
         <div id="invest-acoes-view" class="invest-scroll-area">
             
@@ -1124,7 +1145,10 @@
             document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
         }
 
-        function updateUI() { renderTables(); updateDashboard(); }
+        function updateUI() { renderTables(); updateDashboard(); 
+            renderTitulos();
+            renderFIISCalc();
+}
 
         function updateDashboard() {
             if(document.getElementById('app-container').style.display === 'none') return;
