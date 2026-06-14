@@ -1040,7 +1040,7 @@
             document.getElementById('tbody-fiis-avaliacao').innerHTML = html;
         }
 
-        // function addAcao() {
+        function addAcao() {
             db.acoes.push({ ticker: '', setor: '', pl: '', roe: '', divEbitda: '', cagr: '', roic: '', pvp: '' });
             renderAcoesTable();
             scheduleSave();
