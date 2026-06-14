@@ -909,12 +909,14 @@
         
         // ======= LÓGICA: CALCULADORA IPCA =======
         function updateCalcIpca(field, value) {
+            if (!db.calcIpca) db.calcIpca = { ipca: 4.39, bruto: 13.12 };
             db.calcIpca[field] = parseFloat(value.replace(',', '.')) || 0;
             scheduleSave();
             renderCalcIpca();
         }
 
         function renderCalcIpca() {
+            if (!db.calcIpca) db.calcIpca = { ipca: 4.39, bruto: 13.12 };
             let ipca = db.calcIpca.ipca / 100;
             let bruto = db.calcIpca.bruto / 100;
             let liquido = bruto * 0.85; // Imposto de Renda padrao ~15%
