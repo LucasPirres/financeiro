@@ -599,9 +599,18 @@
                     if(!db.acoes) db.acoes = [];
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
-                } else { 
-                    db.years[selectedYear] = createYearStructure(); 
-                    db.fiis = []; db.fiisAvaliacao = []; db.acoes = [];
+                    // Atualiza backup local com dados da nuvem
+                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
+                } else {
+                    // Supabase não tem dados — tenta carregar do backup local
+                    const backup = localStorage.getItem('financeiro_backup');
+                    if (backup) {
+                        db = JSON.parse(backup);
+                        document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
+                    } else {
+                        db.years[selectedYear] = createYearStructure(); 
+                        db.fiis = []; db.fiisAvaliacao = []; db.acoes = [];
+                    }
                 }
                 
                 // Initialize Patrimônio Data based on CSV if empty
@@ -627,18 +636,33 @@
                     };
                 }
 
-                document.getElementById('sync-status').innerText = "Online";
+                document.getElementById('sync-status').innerText = "Online ✓";
                 renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores();
             } catch (e) { 
-                document.getElementById('sync-status').innerText = "Offline (Local)";
-                if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 }; if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
-                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca();
+                // Supabase inacessível — tenta carregar do backup local
+                const backup = localStorage.getItem('financeiro_backup');
+                if (backup) {
+                    try {
+                        db = JSON.parse(backup);
+                        document.getElementById('sync-status').innerText = "Offline — backup local carregado ✓";
+                    } catch(e2) {
+                        document.getElementById('sync-status').innerText = "Erro ao carregar backup";
+                    }
+                } else {
+                    document.getElementById('sync-status').innerText = "Offline — sem backup local";
+                    if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
+                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = [];
+                }
+                if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
+                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores();
             }
         }
 
         function scheduleSave() {
             document.getElementById('sync-status').innerText = "Salvando...";
+            // Backup imediato no localStorage
+            try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(saveDataNow, 1000);
         }
@@ -646,8 +670,16 @@
         async function saveDataNow() {
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
-                if (!error) document.getElementById('sync-status').innerText = "Sincronizado";
-            } catch (e) { document.getElementById('sync-status').innerText = "Erro ao salvar"; }
+                if (!error) {
+                    // Atualiza backup local após salvar na nuvem com sucesso
+                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
+                    document.getElementById('sync-status').innerText = "Sincronizado ✓";
+                } else {
+                    document.getElementById('sync-status').innerText = "Erro (backup local salvo)";
+                }
+            } catch (e) { 
+                document.getElementById('sync-status').innerText = "Offline (backup local salvo)";
+            }
         }
 
         function createYearStructure() {
@@ -948,7 +980,8 @@
 
         // ======= LÓGICA: PLANILHA DE FIIs (AVALIAÇÃO E PREÇO TETO) =======
         function addFIIAvaliacao() {
-            db.fiisAvaliacao.push({ ticker: '', pvp: 1.00, cotacao: 10.00, div12m: 1.00, ipca: 0.00, ipcaMais: 6.48, premio: 1.00 });
+            const ipcaPadrao = db.calcIpca ? db.calcIpca.ipcaMais : 7.00;
+            db.fiisAvaliacao.push({ ticker: '', pvp: 1.00, cotacao: 10.00, div12m: 1.00, ipca: 0.00, ipcaMais: ipcaPadrao, premio: 1.00 });
             renderFIIAvaliacaoTable();
             scheduleSave();
         }
