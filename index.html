@@ -112,6 +112,8 @@
         
         .btn-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; margin-left: 5px; }
         .btn-remove:hover { color: var(--color-expense); }
+        .btn-move { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px 5px; border-radius: 4px; transition: background 0.2s, color 0.2s; }
+        .btn-move:hover:not([disabled]) { background: rgba(255,255,255,0.08); color: var(--text-main); }
         .btn-move { background: transparent; border: none; color: var(--text-main); cursor: pointer; font-size: 16px; transition: 0.2s; margin: 0 4px; opacity: 0.5; }
         .btn-move:hover { opacity: 1; color: var(--color-highlight); }
 
@@ -401,8 +403,15 @@
             </div>
 
             <div class="fii-card" style="border-top-color: var(--color-purple);">
-                <div class="entry-title" style="color: var(--color-purple); font-size: 1.4rem; margin-bottom: 25px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🏷️ Preço Teto de FIIs</span>
+                <div class="entry-title" style="color: var(--color-purple); font-size: 1.4rem; margin-bottom: 25px; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display:flex; align-items:center; gap: 18px; flex-wrap: wrap;">
+                        <span>🏷️ Preço Teto de FIIs</span>
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px;">
+                            Tijolo: IPCA = <span style="color: #555; font-weight: 700;">0%</span>
+                            &nbsp;/&nbsp;
+                            Papel: IPCA = <span id="hint-ipca-papel" style="color: var(--color-gain); font-weight: 700;">0,00%</span>
+                        </span>
+                    </div>
                     <button class="btn-add" style="border-color: var(--color-purple); color: var(--color-purple); font-size:12px;" onclick="addFIIAvaliacao()">+ Adicionar Fundo</button>
                 </div>
                 <div style="overflow-x: auto;">
@@ -413,13 +422,13 @@
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">P/VP</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Preço</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Dividendo 12M</th>
-                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA</th>
+                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equiv. IPCA+</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA+</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Prêmio</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Rendimento</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Preço Teto</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">M.SEG</th>
-                                <th style="width: 40px;"></th>
+                                <th style="width: 80px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-fiis-avaliacao">
@@ -976,6 +985,9 @@
                 </tr>
             `;
             document.getElementById('tbody-calc-ipca').innerHTML = html;
+            // Atualiza dica no cabeçalho da tabela Preço Teto
+            const hintEl = document.getElementById('hint-ipca-papel');
+            if(hintEl) hintEl.textContent = (db.calcIpca.ipca).toFixed(2).replace('.',',') + '%';
         }
 
         // ======= LÓGICA: PLANILHA DE FIIs (AVALIAÇÃO E PREÇO TETO) =======
@@ -1012,7 +1024,24 @@
             scheduleSave();
         }
 
+        function moveFIIAvaliacao(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= db.fiisAvaliacao.length) return;
+            const temp = db.fiisAvaliacao[index];
+            db.fiisAvaliacao[index] = db.fiisAvaliacao[newIndex];
+            db.fiisAvaliacao[newIndex] = temp;
+            renderFIIAvaliacaoTable();
+            scheduleSave();
+        }
+
         function renderFIIAvaliacaoTable() {
+            // Calcula o Equiv. IPCA+ da calculadora para exibir na coluna
+            const ipcaGlobal = db.calcIpca ? db.calcIpca.ipca : 0;
+            const ipcaMaisGlobal = db.calcIpca ? db.calcIpca.ipcaMais : 7.00;
+            const brutoGlobal = (1 + ipcaGlobal/100) * (1 + ipcaMaisGlobal/100) - 1;
+            const liquidoGlobal = brutoGlobal * 0.85;
+            const equivIpcaGlobal = ((1 + liquidoGlobal) / (1 + ipcaGlobal/100)) - 1;
+
             const html = db.fiisAvaliacao.map((fii, i) => {
                 const pvp = fii.pvp !== undefined ? parseFloat(fii.pvp) : 1.00;
                 const cotacao = fii.cotacao !== undefined ? parseFloat(fii.cotacao) : 0;
@@ -1020,6 +1049,13 @@
                 const ipca = fii.ipca !== undefined ? parseFloat(fii.ipca) : 0;
                 const ipcaMais = fii.ipcaMais !== undefined ? parseFloat(fii.ipcaMais) : 6.48;
                 const premio = fii.premio !== undefined ? parseFloat(fii.premio) : 0;
+
+                // Equiv. IPCA+ desta linha: calculado com o ipca individual do fundo
+                const brutoLinha = (1 + ipca/100) * (1 + ipcaMais/100) - 1;
+                const liquidoLinha = brutoLinha * 0.85;
+                const equivIpcaLinha = ipca > 0
+                    ? ((1 + liquidoLinha) / (1 + ipca/100)) - 1
+                    : equivIpcaGlobal; // se ipca=0 (tijolo), usa o equivalente global
 
                 // Calculo de Rendimento COMPOSTO
                 const fatorIpca = 1 + (ipca / 100);
@@ -1048,6 +1084,9 @@
                 let msegColor2 = mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
                 let msegBg2 = mseg >= 0 ? 'rgba(0,230,118,0.1)' : 'rgba(255,82,82,0.1)';
 
+                const isFirst = i === 0;
+                const isLast = i === db.fiisAvaliacao.length - 1;
+
                 return `
                 <tr style="border-bottom: 1px solid #1a1a1a;">
                     <td style="padding: 10px 15px; text-align: left;">
@@ -1068,12 +1107,7 @@
                             <input type="number" step="0.01" class="custom-input" style="width: 60px; text-align: center; color: var(--text-main);" value="${div12m.toFixed(2)}" onchange="updateFIIAvaliacao(${i}, 'div12m', this.value)">
                         </div>
                     </td>
-                    <td style="padding: 10px 15px;">
-                        <div style="display:flex; align-items:center; justify-content:center; gap:3px;">
-                            <input type="number" step="0.01" class="custom-input" style="width: 60px; text-align: center; color: var(--text-main);" value="${ipca.toFixed(2)}" onchange="updateFIIAvaliacao(${i}, 'ipca', this.value)">
-                            <span style="color:var(--text-muted); font-size:12px;">%</span>
-                        </div>
-                    </td>
+                    <td style="padding: 10px 15px; font-weight: 700; font-size: 14px; color: var(--color-gain);">${(equivIpcaLinha*100).toFixed(2).replace('.',',')}%</td>
                     <td style="padding: 10px 15px;">
                         <div style="display:flex; align-items:center; justify-content:center; gap:3px;">
                             <input type="number" step="0.01" class="custom-input" style="width: 60px; text-align: center; color: var(--text-main);" value="${ipcaMais.toFixed(2)}" onchange="updateFIIAvaliacao(${i}, 'ipcaMais', this.value)">
@@ -1089,7 +1123,9 @@
                     <td style="padding: 10px 15px; font-weight: 700; font-size: 15px; color: var(--color-highlight);">${rendimentoPerc.toFixed(2).replace('.',',')}%</td>
                     <td style="padding: 10px 15px; font-weight: 700; font-size: 15px; color: var(--color-highlight);">R$ ${precoTeto.toFixed(2).replace('.',',')}</td>
                     <td style="padding: 10px 15px; font-weight: 700; font-size: 15px; background: ${msegBg2}; color: ${msegColor2}; border-radius: 6px;">${mseg.toFixed(2).replace('.',',')}%</td>
-                    <td style="padding: 10px 15px; text-align: right;">
+                    <td style="padding: 10px 8px; text-align: right; white-space: nowrap;">
+                        <button class="btn-move" onclick="moveFIIAvaliacao(${i}, -1)" ${isFirst ? 'disabled' : ''} style="opacity:${isFirst?0.3:1}">↑</button>
+                        <button class="btn-move" onclick="moveFIIAvaliacao(${i}, 1)" ${isLast ? 'disabled' : ''} style="opacity:${isLast?0.3:1}">↓</button>
                         <button class="btn-remove" onclick="removeFIIAvaliacao(${i})">✕</button>
                     </td>
                 </tr>
