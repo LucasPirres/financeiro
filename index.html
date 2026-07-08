@@ -147,6 +147,9 @@
         .card-carteira:hover { border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.25); }
         .card-carteira .icon { color: var(--color-gain); font-size: 48px; }
 
+        .card-rf:hover { border-color: #00bcd4; box-shadow: 0 20px 40px rgba(0, 188, 212, 0.25); }
+        .card-rf .icon { color: #00bcd4; }
+
         /* ================= TELA DE PLANILHAS E CARTEIRA ================= */
         .invest-scroll-area {
             display: none; 
@@ -282,6 +285,11 @@
             <div class="invest-menu-card card-acoes" onclick="openAcoesTable()">
                 <div class="icon">📈</div>
                 <h3>Planilha de Ações BR</h3>
+            </div>
+
+            <div class="invest-menu-card card-rf" onclick="openRendaFixaTable()">
+                <div class="icon" style="color: #00bcd4;">🏦</div>
+                <h3>Planilha Renda Fixa</h3>
             </div>
         </div>
 
@@ -478,6 +486,179 @@
 
     </div>
 
+        <!-- ======= TELA RENDA FIXA ======= -->
+        <div id="invest-rendafixa-view" class="invest-scroll-area">
+
+            <div class="fii-card" style="border-top-color: #00bcd4; max-width: 1400px;">
+                <div class="entry-title" style="color: #00bcd4; font-size: 1.4rem; margin-bottom: 25px;">
+                    🏦 Calculadora de Renda Fixa
+                </div>
+
+                <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start;">
+
+                    <!-- LADO ESQUERDO: Calculadora -->
+                    <div style="flex: 1; min-width: 320px;">
+
+                        <!-- Input IPCA -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 18px; margin-bottom: 16px; border: 1px solid #00bcd4; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                            <div style="color: #00bcd4; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">IPCA <span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">(inflação atual % a.a.)</span></div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="number" id="rf-ipca" value="4.72" step="0.01" oninput="calcRendaFixa()" style="width: 90px; background: #0a0a0a; border: 1px solid #00bcd4; border-radius: 6px; color: #00bcd4; font-size: 18px; font-weight: 700; padding: 8px 10px; text-align: right; outline: none;">
+                                <span style="color: #00bcd4; font-weight: 700;">%</span>
+                            </div>
+                        </div>
+
+                        <!-- IPCA+ -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: #b39ddb; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #2a2a2a; padding-bottom: 8px;">📌 IPCA+</div>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap;">
+                                <label style="color: var(--text-muted); font-size: 12px; flex: 1; min-width: 120px;">Taxa pré-fixada adicional (% a.a.)<br>
+                                    <input type="number" id="rf-ipcamais-taxa" value="6.00" step="0.01" oninput="calcRendaFixa()" style="width: 100%; margin-top: 4px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 16px; font-weight: 700; padding: 7px 10px; outline: none;">
+                                </label>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Bruto</div>
+                                    <div id="rf-ipcamais-bruto" style="color: #b39ddb; font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Líquido</div>
+                                    <div id="rf-ipcamais-liquido" style="color: var(--color-gain); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pré-Fixado -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: var(--color-highlight); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #2a2a2a; padding-bottom: 8px;">📌 Pré-Fixado</div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: var(--text-muted); font-size: 12px; display: block;">Taxa contratada (% a.a.)<br>
+                                    <input type="number" id="rf-pre-taxa" value="12.00" step="0.01" oninput="calcRendaFixa()" style="width: 100%; margin-top: 4px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 16px; font-weight: 700; padding: 7px 10px; outline: none;">
+                                </label>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Bruto</div>
+                                    <div id="rf-pre-bruto" style="color: var(--color-highlight); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Líquido</div>
+                                    <div id="rf-pre-liquido" style="color: var(--color-gain); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selic -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: var(--color-blue); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #2a2a2a; padding-bottom: 8px;">📌 Selic (Tesouro Direto) <span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">— Hoje: 14,25%</span></div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: var(--text-muted); font-size: 12px; display: block;">Taxa Selic atual (% a.a.)<br>
+                                    <input type="number" id="rf-selic-taxa" value="14.25" step="0.01" oninput="calcRendaFixa()" style="width: 100%; margin-top: 4px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 16px; font-weight: 700; padding: 7px 10px; outline: none;">
+                                </label>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Bruto</div>
+                                    <div id="rf-selic-bruto" style="color: var(--color-blue); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Líquido</div>
+                                    <div id="rf-selic-liquido" style="color: var(--color-gain); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CDI -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: #80cbc4; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #2a2a2a; padding-bottom: 8px;">📌 100% do CDI (Bancos Privados) <span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">— Hoje: 14,15%</span></div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: var(--text-muted); font-size: 12px; display: block;">% do CDI contratado<br>
+                                    <input type="number" id="rf-cdi-perc" value="100" step="1" min="1" max="200" oninput="calcRendaFixa()" style="width: 100%; margin-top: 4px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 16px; font-weight: 700; padding: 7px 10px; outline: none;">
+                                </label>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Bruto</div>
+                                    <div id="rf-cdi-bruto" style="color: #80cbc4; font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                                <div style="background: #0a0a0a; border-radius: 6px; padding: 10px; text-align: center;">
+                                    <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Retorno Real Líquido</div>
+                                    <div id="rf-cdi-liquido" style="color: var(--color-gain); font-size: 20px; font-weight: 700; margin-top: 4px;">—</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nota IR -->
+                        <div style="background: #111; border-radius: 8px; padding: 12px 16px; border: 1px solid #2a2a2a; font-size: 11px; color: var(--text-muted); line-height: 1.7;">
+                            <strong style="color: var(--color-highlight);">📋 IR Tabela Regressiva:</strong><br>
+                            Até 180 dias → 22,5% &nbsp;|&nbsp; 181–360 dias → 20% &nbsp;|&nbsp; 361–720 dias → 17,5% &nbsp;|&nbsp; Acima de 720 dias → 15%<br>
+                            <span style="color: #555;">* Cálculo usa alíquota de 15% (longo prazo). LCI/LCA são isentos de IR.</span>
+                        </div>
+                    </div>
+
+                    <!-- LADO DIREITO: Guia de Tipos -->
+                    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px;">
+
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 20px; border: 1px solid var(--border-color);">
+                            <div style="color: #00bcd4; font-weight: 700; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; border-bottom: 1px solid #2a2a2a; padding-bottom: 10px;">📖 Tipos de Renda Fixa</div>
+
+                            <!-- Pós-Fixado -->
+                            <div style="margin-bottom: 18px;">
+                                <div style="color: var(--color-gain); font-weight: 700; font-size: 14px; margin-bottom: 6px;">Pós-Fixado</div>
+                                <div style="color: var(--text-muted); font-size: 13px; line-height: 1.7;">
+                                    Segue um indicador de mercado — o rendimento <strong style="color: var(--text-main);">varia conforme a taxa sobe ou desce</strong>.<br><br>
+                                    <span style="display: block; background: #0d0d0d; border-radius: 6px; padding: 10px 12px; margin-bottom: 6px; border-left: 3px solid var(--color-blue);">
+                                        <strong style="color: var(--color-blue);">Selic</strong> — Taxa básica de juros do Brasil, definida pelo COPOM. O governo paga juros baseados nela para quem empresta dinheiro via <strong>Tesouro Selic</strong>. Hoje: <strong style="color: var(--text-main);">14,25%</strong>
+                                    </span>
+                                    <span style="display: block; background: #0d0d0d; border-radius: 6px; padding: 10px 12px; border-left: 3px solid #80cbc4;">
+                                        <strong style="color: #80cbc4;">CDI</strong> — Taxa de empréstimos entre bancos privados. É sempre <strong>0,10% menor que a Selic</strong>. Bancos pagam o CDI em produtos como CDB e LCI. Hoje: <strong style="color: var(--text-main);">14,15%</strong>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style="border-top: 1px solid #2a2a2a; margin-bottom: 18px;"></div>
+
+                            <!-- IPCA+ -->
+                            <div style="margin-bottom: 18px;">
+                                <div style="color: #b39ddb; font-weight: 700; font-size: 14px; margin-bottom: 6px;">IPCA+</div>
+                                <div style="color: var(--text-muted); font-size: 13px; line-height: 1.7; background: #0d0d0d; border-radius: 6px; padding: 10px 12px; border-left: 3px solid #b39ddb;">
+                                    Combinação de <strong style="color: var(--text-main);">pós + pré fixado</strong>. Acompanha a inflação medida pelo IPCA e adiciona uma taxa pré-fixada por cima.<br><br>
+                                    Exemplo: <strong style="color: #b39ddb;">IPCA + 6%</strong> → se o IPCA estiver em 4,72%, o retorno bruto é <strong>~10,72% a.a.</strong><br><br>
+                                    <span style="color: #555; font-size: 12px;">✔ Protege o poder de compra + garante ganho real acima da inflação.</span>
+                                </div>
+                            </div>
+
+                            <div style="border-top: 1px solid #2a2a2a; margin-bottom: 18px;"></div>
+
+                            <!-- Pré-Fixado -->
+                            <div>
+                                <div style="color: var(--color-highlight); font-weight: 700; font-size: 14px; margin-bottom: 6px;">Pré-Fixado</div>
+                                <div style="color: var(--text-muted); font-size: 13px; line-height: 1.7; background: #0d0d0d; border-radius: 6px; padding: 10px 12px; border-left: 3px solid var(--color-highlight);">
+                                    Taxa <strong style="color: var(--text-main);">travada no momento da contratação</strong> — não sobe nem desce.<br><br>
+                                    Exemplo: CDB de <strong style="color: var(--color-highlight);">12% a.a.</strong> → você receberá exatamente isso, independente do que aconteça com a Selic.<br><br>
+                                    <span style="color: #555; font-size: 12px;">⚠ Risco: se a inflação subir muito, o ganho real pode ser baixo ou até negativo.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card fórmulas -->
+                        <div style="background: #1a1a1a; border-radius: 10px; padding: 16px 18px; border: 1px solid var(--border-color);">
+                            <div style="color: var(--text-muted); font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;">🔢 Como os Cálculos São Feitos</div>
+                            <div style="font-size: 12px; color: var(--text-muted); line-height: 1.9;">
+                                <strong style="color: var(--text-main);">Retorno Real Bruto</strong> = ((1 + taxa/100) ÷ (1 + IPCA/100) − 1) × 100<br>
+                                <strong style="color: var(--text-main);">Retorno Líquido</strong> = taxa bruta × (1 − 0,15) — IR de 15% longo prazo<br>
+                                <strong style="color: var(--text-main);">Retorno Real Líquido</strong> = ((1 + liq/100) ÷ (1 + IPCA/100) − 1) × 100
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIM TELA RENDA FIXA -->
+
+    </div>
+
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
@@ -502,6 +683,7 @@
         function goHome() {
             document.getElementById('invest-planilhas-view').style.display = 'none';
             document.getElementById('invest-acoes-view').style.display = 'none';
+            document.getElementById('invest-rendafixa-view').style.display = 'none';
             document.getElementById('invest-carteira-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
@@ -561,10 +743,75 @@
             renderAcoesTable();
         }
 
+        function openRendaFixaTable() {
+            document.getElementById('invest-planilhas-menu-view').style.display = 'none';
+            const rfView = document.getElementById('invest-rendafixa-view');
+            rfView.style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'PLANILHA RENDA FIXA';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'rendafixa-table';
+            calcRendaFixa();
+        }
+
+        function calcRendaFixa() {
+            const ipca = parseFloat(document.getElementById('rf-ipca').value) || 0;
+            const IR = 0.15;
+
+            function retornoReal(taxaBruta) {
+                return ((1 + taxaBruta/100) / (1 + ipca/100) - 1) * 100;
+            }
+            function fmt(v) { return v.toFixed(2).replace('.', ',') + '%'; }
+            function color(v) { return v >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'; }
+
+            // IPCA+
+            const ipcaTaxa = parseFloat(document.getElementById('rf-ipcamais-taxa').value) || 0;
+            const ipcaBruto = ipca + ipcaTaxa;
+            const ipcaLiq = ipcaBruto * (1 - IR);
+            const ipcaRealBruto = retornoReal(ipcaBruto);
+            const ipcaRealLiq = retornoReal(ipcaLiq);
+            document.getElementById('rf-ipcamais-bruto').innerText = fmt(ipcaRealBruto);
+            document.getElementById('rf-ipcamais-bruto').style.color = color(ipcaRealBruto);
+            document.getElementById('rf-ipcamais-liquido').innerText = fmt(ipcaRealLiq);
+            document.getElementById('rf-ipcamais-liquido').style.color = color(ipcaRealLiq);
+
+            // Pré-Fixado
+            const preTaxa = parseFloat(document.getElementById('rf-pre-taxa').value) || 0;
+            const preLiq = preTaxa * (1 - IR);
+            const preRealBruto = retornoReal(preTaxa);
+            const preRealLiq = retornoReal(preLiq);
+            document.getElementById('rf-pre-bruto').innerText = fmt(preRealBruto);
+            document.getElementById('rf-pre-bruto').style.color = color(preRealBruto);
+            document.getElementById('rf-pre-liquido').innerText = fmt(preRealLiq);
+            document.getElementById('rf-pre-liquido').style.color = color(preRealLiq);
+
+            // Selic
+            const selicTaxa = parseFloat(document.getElementById('rf-selic-taxa').value) || 0;
+            const selicLiq = selicTaxa * (1 - IR);
+            const selicRealBruto = retornoReal(selicTaxa);
+            const selicRealLiq = retornoReal(selicLiq);
+            document.getElementById('rf-selic-bruto').innerText = fmt(selicRealBruto);
+            document.getElementById('rf-selic-bruto').style.color = color(selicRealBruto);
+            document.getElementById('rf-selic-liquido').innerText = fmt(selicRealLiq);
+            document.getElementById('rf-selic-liquido').style.color = color(selicRealLiq);
+
+            // CDI
+            const cdiBase = (parseFloat(document.getElementById('rf-selic-taxa').value) || 14.25) - 0.10;
+            const cdiPerc = parseFloat(document.getElementById('rf-cdi-perc').value) || 100;
+            const cdiTaxa = cdiBase * cdiPerc / 100;
+            const cdiLiq = cdiTaxa * (1 - IR);
+            const cdiRealBruto = retornoReal(cdiTaxa);
+            const cdiRealLiq = retornoReal(cdiLiq);
+            document.getElementById('rf-cdi-bruto').innerText = fmt(cdiRealBruto);
+            document.getElementById('rf-cdi-bruto').style.color = color(cdiRealBruto);
+            document.getElementById('rf-cdi-liquido').innerText = fmt(cdiRealLiq);
+            document.getElementById('rf-cdi-liquido').style.color = color(cdiRealLiq);
+        }
+
         function goBackInvest() {
-            if (currentInvestView === 'planilhas-table' || currentInvestView === 'acoes-table') {
+            if (currentInvestView === 'planilhas-table' || currentInvestView === 'acoes-table' || currentInvestView === 'rendafixa-table') {
                 document.getElementById('invest-planilhas-view').style.display = 'none';
                 document.getElementById('invest-acoes-view').style.display = 'none';
+                document.getElementById('invest-rendafixa-view').style.display = 'none';
                 document.getElementById('invest-planilhas-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
