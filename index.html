@@ -331,6 +331,121 @@
                     </div>
             </div>
 
+            <!-- ======= MÉTODO ARCA ======= -->
+            <div class="fii-card" style="border-top-color: var(--color-blue); margin-top: 0;">
+                <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 25px;">⚓ Método ARCA — Rebalanceamento</div>
+
+                <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start;">
+
+                    <!-- COLUNA ESQUERDA: Inputs -->
+                    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 14px;">
+
+                        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 4px;">Patrimônio Atual por Classe</div>
+
+                        <!-- A: Ações -->
+                        <div style="background: #111; border-radius: 8px; padding: 14px 16px; border: 1px solid #1c2e1c; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 8px; height: 40px; background: var(--color-gain); border-radius: 4px; flex-shrink: 0;"></div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: var(--color-gain); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">A — Ações (Brasil)</div>
+                                <input type="number" id="arca-acoes" value="0" min="0" step="100" oninput="calcARCA()" placeholder="R$ 0,00" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #2a2a2a; color: var(--text-main); font-size: 18px; font-weight: 700; padding: 4px 0; outline: none;">
+                            </div>
+                            <div style="text-align: right; min-width: 52px;">
+                                <div id="arca-acoes-pct" style="font-size: 20px; font-weight: 700; color: var(--color-gain);">0%</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">do total</div>
+                            </div>
+                        </div>
+
+                        <!-- R: Real Estate -->
+                        <div style="background: #111; border-radius: 8px; padding: 14px 16px; border: 1px solid #2e2510; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 8px; height: 40px; background: var(--color-highlight); border-radius: 4px; flex-shrink: 0;"></div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: var(--color-highlight); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">R — Real Estate (FIIs)</div>
+                                <input type="number" id="arca-re" value="0" min="0" step="100" oninput="calcARCA()" placeholder="R$ 0,00" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #2a2a2a; color: var(--text-main); font-size: 18px; font-weight: 700; padding: 4px 0; outline: none;">
+                            </div>
+                            <div style="text-align: right; min-width: 52px;">
+                                <div id="arca-re-pct" style="font-size: 20px; font-weight: 700; color: var(--color-highlight);">0%</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">do total</div>
+                            </div>
+                        </div>
+
+                        <!-- C: Caixa -->
+                        <div style="background: #111; border-radius: 8px; padding: 14px 16px; border: 1px solid #0f1c2e; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 8px; height: 40px; background: var(--color-blue); border-radius: 4px; flex-shrink: 0;"></div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: var(--color-blue); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">C — Caixa (Renda Fixa)</div>
+                                <input type="number" id="arca-caixa" value="0" min="0" step="100" oninput="calcARCA()" placeholder="R$ 0,00" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #2a2a2a; color: var(--text-main); font-size: 18px; font-weight: 700; padding: 4px 0; outline: none;">
+                            </div>
+                            <div style="text-align: right; min-width: 52px;">
+                                <div id="arca-caixa-pct" style="font-size: 20px; font-weight: 700; color: var(--color-blue);">0%</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">do total</div>
+                            </div>
+                        </div>
+
+                        <!-- A: Internacional -->
+                        <div style="background: #111; border-radius: 8px; padding: 14px 16px; border: 1px solid #1c1030; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 8px; height: 40px; background: #b39ddb; border-radius: 4px; flex-shrink: 0;"></div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: #b39ddb; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">A — Ativos Internacionais</div>
+                                <input type="number" id="arca-inter" value="0" min="0" step="100" oninput="calcARCA()" placeholder="R$ 0,00" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #2a2a2a; color: var(--text-main); font-size: 18px; font-weight: 700; padding: 4px 0; outline: none;">
+                            </div>
+                            <div style="text-align: right; min-width: 52px;">
+                                <div id="arca-inter-pct" style="font-size: 20px; font-weight: 700; color: #b39ddb;">0%</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">do total</div>
+                            </div>
+                        </div>
+
+                        <!-- Novo Aporte -->
+                        <div style="background: #0d0d0d; border-radius: 8px; padding: 14px 16px; border: 1px dashed #333; margin-top: 4px;">
+                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;">💰 Valor do Novo Aporte</div>
+                            <input type="number" id="arca-aporte" value="0" min="0" step="100" oninput="calcARCA()" placeholder="R$ 0,00" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: var(--text-main); font-size: 22px; font-weight: 700; padding: 4px 0; outline: none;">
+                        </div>
+
+                        <!-- Recomendação -->
+                        <div id="arca-recomendacao" style="background: #0a0a0a; border-radius: 8px; padding: 16px; border: 1px solid #1a1a1a; min-height: 60px; display: none; line-height: 1.8; font-size: 13px; color: var(--text-muted);">
+                        </div>
+
+                    </div>
+
+                    <!-- COLUNA DIREITA: Gráfico -->
+                    <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                        <div style="width: 100%; max-width: 320px; position: relative;">
+                            <canvas id="chartArca" height="320"></canvas>
+                            <!-- Total no centro do doughnut -->
+                            <div id="arca-total-centro" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Total</div>
+                                <div id="arca-total-valor" style="font-size: 20px; font-weight: 700; color: var(--text-main);">R$ 0</div>
+                            </div>
+                        </div>
+                        <!-- Legenda manual -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 320px;">
+                            <div style="background: #111; border-radius: 6px; padding: 10px 12px; border-left: 3px solid var(--color-gain);">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Ações</div>
+                                <div id="arca-leg-acoes" style="font-size: 13px; font-weight: 700; color: var(--color-gain);">R$ 0</div>
+                            </div>
+                            <div style="background: #111; border-radius: 6px; padding: 10px 12px; border-left: 3px solid var(--color-highlight);">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Real Estate</div>
+                                <div id="arca-leg-re" style="font-size: 13px; font-weight: 700; color: var(--color-highlight);">R$ 0</div>
+                            </div>
+                            <div style="background: #111; border-radius: 6px; padding: 10px 12px; border-left: 3px solid var(--color-blue);">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Caixa / RF</div>
+                                <div id="arca-leg-caixa" style="font-size: 13px; font-weight: 700; color: var(--color-blue);">R$ 0</div>
+                            </div>
+                            <div style="background: #111; border-radius: 6px; padding: 10px 12px; border-left: 3px solid #b39ddb;">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Internacional</div>
+                                <div id="arca-leg-inter" style="font-size: 13px; font-weight: 700; color: #b39ddb;">R$ 0</div>
+                            </div>
+                        </div>
+                        <!-- Barra de desvio do ideal -->
+                        <div style="width: 100%; max-width: 320px; background: #111; border-radius: 8px; padding: 14px;">
+                            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Desvio do ideal (25% cada)</div>
+                            <div id="arca-barras-desvio" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- FIM MÉTODO ARCA -->
+
         </div>
 
         <div id="invest-planilhas-view" class="invest-scroll-area">
@@ -430,7 +545,7 @@
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">P/VP</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Preço</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Dividendo 12M</th>
-                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equiv. IPCA+</th>
+                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equiv. IPCA</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA+</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Prêmio</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Rendimento</th>
@@ -661,6 +776,203 @@
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <script>
+        // ======= MÉTODO ARCA =======
+
+        // Instância global do gráfico (necessário para destruir e recriar sem vazamento)
+        let chartArcaInstance = null;
+
+        /**
+         * Inicializa o gráfico Doughnut do Método ARCA.
+         * Chamada uma vez quando a tela de carteira é aberta.
+         */
+        function initChartArca() {
+            // Se já existe uma instância, destrói antes de criar nova (evita canvas duplicado)
+            if (chartArcaInstance) { chartArcaInstance.destroy(); chartArcaInstance = null; }
+
+            const ctx = document.getElementById('chartArca');
+            if (!ctx) return;
+
+            chartArcaInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ações', 'Real Estate', 'Caixa / RF', 'Internacional'],
+                    datasets: [{
+                        data: [25, 25, 25, 25], // valores iniciais (placeholder)
+                        backgroundColor: ['#00e676', '#ffb300', '#4da6ff', '#b39ddb'],
+                        borderColor: '#0a0a0a',
+                        borderWidth: 3,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    cutout: '68%', // cria o buraco central para o total
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }, // usamos legenda manual
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const val = ctx.parsed;
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                    return ` R$ ${val.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: { duration: 400 }
+                }
+            });
+
+            // Roda o cálculo inicial para preencher os valores
+            calcARCA();
+        }
+
+        /**
+         * Formata número como moeda BRL curta (ex: 1.500 → "R$ 1.500")
+         */
+        function fmtBRL(v) {
+            if (v >= 1000000) return 'R$ ' + (v / 1000000).toFixed(2).replace('.', ',') + 'M';
+            if (v >= 1000) return 'R$ ' + (v / 1000).toFixed(1).replace('.', ',') + 'k';
+            return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
+        }
+
+        /**
+         * Função principal: recalcula tudo ao alterar qualquer input.
+         * Chamada via oninput nos campos de patrimônio e aporte.
+         */
+        function calcARCA() {
+            // --- 1. Leitura dos valores ---
+            const acoes  = parseFloat(document.getElementById('arca-acoes').value)  || 0;
+            const re     = parseFloat(document.getElementById('arca-re').value)     || 0;
+            const caixa  = parseFloat(document.getElementById('arca-caixa').value)  || 0;
+            const inter  = parseFloat(document.getElementById('arca-inter').value)  || 0;
+            const aporte = parseFloat(document.getElementById('arca-aporte').value) || 0;
+
+            const valores = [acoes, re, caixa, inter];
+            const total   = acoes + re + caixa + inter;
+
+            // --- 2. Cálculo das porcentagens atuais ---
+            const pcts = total > 0
+                ? valores.map(v => (v / total) * 100)
+                : [0, 0, 0, 0];
+
+            // --- 3. Atualiza os % ao lado de cada input ---
+            const pctIds  = ['arca-acoes-pct', 'arca-re-pct', 'arca-caixa-pct', 'arca-inter-pct'];
+            pctIds.forEach((id, i) => {
+                document.getElementById(id).innerText = pcts[i].toFixed(1) + '%';
+            });
+
+            // --- 4. Atualiza o gráfico (se inicializado) ---
+            if (chartArcaInstance) {
+                // Usa os valores brutos no gráfico; tooltip calculará % automaticamente
+                chartArcaInstance.data.datasets[0].data = total > 0 ? valores : [1, 1, 1, 1];
+                chartArcaInstance.update();
+            }
+
+            // --- 5. Atualiza o total no centro do doughnut ---
+            document.getElementById('arca-total-valor').innerText = fmtBRL(total);
+
+            // --- 6. Atualiza a legenda manual ---
+            document.getElementById('arca-leg-acoes').innerText = fmtBRL(acoes);
+            document.getElementById('arca-leg-re').innerText    = fmtBRL(re);
+            document.getElementById('arca-leg-caixa').innerText = fmtBRL(caixa);
+            document.getElementById('arca-leg-inter').innerText = fmtBRL(inter);
+
+            // --- 7. Barras de desvio do ideal (25%) ---
+            const nomes  = ['Ações', 'Real Estate', 'Caixa / RF', 'Internacional'];
+            const cores  = ['var(--color-gain)', 'var(--color-highlight)', 'var(--color-blue)', '#b39ddb'];
+            const barDiv = document.getElementById('arca-barras-desvio');
+            barDiv.innerHTML = '';
+
+            nomes.forEach((nome, i) => {
+                const desvio = pcts[i] - 25; // positivo = acima do ideal; negativo = abaixo
+                const barWidth = Math.min(Math.abs(desvio) * 2, 100); // escala visual
+                const sinal = desvio >= 0 ? '+' : '';
+                const cor = Math.abs(desvio) < 2 ? 'var(--color-gain)' : Math.abs(desvio) < 6 ? 'var(--color-highlight)' : 'var(--color-expense, #ff5252)';
+                barDiv.innerHTML += `
+                    <div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                            <span style="font-size:11px; color:${cores[i]}; font-weight:700;">${nome}</span>
+                            <span style="font-size:11px; color:${cor}; font-weight:700;">${sinal}${desvio.toFixed(1)}pp</span>
+                        </div>
+                        <div style="background:#1a1a1a; border-radius:3px; height:5px; overflow:hidden;">
+                            <div style="height:100%; width:${barWidth}%; background:${cor}; border-radius:3px; transition:width 0.3s;"></div>
+                        </div>
+                    </div>`;
+            });
+
+            // --- 8. Recomendação de aporte ---
+            const recDiv = document.getElementById('arca-recomendacao');
+            recDiv.style.display = 'none';
+            recDiv.innerHTML = '';
+
+            if (aporte <= 0 && total <= 0) return;
+
+            // Calcula o patrimônio ideal (25% cada) com o novo aporte incluído
+            const totalFuturo = total + aporte;
+            const idealFuturo = totalFuturo * 0.25; // valor ideal de cada classe após o aporte
+
+            // Diferença entre o ideal futuro e o que já tenho: quanto falta em cada classe
+            const deficit = [
+                idealFuturo - acoes,
+                idealFuturo - re,
+                idealFuturo - caixa,
+                idealFuturo - inter
+            ];
+
+            // Apenas classes que ainda estão abaixo do ideal recebem aporte
+            const precisam = deficit.map((d, i) => ({ i, d: Math.max(0, d) })).filter(x => x.d > 0);
+            const totalDeficit = precisam.reduce((a, x) => a + x.d, 0);
+
+            if (aporte <= 0) {
+                // Sem aporte: só mostra o status
+                recDiv.style.display = 'block';
+                if (total > 0) {
+                    const mais = pcts.indexOf(Math.max(...pcts));
+                    const menos = pcts.indexOf(Math.min(...pcts));
+                    recDiv.innerHTML = `
+                        <div style="color:var(--text-muted); margin-bottom:6px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">📊 Diagnóstico da carteira</div>
+                        <span style="color:${cores[mais]}; font-weight:700;">${nomes[mais]}</span> está mais pesado (${pcts[mais].toFixed(1)}%).
+                        <span style="color:${cores[menos]}; font-weight:700;">${nomes[menos]}</span> é o mais leve (${pcts[menos].toFixed(1)}%).
+                        <br><span style="color:var(--text-muted);">Adicione um valor de aporte para ver a recomendação.</span>`;
+                }
+                return;
+            }
+
+            // Distribui o aporte proporcionalmente ao déficit de cada classe
+            let linhas = '';
+            let sobraAlocada = 0;
+
+            precisam.forEach(({ i, d }) => {
+                const proporcao = d / totalDeficit;
+                const valorAlocar = Math.min(aporte * proporcao, d); // não ultrapassa o que falta
+                sobraAlocada += valorAlocar;
+
+                const valorFmt = valorAlocar.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const pctFmt  = (proporcao * 100).toFixed(0);
+                linhas += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:#111; border-radius:6px; border-left:3px solid ${cores[i]};">
+                        <span style="color:${cores[i]}; font-weight:700;">${nomes[i]}</span>
+                        <span style="color:var(--text-main); font-weight:700;">R$ ${valorFmt} <span style="font-size:11px; color:var(--text-muted);">(${pctFmt}% do aporte)</span></span>
+                    </div>`;
+            });
+
+            // Se já está equilibrado (todos no ideal ou acima), informa
+            if (precisam.length === 0) {
+                recDiv.style.display = 'block';
+                recDiv.innerHTML = `<span style="color:var(--color-gain); font-weight:700;">✅ Carteira equilibrada!</span> Nenhuma classe está abaixo de 25%. O aporte pode ir para qualquer uma.`;
+                return;
+            }
+
+            const aporteTotal = aporte.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            recDiv.style.display = 'block';
+            recDiv.innerHTML = `
+                <div style="color:var(--text-muted); margin-bottom:8px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">🎯 Onde aportar R$ ${aporteTotal}</div>
+                <div style="display:flex; flex-direction:column; gap:6px;">${linhas}</div>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted);">Distribuição calculada para aproximar sua carteira de 25% em cada classe (Método ARCA).</div>`;
+        }
+
         // ======= NAVEGAÇÃO PRINCIPAL =======
         let currentInvestView = 'menu';
 
@@ -709,6 +1021,8 @@
             currentInvestView = 'carteira-view';
             renderMeuPatrimonio();
             renderSetores();
+            // Inicializa o gráfico ARCA (aguarda um frame para o canvas estar visível)
+            setTimeout(initChartArca, 50);
         }
 
         function openInvestPlanilhas() {
