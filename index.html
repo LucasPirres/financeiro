@@ -589,39 +589,24 @@
 
         <div id="invest-acoes-view" class="invest-scroll-area">
             
-            <div class="fii-card" style="padding: 25px; display: flex; flex-direction: column; align-items: center; border-top-color: var(--color-blue);">
+            <div class="fii-card" style="padding: 25px; border-top-color: var(--color-blue);">
                 <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 20px; width: 100%; text-align: left;">
-                    📚 Critérios: Como Escolher Boas Ações
+                    📚 Referências e Ferramentas
                 </div>
-                <img src="Gemini_Generated_Image_ld3kvxld3kvxld3k.jpg" alt="Critérios para escolher Ações" style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 1px solid var(--border-color);">
+                <a href="https://investidor10.com.br/acoes/indice-basileia-bancos/" target="_blank" rel="noopener noreferrer"
+                   style="display: flex; align-items: center; gap: 18px; width: 100%; background: linear-gradient(135deg, #0d1a2e 0%, #112240 100%); border: 1px solid var(--color-blue); border-radius: 10px; padding: 22px 28px; text-decoration: none; cursor: pointer; transition: box-shadow 0.25s, border-color 0.25s, transform 0.2s; box-shadow: 0 4px 20px rgba(77,166,255,0.10);"
+                   onmouseover="this.style.boxShadow='0 8px 32px rgba(77,166,255,0.28)'; this.style.borderColor='#7ec8ff'; this.style.transform='translateY(-2px)';"
+                   onmouseout="this.style.boxShadow='0 4px 20px rgba(77,166,255,0.10)'; this.style.borderColor='var(--color-blue)'; this.style.transform='translateY(0)';">
+                    <div style="font-size: 36px; line-height: 1;">🏦</div>
+                    <div style="flex: 1;">
+                        <div style="color: var(--color-blue); font-weight: 700; font-size: 15px; letter-spacing: 0.5px; margin-bottom: 4px;">Índice de Basileia dos Bancos — Investidor10</div>
+                        <div style="color: var(--text-muted); font-size: 13px;">Consulte o índice de Basileia atualizado de todos os bancos listados na B3. Ideal para avaliar a saúde financeira do setor financeiro.</div>
+                    </div>
+                    <div style="color: var(--color-blue); font-size: 22px; opacity: 0.7;">→</div>
+                </a>
             </div>
 
-            <div class="fii-card" style="border-top-color: var(--color-blue);">
-                <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 25px;">
-                    📈 Ações (Brasil)
-                </div>
-                
-                <div style="overflow-x: auto;">
-                    <table style="min-width: 1100px;">
-                        <thead>
-                            <tr>
-                                <th style="width: 15%;">Ticker</th>
-                                <th style="width: 15%;">Setor</th>
-                                <th style="width: 10%;">P/L</th>
-                                <th style="width: 10%;">ROE (%)</th>
-                                <th style="width: 12%;">Dívida Liq/EBITDA</th>
-                                <th style="width: 10%;">CAGR (%)</th>
-                                <th style="width: 10%;">ROIC (%)</th>
-                                <th style="width: 10%;">P/VP</th>
-                                <th style="width: 90px; text-align: right;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-acoes">
-                        </tbody>
-                    </table>
-                </div>
-                <button class="btn-add" style="margin-top: 20px; border-color: var(--color-blue); color: var(--color-blue);" onclick="addAcao()">+ Adicionar Nova Ação</button>
-            </div>
+
 
             <!-- ===== TABELAS POR SETOR COM PREÇO TETO ===== -->
 
@@ -641,24 +626,30 @@
                     <table style="min-width: 900px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width:12%; padding: 10px 8px; border-bottom: 2px solid #4db6ac; color: #4db6ac;">Ticker</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
-                                <th style="width:11%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Basileia (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #4db6ac; color: #4db6ac;">Ticker</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Basileia (%)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação (média 5 anos) — usado no Método Bazin">DPA 5a (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">T. Graham</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Preço Teto Bazin = DPA / 0,06">T. Bazin</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-setor-financeiro"></tbody>
                     </table>
                 </div>
-                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic;">
-                    💡 Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#ffb300;">Teto Graham</span> = LPA × P/L Alvo &nbsp;|&nbsp;
+                    <span style="color:#ce93d8;">Teto Bazin</span> = DPA ÷ 0,06 (yield mínimo 6%) &nbsp;|&nbsp;
+                    M. Seg. = (Teto Graham / Cotação − 1) × 100 &nbsp;|&nbsp;
+                    <span style="color: var(--color-gain);">Verde = abaixo do teto (barato)</span> &nbsp;
+                    <span style="color: var(--color-expense);">Vermelho = acima do teto (caro)</span>
                 </div>
             </div>
 
@@ -2012,7 +2003,7 @@
         const SETOR_CONFIG = {
             financeiro: {
                 defaultPlAlvo: 8,
-                fields: ['ticker','pl','roe','pvp','basileia','lpa','cotacao','plAlvo'],
+                fields: ['ticker','pl','roe','pvp','basileia','lpa','dpa','cotacao','plAlvo'],
                 tbody: 'tbody-setor-financeiro'
             },
             utilidade: {
@@ -2049,7 +2040,7 @@
         function addAcaoSetor(setor) {
             ensureSetorData();
             const cfg = SETOR_CONFIG[setor];
-            let item = { ticker: '', pl: '', roe: '', pvp: '', divEbitda: '', cagr: '', roic: '', basileia: '', lpa: '', cotacao: '', plAlvo: cfg.defaultPlAlvo, tipo: 'Não Cíclico' };
+            let item = { ticker: '', pl: '', roe: '', pvp: '', divEbitda: '', cagr: '', roic: '', basileia: '', lpa: '', dpa: '', cotacao: '', plAlvo: cfg.defaultPlAlvo, tipo: 'Não Cíclico' };
             db.acoesSetor[setor].push(item);
             renderSetorTable(setor);
             scheduleSave();
@@ -2107,6 +2098,9 @@
                 const ms = calcMSeg(pt, a.cotacao);
 
                 if (setor === 'financeiro') {
+                    const ptGraham = calcPrecoTeto(a.lpa, a.plAlvo);
+                    const ptBazin = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
+                    const ms = calcMSeg(ptGraham, a.cotacao);
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
                         <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'var(--color-blue)','ITUB4')}</td>
                         <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
@@ -2114,9 +2108,11 @@
                         <td style="padding:10px 8px;">${numInput(setor,i,'pvp',a.pvp)}</td>
                         <td style="padding:10px 8px;">${numInput(setor,i,'basileia',a.basileia)}</td>
                         <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
+                        <td style="padding:10px 8px;">${numInput(setor,i,'dpa',a.dpa,'#ce93d8')}</td>
                         <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
                         <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
-                        ${precoTetoCell(pt)}
+                        ${precoTetoCell(ptGraham)}
+                        <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
                         ${msegCell(ms)}
                         <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
                     </tr>`;
