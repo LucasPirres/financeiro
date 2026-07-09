@@ -311,8 +311,33 @@
                     </label>
                 </div>
 
-                <div class="grid-classes" id="grid-patrimonio" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
+                <!-- LAYOUT DUAS COLUNAS -->
+                <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+
+                    <!-- COLUNA ESQUERDA: Cards das categorias -->
+                    <div style="flex: 2; min-width: 320px;">
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 12px;">Categorias e Ativos</div>
+                        <div class="grid-classes" id="grid-patrimonio" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px;"></div>
                     </div>
+
+                    <!-- COLUNA DIREITA: Tabela de rebalanceamento -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 12px;">Distribuição e Aporte</div>
+                        <table id="tabela-rebalanceamento" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 8px 10px; text-align: left; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;"></th>
+                                    <th style="padding: 8px 10px; text-align: right; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">% Atual</th>
+                                    <th style="padding: 8px 10px; text-align: right; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">% Ideal</th>
+                                    <th style="padding: 8px 10px; text-align: right; color: var(--color-gain); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Quanto Coloco</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-rebalanceamento"></tbody>
+                            <tfoot id="tfoot-rebalanceamento" style="border-top: 2px solid var(--border-color);"></tfoot>
+                        </table>
+                    </div>
+
+                </div>
             </div>
 
             <div class="fii-card" style="border-top-color: var(--color-highlight);">
@@ -1292,11 +1317,56 @@
             const container = document.getElementById('grid-patrimonio');
             container.innerHTML = '';
 
-            const aporte = db.meuPatrimonio.aporte; 
+            const patrimonioAtual = db.meuPatrimonio.atual || 0;
+            const aporte          = db.meuPatrimonio.aporte || 0;
+            const totalSoma       = db.meuPatrimonio.categorias.reduce((s, c) => s + (c.percAtual || 0), 0);
+            // totalSoma é a soma dos % atuais para normalizar (caso usuário não some 100)
 
-            db.meuPatrimonio.categorias.forEach((cat, cIndex) => {
-                const quantoColoco = aporte * (cat.percIdeal / 100);
-                const corQuanto = quantoColoco >= 0 ? 'var(--color-gain)' : 'var(--color-expense)';
+            // ---- Fórmula da planilha (imagem 1) ----
+            // "Quanto Coloco" = (percIdeal / 100) * aporte
+            // MAS corrigida para o rebalanceamento real:
+            // percAtualNorm = percAtual / totalSoma  (% real dentro da carteira)
+            // Se ÉERRO(percAtualNorm * aporte) → 0
+            // Se percAtualNorm * aporte = FALSO() → 0  (impossível, mas replicado)
+            // Senão → (percIdeal/100) * aporte
+            // Simplificado e fiel: quantoColoco = IFS(totalSoma=0; 0; percIdeal=0; 0; percAtualNorm < percIdeal/100; (percIdeal/100)*aporte; SENÃO; 0)
+            // Ou seja: só aporta em categorias que estão ABAIXO do ideal; distribui proporcionalmente.
+
+            // Calcula % atual real de cada categoria
+            const cats = db.meuPatrimonio.categorias;
+
+            // Soma total dos percAtual (pode não ser 100 se usuário não configurou)
+            const somaPercAtual = cats.reduce((s, c) => s + (parseFloat(c.percAtual) || 0), 0);
+
+            // Calcula quanto coloco em cada categoria usando a lógica da planilha:
+            // Categorias abaixo do ideal recebem aporte proporcional ao seu déficit
+            const percIdealTotal = cats.reduce((s, c) => s + (parseFloat(c.percIdeal) || 0), 0);
+
+            // Déficit de cada categoria (em pontos percentuais)
+            const deficits = cats.map(c => {
+                const pAtual = somaPercAtual > 0 ? (parseFloat(c.percAtual) || 0) / somaPercAtual * 100 : 0;
+                const pIdeal = parseFloat(c.percIdeal) || 0;
+                const deficit = pIdeal - pAtual; // positivo = abaixo do ideal
+                return Math.max(0, deficit);
+            });
+            const somaDeficit = deficits.reduce((s, d) => s + d, 0);
+
+            // "Quanto Coloco" = (déficit_categoria / soma_déficits) * aporte
+            // Se não há déficit (carteira perfeita), distribui pelo % ideal
+            const quantosColoco = cats.map((c, i) => {
+                if (aporte === 0) return 0;
+                if (somaDeficit === 0) {
+                    // Carteira equilibrada: distribui proporcionalmente ao % ideal
+                    const pIdeal = parseFloat(c.percIdeal) || 0;
+                    return percIdealTotal > 0 ? (pIdeal / percIdealTotal) * aporte : 0;
+                }
+                return (deficits[i] / somaDeficit) * aporte;
+            });
+
+            // ---- Renderiza os cards (coluna esquerda) ----
+            cats.forEach((cat, cIndex) => {
+                const quantoColoco = quantosColoco[cIndex];
+                const corQuanto = quantoColoco > 0 ? 'var(--color-gain)' : 'var(--text-muted)';
 
                 let ativosHtml = '';
                 cat.ativos.forEach((ativo, aIndex) => {
@@ -1312,19 +1382,19 @@
                     <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display:flex; flex-direction:column;">
                         <div style="text-align:center; font-weight:700; color:var(--text-main); margin-bottom:15px; font-size:14px; text-transform:uppercase;">${cat.nome}</div>
                         
-                        <div style="flex:1; margin-bottom:15px; min-height:100px;">
+                        <div style="flex:1; margin-bottom:15px; min-height:80px;">
                             ${ativosHtml}
                             <button onclick="addAtivoPatrimonio(${cIndex})" style="width:100%; background:transparent; border:1px dashed var(--text-muted); color:var(--text-muted); padding:6px; border-radius:4px; cursor:pointer; font-size:12px; margin-top:5px; font-weight:bold;">+ Ativo</button>
                         </div>
 
-                        <div style="border-top: 1px solid var(--border-color); padding-top: 15px; font-size:12px; color:var(--text-muted);">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center; display:none;">
-                                <span style="font-weight:600;">% Atual:</span>
-                                <input type="number" step="0.1" value="${cat.percAtual}" onchange="updateCategoriaPatrimonio(${cIndex}, 'percAtual', this.value)" style="width:70px; background:#111; border:1px solid var(--border-color); color:var(--text-main); padding:6px; border-radius:4px; text-align:right; font-weight:bold;">
-                            </div>
-                            <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 12px; font-size:12px; color:var(--text-muted);">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
                                 <span style="font-weight:600;">% Ideal:</span>
-                                <input type="number" step="0.1" value="${cat.percIdeal}" onchange="updateCategoriaPatrimonio(${cIndex}, 'percIdeal', this.value)" style="width:70px; background:#111; border:1px solid var(--border-color); color:var(--text-main); padding:6px; border-radius:4px; text-align:right; font-weight:bold;">
+                                <input type="number" step="0.1" value="${cat.percIdeal}" onchange="updateCategoriaPatrimonio(${cIndex}, 'percIdeal', this.value)" style="width:65px; background:#111; border:1px solid var(--border-color); color:var(--text-main); padding:5px 8px; border-radius:4px; text-align:right; font-weight:bold;">
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                                <span style="font-weight:600;">% Atual:</span>
+                                <input type="number" step="0.1" value="${cat.percAtual}" onchange="updateCategoriaPatrimonio(${cIndex}, 'percAtual', this.value)" style="width:65px; background:#111; border:1px solid var(--border-color); color:var(--color-blue); padding:5px 8px; border-radius:4px; text-align:right; font-weight:bold;">
                             </div>
                             <div style="display:flex; flex-direction:column; background:#111; padding:10px; border-radius:6px; border:1px solid var(--border-color);">
                                 <span style="font-size:11px; text-transform:uppercase; margin-bottom:5px; font-weight:600;">Quanto Coloco:</span>
@@ -1334,6 +1404,51 @@
                     </div>
                 `;
             });
+
+            // ---- Renderiza a tabela da direita ----
+            const tbody = document.getElementById('tbody-rebalanceamento');
+            const tfoot = document.getElementById('tfoot-rebalanceamento');
+            tbody.innerHTML = '';
+            tfoot.innerHTML = '';
+
+            let totalQuantoColoco = 0;
+
+            cats.forEach((cat, i) => {
+                const pAtualNorm = somaPercAtual > 0
+                    ? ((parseFloat(cat.percAtual) || 0) / somaPercAtual * 100)
+                    : 0;
+                const pIdeal     = parseFloat(cat.percIdeal) || 0;
+                const quanto     = quantosColoco[i];
+                totalQuantoColoco += quanto;
+
+                // Cor: vermelho se abaixo do ideal, verde se igual/acima
+                const diff = pIdeal - pAtualNorm;
+                const corAtual = diff > 0.5
+                    ? 'var(--color-expense, #ff5252)'
+                    : diff < -0.5
+                        ? 'var(--color-gain)'
+                        : 'var(--text-main)';
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #1a1a1a;">
+                        <td style="padding: 10px 10px; font-weight: 700; color: var(--text-main); font-size: 13px;">${cat.nome}</td>
+                        <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: ${corAtual};">${pAtualNorm.toFixed(1)}%</td>
+                        <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: var(--text-muted);">${pIdeal.toFixed(1)}%</td>
+                        <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: ${quanto > 0 ? 'var(--color-gain)' : 'var(--text-muted)'};">R$ ${quanto.toFixed(2).replace('.',',')}</td>
+                    </tr>
+                `;
+            });
+
+            // Rodapé com totais
+            const somaIdeal = cats.reduce((s, c) => s + (parseFloat(c.percIdeal) || 0), 0);
+            tfoot.innerHTML = `
+                <tr>
+                    <td style="padding: 10px 10px; font-weight: 700; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Total</td>
+                    <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: var(--text-muted);">${somaPercAtual > 0 ? '100,0%' : '—'}</td>
+                    <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: var(--text-muted);">${somaIdeal.toFixed(1)}%</td>
+                    <td style="padding: 10px 10px; text-align: right; font-weight: 700; color: var(--color-gain);">R$ ${totalQuantoColoco.toFixed(2).replace('.',',')}</td>
+                </tr>
+            `;
         }
 
         // ======= LÓGICA: SETORES =======
