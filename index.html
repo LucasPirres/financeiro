@@ -616,11 +616,24 @@
                     <span>🏦 Financeiro — Bancos, Seguradoras e Corretoras</span>
                     <button class="btn-add" style="border-color: #4db6ac; color: #4db6ac; font-size: 12px;" onclick="addAcaoSetor('financeiro')">+ Adicionar</button>
                 </div>
-                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #4db6ac; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #4db6ac; font-size: 12px; color: var(--text-muted); line-height: 2;">
                     <strong style="color: #4db6ac;">P/L:</strong> 5x–10x (próximo a 5x = grande oportunidade) &nbsp;|&nbsp;
                     <strong style="color: #4db6ac;">ROE:</strong> &gt;15% ideal (&gt;20% excelente; &lt;12% ruim) &nbsp;|&nbsp;
-                    <strong style="color: #4db6ac;">P/VP:</strong> &lt;1.0x = comprar abaixo do valor patrimonial &nbsp;|&nbsp;
                     <strong style="color: #4db6ac;">Dívida/EBITDA:</strong> <em>Não usar</em> — use o <strong>Índice de Basileia &gt; 11%</strong>
+                    <div style="margin-top: 10px; border-top: 1px solid #1a1a1a; padding-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div style="background:#111; border-radius:6px; padding:8px 12px; border-left:3px solid #4db6ac;">
+                            <span style="color:#4db6ac; font-weight:700;">P/VP Alto</span> (ex: 1.8) com <span style="color:#4db6ac; font-weight:700;">ROE Alto</span> (ex: 20%): <span style="color:var(--text-main);">Justo.</span> É um banco de excelência (ex: Itaú).
+                        </div>
+                        <div style="background:#111; border-radius:6px; padding:8px 12px; border-left:3px solid var(--text-muted);">
+                            <span style="color:var(--text-muted); font-weight:700;">P/VP Baixo</span> (ex: 0.8) com <span style="color:var(--text-muted); font-weight:700;">ROE Baixo</span> (ex: 9%): <span style="color:var(--text-main);">Justo.</span> É um banco com dificuldades, o desconto é merecido.
+                        </div>
+                        <div style="background:#111; border-radius:6px; padding:8px 12px; border-left:3px solid var(--color-expense);">
+                            <span style="color:#4db6ac; font-weight:700;">P/VP Alto</span> (ex: 1.5) com <span style="color:var(--text-muted); font-weight:700;">ROE Baixo</span> (ex: 10%): <span style="color:var(--color-expense); font-weight:700;">Caro!</span> O mercado está pagando muito por um banco que não entrega tanto lucro.
+                        </div>
+                        <div style="background:#111; border-radius:6px; padding:8px 12px; border-left:3px solid var(--color-gain);">
+                            <span style="color:var(--text-muted); font-weight:700;">P/VP Baixo</span> (ex: 0.8) com <span style="color:#4db6ac; font-weight:700;">ROE Alto</span> (ex: 18%): <span style="color:var(--color-gain); font-weight:700;">A barganha de ouro!</span> O mercado bateu no banco injustamente, e aqui moram as grandes oportunidades.
+                        </div>
+                    </div>
                 </div>
                 <div style="overflow-x: auto;">
                     <table style="min-width: 900px; border-collapse: collapse;">
@@ -631,13 +644,10 @@
                                 <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
                                 <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
                                 <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Basileia (%)</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação (média 5 anos) — usado no Método Bazin">DPA 5a (R$)</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação (média 3 anos) — usado no Método Bazin">DPA 3a (R$)</th>
                                 <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">T. Graham</th>
                                 <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Preço Teto Bazin = DPA / 0,06">T. Bazin</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
@@ -645,9 +655,8 @@
                     </table>
                 </div>
                 <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
-                    💡 <span style="color:#ffb300;">Teto Graham</span> = LPA × P/L Alvo &nbsp;|&nbsp;
-                    <span style="color:#ce93d8;">Teto Bazin</span> = DPA ÷ 0,06 (yield mínimo 6%) &nbsp;|&nbsp;
-                    M. Seg. = (Teto Graham / Cotação − 1) × 100 &nbsp;|&nbsp;
+                    💡 <span style="color:#ce93d8;">Teto Bazin</span> = DPA 3a ÷ 0,06 (yield mínimo 6%) &nbsp;|&nbsp;
+                    M. Seg. = (Teto Bazin / Cotação − 1) × 100 &nbsp;|&nbsp;
                     <span style="color: var(--color-gain);">Verde = abaixo do teto (barato)</span> &nbsp;
                     <span style="color: var(--color-expense);">Vermelho = acima do teto (caro)</span>
                 </div>
@@ -2180,19 +2189,17 @@
 
                 if (setor === 'financeiro') {
                     const ptBazin = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
+                    const msBazin = calcMSeg(ptBazin, a.cotacao);
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
                         ${td(txtInput(setor,i,'ticker',a.ticker,'var(--color-blue)','ITUB4'))}
                         ${td(numInput(setor,i,'pl',a.pl))}
                         ${td(numInput(setor,i,'roe',a.roe))}
                         ${td(numInput(setor,i,'pvp',a.pvp))}
                         ${td(numInput(setor,i,'basileia',a.basileia))}
-                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
                         ${td(numInput(setor,i,'dpa',a.dpa,'#ce93d8'))}
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
-                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
-                        ${precoTetoCell(pt)}
                         <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
-                        ${msegCell(ms)}
+                        ${msegCell(msBazin)}
                         ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'utilidade') {
