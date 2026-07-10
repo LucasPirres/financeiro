@@ -660,34 +660,37 @@
                     <button class="btn-add" style="border-color: #aed581; color: #aed581; font-size: 12px;" onclick="addAcaoSetor('utilidade')">+ Adicionar</button>
                 </div>
                 <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #aed581; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
-                    <strong style="color: #aed581;">Dívida/EBITDA:</strong> até 3.0x–3.5x é normal (receita previsível) &nbsp;|&nbsp;
-                    <strong style="color: #aed581;">CAGR:</strong> 5%–8% (empresas maduras) &nbsp;|&nbsp;
-                    <strong style="color: #aed581;">ROIC/ROE:</strong> &gt;10%–12% constante já é excelente &nbsp;|&nbsp;
-                    Preço Teto = LPA × P/L Alvo (use 8x–12x para este setor)
+                    <strong style="color: #aed581;">Dívida/EBITDA:</strong> até 3.0x–3.5x é normal &nbsp;|&nbsp;
+                    <strong style="color: #aed581;">ROIC/ROE:</strong> &gt;10%–12% constante &nbsp;|&nbsp;
+                    <strong style="color: #ce93d8;">Método Barsi:</strong> Teto Barsi = DPA 5a ÷ 0,06 &nbsp;|&nbsp; Teto Graham = LPA × P/L Alvo (8x–12x)
                 </div>
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 950px; border-collapse: collapse;">
+                    <table style="min-width: 1100px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width:12%; padding: 10px 8px; border-bottom: 2px solid #aed581; color: #aed581;">Ticker</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #aed581; color: #aed581;">Ticker</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação médio 5 anos — Método Barsi">DPA 5a (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">T. Graham</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Teto Barsi = DPA ÷ 0,06">T. Barsi</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-setor-utilidade"></tbody>
                     </table>
                 </div>
-                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic;">
-                    💡 Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#ffb300;">T. Graham</span> = LPA × P/L Alvo &nbsp;|&nbsp;
+                    <span style="color:#ce93d8;">T. Barsi</span> = DPA 5a ÷ 0,06 &nbsp;|&nbsp;
+                    M. Seg. = (T. Graham / Cotação − 1) × 100
                 </div>
             </div>
 
@@ -700,31 +703,34 @@
                 <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #ff8a65; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
                     <strong style="color: #ff8a65;">Não Cíclico</strong> (alimentos, higiene): P/L 10x–15x — mais seguro &nbsp;|&nbsp;
                     <strong style="color: #ff8a65;">Cíclico</strong> (moda, eletro): Dívida/EBITDA próxima de 0; ROIC &gt;15% &nbsp;|&nbsp;
-                    Margens apertadas (2–4%) — juro alto corrói tudo
+                    <strong style="color: #ff8a65;">EV/EBITDA:</strong> abaixo de 8x–10x = preço atrativo &nbsp;|&nbsp; Não usar Barsi — dividendos imprevisíveis
                 </div>
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 1000px; border-collapse: collapse;">
+                    <table style="min-width: 1100px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width:12%; padding: 10px 8px; border-bottom: 2px solid #ff8a65; color: #ff8a65;">Ticker</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Tipo</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #ff8a65; color: #ff8a65;">Ticker</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Tipo</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">EBITDA (M)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív. Líq. (M)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ff8a65; color: #ff8a65;" title="EV/EBITDA = (Valor Mercado + Dívida Líq.) / EBITDA">EV/EBITDA</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-setor-consumo"></tbody>
                     </table>
                 </div>
-                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic;">
-                    💡 Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#ff8a65;">EV/EBITDA</span> = (Valor Mercado + Dív. Líq.) ÷ EBITDA &nbsp;|&nbsp; EV/EBITDA &lt; 8x–10x = atrativo &nbsp;|&nbsp; Preço Teto = LPA × P/L Alvo
                 </div>
             </div>
 
@@ -736,32 +742,35 @@
                 </div>
                 <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #b0bec5; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
                     <strong style="color: #b0bec5;">ROIC:</strong> &gt;12%–15% consistente = excelência &nbsp;|&nbsp;
-                    <strong style="color: #b0bec5;">Dívida/EBITDA:</strong> &lt;2.0x–2.5x (fábricas ociosas não pagam dívida) &nbsp;|&nbsp;
-                    <strong style="color: #b0bec5;">CAGR:</strong> atrelado ao PIB e ciclos de infraestrutura
+                    <strong style="color: #b0bec5;">Dívida/EBITDA:</strong> &lt;2.0x–2.5x &nbsp;|&nbsp;
+                    <strong style="color: #b0bec5;">EV/EBITDA:</strong> abaixo de 8x–10x = atrativo (capital intensivo, não usar P/L isolado)
                 </div>
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 1000px; border-collapse: collapse;">
+                    <table style="min-width: 1150px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width:12%; padding: 10px 8px; border-bottom: 2px solid #b0bec5; color: #b0bec5;">Ticker</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #b0bec5; color: #b0bec5;">Ticker</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">EBITDA (M)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív. Líq. (M)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid #b0bec5; color: #b0bec5;" title="EV/EBITDA = (Valor Mercado + Dívida Líq.) / EBITDA">EV/EBITDA</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-setor-industrial"></tbody>
                     </table>
                 </div>
-                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic;">
-                    💡 Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#b0bec5;">EV/EBITDA</span> = (Valor Mercado + Dív. Líq.) ÷ EBITDA &nbsp;|&nbsp; EV/EBITDA &lt; 8x–10x = atrativo &nbsp;|&nbsp; Preço Teto = LPA × P/L Alvo
                 </div>
             </div>
 
@@ -772,32 +781,112 @@
                     <button class="btn-add" style="border-color: #ce93d8; color: #ce93d8; font-size: 12px;" onclick="addAcaoSetor('tecnologia')">+ Adicionar</button>
                 </div>
                 <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #ce93d8; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
-                    <strong style="color: #ce93d8;">P/VP:</strong> Esqueça — ativos são intangíveis (código, engenheiros); P/VP será 5x, 10x, 15x+ &nbsp;|&nbsp;
-                    <strong style="color: #ce93d8;">P/L:</strong> 20x–30x+ é normal — mercado precifica o futuro &nbsp;|&nbsp;
-                    <strong style="color: #ce93d8;">CAGR:</strong> &gt;20%–30% a.a. — se crescimento frear, a ação despenca
+                    <strong style="color: #ce93d8;">P/VP:</strong> Esqueça — ativos são intangíveis; será 5x–15x+ &nbsp;|&nbsp;
+                    <strong style="color: #ce93d8;">P/L:</strong> 20x–30x+ é normal &nbsp;|&nbsp;
+                    <strong style="color: #ce93d8;">CAGR:</strong> &gt;20%–30% a.a. &nbsp;|&nbsp;
+                    <strong style="color: #ce93d8;">PEG Ratio</strong> = P/L ÷ CAGR: &lt;1 = barato | =1 = justo | &gt;1 = caro
                 </div>
                 <div style="overflow-x: auto;">
-                    <table style="min-width: 900px; border-collapse: collapse;">
+                    <table style="min-width: 1000px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="width:12%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;">Ticker</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;">Ticker</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="PEG = P/L ÷ CAGR esperado. &lt;1 = barato">PEG Ratio</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">Preço Teto</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-setor-tecnologia"></tbody>
                     </table>
                 </div>
-                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic;">
-                    💡 Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#ce93d8;">PEG</span> = P/L ÷ CAGR (calculado automaticamente) &nbsp;|&nbsp; Preço Teto = LPA × P/L Alvo &nbsp;|&nbsp; M. Seg. = (Preço Teto / Cotação − 1) × 100
+                </div>
+            </div>
+
+            <!-- COMMODITIES -->
+            <div class="fii-card" style="border-top-color: #ffcc80;">
+                <div class="entry-title" style="color: #ffcc80; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                    <span>⛏️ Commodities — Mineração, Siderurgia e Petróleo</span>
+                    <button class="btn-add" style="border-color: #ffcc80; color: #ffcc80; font-size: 12px;" onclick="addAcaoSetor('commodities')">+ Adicionar</button>
+                </div>
+                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #ffcc80; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+                    <strong style="color: #ffcc80;">Método:</strong> P/VP + Ciclo &nbsp;|&nbsp;
+                    <strong style="color: var(--color-gain);">Comprar</strong> quando P/VP abaixo da média histórica (pânico/baixa do ciclo) &nbsp;|&nbsp;
+                    <strong style="color: var(--color-expense);">Vender</strong> quando P/VP muito acima (topo do ciclo) &nbsp;|&nbsp;
+                    Nunca usar Barsi nem P/L — lucros e dividendos são reféns do preço da commodity
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 1000px; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #ffcc80; color: #ffcc80;">Ticker</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Commodity</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ffcc80; color: #ffcc80;" title="Principal métrica para Commodities">P/VP</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ffcc80; color: #ffcc80;" title="Média histórica P/VP para comparação">P/VP Médio Hist.</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">VPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ffcc80; color: #ffcc80;" title="Fase do ciclo: Baixa / Recuperação / Alta / Topo">Ciclo</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);" title="Desconto/Prêmio vs P/VP médio histórico">Vs. Médio</th>
+                                <th style="width:60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-setor-commodities"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#ffcc80;">Vs. Médio</span> = (P/VP atual / P/VP médio histórico − 1) × 100 &nbsp;|&nbsp;
+                    <span style="color: var(--color-gain);">Negativo = abaixo da média (oportunidade)</span> &nbsp;
+                    <span style="color: var(--color-expense);">Positivo = acima da média (caro/topo)</span>
+                </div>
+            </div>
+
+            <!-- CONSUMO NÃO CÍCLICO / GRAHAM -->
+            <div class="fii-card" style="border-top-color: #80cbc4;">
+                <div class="entry-title" style="color: #80cbc4; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                    <span>🏭 Consumo Não Cíclico / Indústrias Tradicionais — Fórmula Graham</span>
+                    <button class="btn-add" style="border-color: #80cbc4; color: #80cbc4; font-size: 12px;" onclick="addAcaoSetor('graham')">+ Adicionar</button>
+                </div>
+                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #80cbc4; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+                    <strong style="color: #80cbc4;">Fórmula Graham:</strong> V = √(22,5 × VPA × LPA) &nbsp;|&nbsp;
+                    Se Cotação &lt; V → ação barata (diferença = Margem de Segurança) &nbsp;|&nbsp;
+                    <strong style="color: var(--color-expense);">Nunca usar</strong> em tecnologia ou em empresas com PL negativo
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="min-width: 950px; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;">Ticker</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/L</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">P/VP</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROE (%)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;" title="VPA = Valor Patrimonial por Ação">VPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;" title="LPA = Lucro por Ação">LPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
+                                <th style="width:10%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);" title="V = √(22,5 × VPA × LPA)">V. Graham (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-setor-graham"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
+                    💡 <span style="color:#80cbc4;">V. Graham</span> = √(22,5 × VPA × LPA) &nbsp;|&nbsp;
+                    M. Seg. = (V. Graham / Cotação − 1) × 100 &nbsp;|&nbsp;
+                    <span style="color: var(--color-gain);">Verde = cotação abaixo do valor Graham (barato)</span>
                 </div>
             </div>
 
@@ -1372,8 +1461,8 @@
                     if(!db.fiis) db.fiis = [];
                     if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
                     if(!db.acoes) db.acoes = [];
-                    if(!db.acoesSetor) db.acoesSetor = { financeiro: [], utilidade: [], consumo: [], industrial: [], tecnologia: [] };
-                    ['financeiro','utilidade','consumo','industrial','tecnologia'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.acoesSetor) db.acoesSetor = {};
+                    ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     // Atualiza backup local com dados da nuvem
@@ -2001,46 +2090,25 @@
         // ======= LÓGICA: TABELAS POR SETOR COM PREÇO TETO =======
 
         const SETOR_CONFIG = {
-            financeiro: {
-                defaultPlAlvo: 8,
-                fields: ['ticker','pl','roe','pvp','basileia','lpa','dpa','cotacao','plAlvo'],
-                tbody: 'tbody-setor-financeiro'
-            },
-            utilidade: {
-                defaultPlAlvo: 10,
-                fields: ['ticker','pl','roe','divEbitda','cagr','roic','lpa','cotacao','plAlvo'],
-                tbody: 'tbody-setor-utilidade'
-            },
-            consumo: {
-                defaultPlAlvo: 12,
-                fields: ['ticker','tipo','pl','roe','divEbitda','roic','lpa','cotacao','plAlvo'],
-                tbody: 'tbody-setor-consumo'
-            },
-            industrial: {
-                defaultPlAlvo: 10,
-                fields: ['ticker','pl','roe','divEbitda','cagr','roic','lpa','cotacao','plAlvo'],
-                tbody: 'tbody-setor-industrial'
-            },
-            tecnologia: {
-                defaultPlAlvo: 25,
-                fields: ['ticker','pl','pvp','roe','cagr','lpa','cotacao','plAlvo'],
-                tbody: 'tbody-setor-tecnologia'
-            }
+            financeiro:  { defaultPlAlvo: 8,  tbody: 'tbody-setor-financeiro' },
+            utilidade:   { defaultPlAlvo: 10, tbody: 'tbody-setor-utilidade' },
+            consumo:     { defaultPlAlvo: 12, tbody: 'tbody-setor-consumo' },
+            industrial:  { defaultPlAlvo: 10, tbody: 'tbody-setor-industrial' },
+            tecnologia:  { defaultPlAlvo: 25, tbody: 'tbody-setor-tecnologia' },
+            commodities: { defaultPlAlvo: 0,  tbody: 'tbody-setor-commodities' },
+            graham:      { defaultPlAlvo: 0,  tbody: 'tbody-setor-graham' }
         };
 
+        const ALL_SETORES = ['financeiro','utilidade','consumo','industrial','tecnologia','commodities','graham'];
         function ensureSetorData() {
-            if (!db.acoesSetor) {
-                db.acoesSetor = { financeiro: [], utilidade: [], consumo: [], industrial: [], tecnologia: [] };
-            }
-            ['financeiro','utilidade','consumo','industrial','tecnologia'].forEach(s => {
-                if (!db.acoesSetor[s]) db.acoesSetor[s] = [];
-            });
+            if (!db.acoesSetor) db.acoesSetor = {};
+            ALL_SETORES.forEach(s => { if (!db.acoesSetor[s]) db.acoesSetor[s] = []; });
         }
 
         function addAcaoSetor(setor) {
             ensureSetorData();
             const cfg = SETOR_CONFIG[setor];
-            let item = { ticker: '', pl: '', roe: '', pvp: '', divEbitda: '', cagr: '', roic: '', basileia: '', lpa: '', dpa: '', cotacao: '', plAlvo: cfg.defaultPlAlvo, tipo: 'Não Cíclico' };
+            let item = { ticker: '', pl: '', roe: '', pvp: '', divEbitda: '', cagr: '', roic: '', basileia: '', lpa: '', dpa: '', vpa: '', cotacao: '', plAlvo: cfg.defaultPlAlvo, tipo: 'Não Cíclico', commodity: '', pvpMedio: '', ciclo: 'Baixa', ebitda: '', divLiq: '' };
             db.acoesSetor[setor].push(item);
             renderSetorTable(setor);
             scheduleSave();
@@ -2088,93 +2156,159 @@
             return `<input type="text" class="custom-input" style="width:${w||'80px'}; text-align:center; color:${color||'var(--color-blue)'}; font-weight:700; text-transform:uppercase;" value="${val||''}" onchange="updateAcaoSetor('${setor}',${i},'${field}',this.value)" placeholder="${ph||''}">`;
         }
 
+        function evEbitdaCell(ebitda, divLiq, color) {
+            const eb = parseFloat(ebitda) || 0;
+            const dl = parseFloat(divLiq) || 0;
+            if (eb <= 0) return `<td style="padding:10px 8px; color:var(--text-muted);">—</td>`;
+            // EV/EBITDA requer valor de mercado, usamos Dív/EBITDA como proxy simplificado quando não há mkt cap
+            // Aqui exibimos apenas Dív.Líq/EBITDA como referência de alavancagem operacional
+            const ratio = dl / eb;
+            const col = ratio <= 8 ? 'var(--color-gain)' : ratio <= 10 ? 'var(--color-highlight)' : 'var(--color-expense)';
+            return `<td style="padding:10px 8px; font-weight:700; color:${col};">${ratio.toFixed(1)}x</td>`;
+        }
+
         function renderSetorTable(setor) {
             ensureSetorData();
             const rows = db.acoesSetor[setor];
             let html = '';
+            const td = (content) => `<td style="padding:10px 8px;">${content}</td>`;
+            const btnDel = (s,i) => `<td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${s}',${i})">✕</button></td>`;
 
             rows.forEach((a, i) => {
                 const pt = calcPrecoTeto(a.lpa, a.plAlvo);
                 const ms = calcMSeg(pt, a.cotacao);
 
                 if (setor === 'financeiro') {
-                    const ptGraham = calcPrecoTeto(a.lpa, a.plAlvo);
                     const ptBazin = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
-                    const ms = calcMSeg(ptGraham, a.cotacao);
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
-                        <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'var(--color-blue)','ITUB4')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roe',a.roe)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pvp',a.pvp)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'basileia',a.basileia)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'dpa',a.dpa,'#ce93d8')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
-                        ${precoTetoCell(ptGraham)}
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'var(--color-blue)','ITUB4'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'pvp',a.pvp))}
+                        ${td(numInput(setor,i,'basileia',a.basileia))}
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'dpa',a.dpa,'#ce93d8'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
+                        ${precoTetoCell(pt)}
                         <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
                         ${msegCell(ms)}
-                        <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
+                        ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'utilidade') {
+                    const ptBazin = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
-                        <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'#aed581','EGIE3')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roe',a.roe)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'divEbitda',a.divEbitda)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cagr',a.cagr)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roic',a.roic)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#aed581','EGIE3'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
+                        ${td(numInput(setor,i,'cagr',a.cagr))}
+                        ${td(numInput(setor,i,'roic',a.roic))}
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'dpa',a.dpa,'#ce93d8'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
+                        <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
                         ${msegCell(ms)}
-                        <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
+                        ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'consumo') {
                     const tipoOpts = ['Não Cíclico','Cíclico'].map(t => `<option value="${t}" ${a.tipo===t?'selected':''}>${t}</option>`).join('');
+                    const eb = parseFloat(a.ebitda)||0, dl = parseFloat(a.divLiq)||0;
+                    const evEb = eb > 0 ? dl/eb : null;
+                    const evCol = evEb===null ? 'var(--text-muted)' : evEb<=8 ? 'var(--color-gain)' : evEb<=10 ? 'var(--color-highlight)' : 'var(--color-expense)';
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
-                        <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'#ff8a65','ABEV3')}</td>
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#ff8a65','ABEV3'))}
                         <td style="padding:10px 8px;"><select class="custom-input" style="width:90px; background:#111; border:1px solid var(--border-color); border-radius:4px; color:var(--text-muted); padding:4px;" onchange="updateAcaoSetor('${setor}',${i},'tipo',this.value)">${tipoOpts}</select></td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roe',a.roe)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'divEbitda',a.divEbitda)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roic',a.roic)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
+                        ${td(numInput(setor,i,'roic',a.roic))}
+                        ${td(numInput(setor,i,'ebitda',a.ebitda))}
+                        ${td(numInput(setor,i,'divLiq',a.divLiq))}
+                        <td style="padding:10px 8px; font-weight:700; color:${evCol};">${evEb!==null ? evEb.toFixed(1)+'x' : '—'}</td>
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
                         ${msegCell(ms)}
-                        <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
+                        ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'industrial') {
+                    const eb = parseFloat(a.ebitda)||0, dl = parseFloat(a.divLiq)||0;
+                    const evEb = eb > 0 ? dl/eb : null;
+                    const evCol = evEb===null ? 'var(--text-muted)' : evEb<=8 ? 'var(--color-gain)' : evEb<=10 ? 'var(--color-highlight)' : 'var(--color-expense)';
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
-                        <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'#b0bec5','WEGE3')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roe',a.roe)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'divEbitda',a.divEbitda)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cagr',a.cagr)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roic',a.roic)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#b0bec5','WEGE3'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
+                        ${td(numInput(setor,i,'cagr',a.cagr))}
+                        ${td(numInput(setor,i,'roic',a.roic))}
+                        ${td(numInput(setor,i,'ebitda',a.ebitda))}
+                        ${td(numInput(setor,i,'divLiq',a.divLiq))}
+                        <td style="padding:10px 8px; font-weight:700; color:${evCol};">${evEb!==null ? evEb.toFixed(1)+'x' : '—'}</td>
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
                         ${msegCell(ms)}
-                        <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
+                        ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'tecnologia') {
+                    const pl = parseFloat(a.pl)||0, cagr = parseFloat(a.cagr)||0;
+                    const peg = (pl > 0 && cagr > 0) ? pl/cagr : null;
+                    const pegCol = peg===null ? 'var(--text-muted)' : peg<1 ? 'var(--color-gain)' : peg===1 ? 'var(--color-highlight)' : 'var(--color-expense)';
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
-                        <td style="padding:10px 8px;">${txtInput(setor,i,'ticker',a.ticker,'#ce93d8','TOTS3')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pl',a.pl)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'pvp',a.pvp)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'roe',a.roe)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cagr',a.cagr)}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)')}</td>
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#ce93d8','TOTS3'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'pvp',a.pvp))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'cagr',a.cagr))}
+                        <td style="padding:10px 8px; font-weight:700; color:${pegCol};">${peg!==null ? peg.toFixed(2) : '—'}</td>
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
                         ${msegCell(ms)}
-                        <td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button></td>
+                        ${btnDel(setor,i)}
+                    </tr>`;
+                } else if (setor === 'commodities') {
+                    const pvp = parseFloat(a.pvp)||0, pvpM = parseFloat(a.pvpMedio)||0;
+                    const vsMedio = (pvp > 0 && pvpM > 0) ? ((pvp/pvpM)-1)*100 : null;
+                    const vsCol = vsMedio===null ? 'var(--text-muted)' : vsMedio<=0 ? 'var(--color-gain)' : vsMedio<=20 ? 'var(--color-highlight)' : 'var(--color-expense)';
+                    const cicloOpts = ['Baixa','Recuperação','Alta','Topo'].map(c => `<option value="${c}" ${a.ciclo===c?'selected':''}>${c}</option>`).join('');
+                    html += `<tr style="border-bottom:1px solid #1a1a1a;">
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#ffcc80','VALE3'))}
+                        ${td(txtInput(setor,i,'commodity',a.commodity,'#ffcc80','Minério','90px'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        <td style="padding:10px 8px;">${numInput(setor,i,'pvp',a.pvp,'#ffcc80')}</td>
+                        <td style="padding:10px 8px;">${numInput(setor,i,'pvpMedio',a.pvpMedio,'#aaaaaa')}</td>
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
+                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        <td style="padding:10px 8px;"><select class="custom-input" style="width:90px; background:#111; border:1px solid var(--border-color); border-radius:4px; color:#ffcc80; padding:4px;" onchange="updateAcaoSetor('${setor}',${i},'ciclo',this.value)">${cicloOpts}</select></td>
+                        <td style="padding:10px 8px; font-weight:700; color:${vsCol};">${vsMedio!==null ? (vsMedio>0?'+':'')+vsMedio.toFixed(1)+'%' : '—'}</td>
+                        ${btnDel(setor,i)}
+                    </tr>`;
+                } else if (setor === 'graham') {
+                    const vpa = parseFloat(a.vpa)||0, lpa = parseFloat(a.lpa)||0;
+                    const vGraham = (vpa > 0 && lpa > 0) ? Math.sqrt(22.5 * vpa * lpa) : 0;
+                    const msGraham = calcMSeg(vGraham, a.cotacao);
+                    html += `<tr style="border-bottom:1px solid #1a1a1a;">
+                        ${td(txtInput(setor,i,'ticker',a.ticker,'#80cbc4','ABEV3'))}
+                        ${td(numInput(setor,i,'pl',a.pl))}
+                        ${td(numInput(setor,i,'pvp',a.pvp))}
+                        ${td(numInput(setor,i,'roe',a.roe))}
+                        ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
+                        <td style="padding:10px 8px;">${numInput(setor,i,'vpa',a.vpa,'#80cbc4')}</td>
+                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'#80cbc4')}</td>
+                        ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
+                        ${precoTetoCell(vGraham)}
+                        ${msegCell(msGraham)}
+                        ${btnDel(setor,i)}
                     </tr>`;
                 }
             });
@@ -2184,7 +2318,7 @@
         }
 
         function renderAllSetorTables() {
-            ['financeiro','utilidade','consumo','industrial','tecnologia'].forEach(renderSetorTable);
+            ALL_SETORES.forEach(renderSetorTable);
         }
 
         function addAcao() {
