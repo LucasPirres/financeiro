@@ -671,7 +671,7 @@
                 <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #aed581; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
                     <strong style="color: #aed581;">Dívida/EBITDA:</strong> até 3.0x–3.5x é normal &nbsp;|&nbsp;
                     <strong style="color: #aed581;">ROIC/ROE:</strong> &gt;10%–12% constante &nbsp;|&nbsp;
-                    <strong style="color: #ce93d8;">Método Barsi:</strong> Teto Barsi = DPA 5a ÷ 0,06 &nbsp;|&nbsp; Teto Graham = LPA × P/L Alvo (8x–12x)
+                    <strong style="color: #ce93d8;">Método Barsi:</strong> Teto Barsi = DPA 3a ÷ 0,06
                 </div>
                 <div style="overflow-x: auto;">
                     <table style="min-width: 1100px; border-collapse: collapse;">
@@ -683,13 +683,10 @@
                                 <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
                                 <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">CAGR (%)</th>
                                 <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">LPA (R$)</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação médio 5 anos — Método Barsi">DPA 5a (R$)</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Dividendo por Ação médio 3 anos — Método Barsi">DPA 3a (R$)</th>
                                 <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">P/L Alvo</th>
-                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">T. Graham</th>
                                 <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;" title="Teto Barsi = DPA ÷ 0,06">T. Barsi</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid #ce93d8; color: #ce93d8;">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
@@ -697,9 +694,10 @@
                     </table>
                 </div>
                 <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
-                    💡 <span style="color:#ffb300;">T. Graham</span> = LPA × P/L Alvo &nbsp;|&nbsp;
-                    <span style="color:#ce93d8;">T. Barsi</span> = DPA 5a ÷ 0,06 &nbsp;|&nbsp;
-                    M. Seg. = (T. Graham / Cotação − 1) × 100
+                    💡 <span style="color:#ce93d8;">T. Barsi</span> = DPA 3a ÷ 0,06 (yield mínimo 6%) &nbsp;|&nbsp;
+                    M. Seg. = (T. Barsi / Cotação − 1) × 100 &nbsp;|&nbsp;
+                    <span style="color: var(--color-gain);">Verde = abaixo do teto (barato)</span> &nbsp;
+                    <span style="color: var(--color-expense);">Vermelho = acima do teto (caro)</span>
                 </div>
             </div>
 
@@ -2203,7 +2201,8 @@
                         ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'utilidade') {
-                    const ptBazin = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
+                    const ptBarsi = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
+                    const msBarsi = calcMSeg(ptBarsi, a.cotacao);
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
                         ${td(txtInput(setor,i,'ticker',a.ticker,'#aed581','EGIE3'))}
                         ${td(numInput(setor,i,'pl',a.pl))}
@@ -2211,13 +2210,10 @@
                         ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
                         ${td(numInput(setor,i,'cagr',a.cagr))}
                         ${td(numInput(setor,i,'roic',a.roic))}
-                        ${td(numInput(setor,i,'lpa',a.lpa,'var(--text-main)'))}
                         ${td(numInput(setor,i,'dpa',a.dpa,'#ce93d8'))}
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
-                        ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
-                        ${precoTetoCell(pt)}
-                        <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
-                        ${msegCell(ms)}
+                        <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBarsi > 0 ? 'R$ '+ptBarsi.toFixed(2).replace('.',',') : '—'}</td>
+                        ${msegCell(msBarsi)}
                         ${btnDel(setor,i)}
                     </tr>`;
                 } else if (setor === 'consumo') {
