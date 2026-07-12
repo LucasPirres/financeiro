@@ -1477,6 +1477,8 @@
                     if(!db.acoes) db.acoes = [];
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    // Migrar dados salvos na chave antiga 'commodity' para 'commodities'
+                    if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     // Atualiza backup local com dados da nuvem
@@ -1487,7 +1489,8 @@
                     if (backup) {
                         db = JSON.parse(backup);
                         if(!db.acoesSetor) db.acoesSetor = {};
-                        ['financeiro','utilidade','consumo','industrial','tecnologia','commodity'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
                     } else {
                         db.years[selectedYear] = createYearStructure(); 
@@ -1527,7 +1530,8 @@
                     try {
                         db = JSON.parse(backup);
                         if(!db.acoesSetor) db.acoesSetor = {};
-                        ['financeiro','utilidade','consumo','industrial','tecnologia','commodity'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Offline — backup local carregado ✓";
                     } catch(e2) {
                         document.getElementById('sync-status').innerText = "Erro ao carregar backup";
@@ -1535,7 +1539,7 @@
                 } else {
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodity'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
@@ -2117,7 +2121,7 @@
             graham:      { defaultPlAlvo: 0,  tbody: 'tbody-setor-graham' }
         };
 
-        const ALL_SETORES = ['financeiro','utilidade','consumo','industrial','tecnologia','commodity'];
+        const ALL_SETORES = ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'];
         function ensureSetorData() {
             if (!db.acoesSetor) db.acoesSetor = {};
             ALL_SETORES.forEach(s => { if (!db.acoesSetor[s]) db.acoesSetor[s] = []; });
