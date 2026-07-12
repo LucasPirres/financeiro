@@ -1364,6 +1364,8 @@
             renderAcoesTable();
             ensureSetorData();
             renderAllSetorTables();
+            // Garante render após o browser aplicar display:flex
+            setTimeout(renderAllSetorTables, 50);
         }
 
         function openRendaFixaTable() {
@@ -2198,12 +2200,12 @@
 
         function renderSetorTable(setor) {
             ensureSetorData();
-            const rows = db.acoesSetor[setor];
+            const rows = db.acoesSetor[setor] || [];
             let html = '';
             const td = (content) => `<td style="padding:10px 8px;">${content}</td>`;
-            const btnDel = (s,i) => `<td style="padding:10px 6px; white-space:nowrap; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${s}',${i})">✕</button></td>`;
+            const btnDel = (s,i) => `<td style="padding:10px 6px; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${s}',${i})">✕</button></td>`;
 
-            rows.forEach((a, i) => {
+            try { rows.forEach((a, i) => {
                 const pt = calcPrecoTeto(a.lpa, a.plAlvo);
                 const ms = calcMSeg(pt, a.cotacao);
 
@@ -2354,14 +2356,14 @@
                         ${btnDel(setor,i)}
                     </tr>`;
                 }
-            });
+            }); } catch(err) { console.error('Erro renderSetorTable', setor, err); }
 
             const el = document.getElementById('tbody-setor-' + setor);
             if (el) el.innerHTML = html;
         }
 
         function renderAllSetorTables() {
-            ALL_SETORES.forEach(renderSetorTable);
+            ALL_SETORES.forEach(s => { try { renderSetorTable(s); } catch(e) { console.error('Erro setor', s, e); } });
         }
 
         function addAcao() {
