@@ -714,11 +714,11 @@
                     <span>🛒 Consumo — Varejo, Alimentos e Vestuário</span>
                     <button class="btn-add" style="border-color: #ff8a65; color: #ff8a65; font-size: 12px;" onclick="addAcaoSetor('consumo')">+ Adicionar</button>
                 </div>
-                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #ff8a65; font-size: 12px; color: var(--text-muted); line-height: 1.8;">
-                    <strong style="color: #ff8a65;">Não Cíclico</strong> (alimentos, higiene): P/L 10x–15x — mais seguro &nbsp;|&nbsp;
-                    <strong style="color: #ff8a65;">Cíclico</strong> (moda, eletro): Dívida/EBITDA próxima de 0; ROIC &gt;15% &nbsp;|&nbsp;
+                <div style="background: #0d0d0d; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; border-left: 3px solid #ff8a65; font-size: 12px; color: var(--text-muted); line-height: 2;">
+                    <strong style="color: #ff8a65;">Não Cíclico</strong> (alimentos, higiene): P/L 10x–15x — mais seguro &nbsp;|&nbsp; Dívida/EBITDA &lt; 2,5x &nbsp;|&nbsp; ROIC/ROE &gt; 15% <span style="background: rgba(255,138,101,0.18); color: #ff8a65; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">(próximos um do outro)</span><br>
+                    <strong style="color: #ff8a65;">Cíclico</strong> (moda, eletro): Dívida/EBITDA próxima de 0 &nbsp;|&nbsp; ROIC/ROE &gt; 15% <span style="background: rgba(255,138,101,0.18); color: #ff8a65; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">(próximos um do outro)</span> &nbsp;|&nbsp; <span style="background: rgba(255,82,82,0.13); color: var(--color-expense); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">desconsidera-se P/L</span><br>
                     <strong style="color: #ff8a65;">EV/EBITDA:</strong> abaixo de 8x–10x = atrativo &nbsp;|&nbsp;
-                    <strong style="color: #80cbc4;">Graham:</strong> Preço Teto = √(22,5 × LPA × VPA)
+                    <strong style="color: var(--color-highlight);">Preço Teto:</strong> pesquise pelo P/L histórico dos últimos 5 anos e faça a média &nbsp;|&nbsp; Preço Teto = LPA × P/L Histórico
                 </div>
                 <div style="overflow-x: auto;">
                     <table style="min-width: 1100px; border-collapse: collapse;">
@@ -731,11 +731,11 @@
                                 <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Dív/EBITDA</th>
                                 <th style="width:6%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">ROIC (%)</th>
                                 <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid #ff8a65; color: #ff8a65;" title="EV/EBITDA — inserir manualmente">EV/EBITDA</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;" title="Lucro por Ação — usado na fórmula de Graham">LPA (R$)</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;" title="Valor Patrimonial por Ação — usado na fórmula de Graham">VPA (R$)</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);" title="Lucro por Ação">LPA (R$)</th>
+                                <th style="width:8%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);" title="P/L Histórico médio dos últimos 5 anos — pesquisar manualmente">P/L Histórico</th>
                                 <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">Cotação (R$)</th>
-                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;" title="Preço Teto Graham = √(22,5 × LPA × VPA)">T. Graham</th>
-                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid #80cbc4; color: #80cbc4;">M. Seg.</th>
+                                <th style="width:9%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);" title="Preço Teto = LPA × P/L Histórico">Preço Teto</th>
+                                <th style="width:7%; padding: 10px 8px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight);">M. Seg.</th>
                                 <th style="width:60px;"></th>
                             </tr>
                         </thead>
@@ -743,8 +743,8 @@
                     </table>
                 </div>
                 <div style="margin-top: 12px; font-size: 11px; color: #555; font-style: italic; line-height: 1.8;">
-                    💡 <span style="color:#80cbc4;">T. Graham</span> = √(22,5 × LPA × VPA) &nbsp;|&nbsp;
-                    M. Seg. = (T. Graham / Cotação − 1) × 100 &nbsp;|&nbsp;
+                    💡 <span style="color:var(--color-highlight);">Preço Teto</span> = LPA × P/L Histórico (média 5 anos) &nbsp;|&nbsp;
+                    M. Seg. = (Preço Teto / Cotação − 1) × 100 &nbsp;|&nbsp;
                     <span style="color: var(--color-gain);">Verde = abaixo do teto (barato)</span> &nbsp;
                     <span style="color: var(--color-expense);">Vermelho = acima do teto (caro)</span>
                 </div>
@@ -2153,6 +2153,17 @@
             scheduleSave();
         }
 
+        function moveAcaoSetor(setor, index, direction) {
+            const arr = db.acoesSetor[setor];
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= arr.length) return;
+            const temp = arr[index];
+            arr[index] = arr[newIndex];
+            arr[newIndex] = temp;
+            renderSetorTable(setor);
+            scheduleSave();
+        }
+
         function updateAcaoSetor(setor, index, field, value) {
             db.acoesSetor[setor][index][field] = value;
             renderSetorTable(setor);
@@ -2205,7 +2216,14 @@
             const rows = db.acoesSetor[setor] || [];
             let html = '';
             const td = (content) => `<td style="padding:10px 8px;">${content}</td>`;
-            const btnDel = (s,i) => `<td style="padding:10px 6px; text-align:right;"><button class="btn-remove" onclick="removeAcaoSetor('${s}',${i})">✕</button></td>`;
+            const btnActions = (s,i) => {
+                const isF = i === 0, isL = i === rows.length - 1;
+                return `<td style="padding:10px 6px; text-align:right; white-space:nowrap;">
+                    <button class="btn-move" onclick="moveAcaoSetor('${s}',${i},-1)" ${isF?'disabled':''} style="opacity:${isF?0.3:1}">↑</button>
+                    <button class="btn-move" onclick="moveAcaoSetor('${s}',${i},1)" ${isL?'disabled':''} style="opacity:${isL?0.3:1}">↓</button>
+                    <button class="btn-remove" onclick="removeAcaoSetor('${s}',${i})">✕</button>
+                </td>`;
+            };
 
             try { rows.forEach((a, i) => {
                 const pt = calcPrecoTeto(a.lpa, a.plAlvo);
@@ -2224,7 +2242,7 @@
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
                         <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBazin > 0 ? 'R$ '+ptBazin.toFixed(2).replace('.',',') : '—'}</td>
                         ${msegCell(msBazin)}
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 } else if (setor === 'utilidade') {
                     const ptBarsi = (parseFloat(a.dpa) || 0) > 0 ? (parseFloat(a.dpa) / 0.06) : 0;
@@ -2258,15 +2276,18 @@
                         <td style="padding:10px 8px; font-weight:700; color:#ce93d8;">${ptBarsi > 0 ? 'R$ '+ptBarsi.toFixed(2).replace('.',',') : '—'}</td>
                         <td style="padding:10px 8px; font-weight:700; color:#80cbc4;">${ptGraham > 0 ? 'R$ '+ptGraham.toFixed(2).replace('.',',') : '—'}</td>
                         ${msegCellUtil}
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 } else if (setor === 'consumo') {
                     const tipoOpts = ['Não Cíclico','Cíclico'].map(t => `<option value="${t}" ${a.tipo===t?'selected':''}>${t}</option>`).join('');
                     const evEbC = parseFloat(a.evEbitda) || null;
                     const evColC = evEbC===null ? 'var(--text-muted)' : evEbC<=8 ? 'var(--color-gain)' : evEbC<=10 ? 'var(--color-highlight)' : 'var(--color-expense)';
-                    const lpaC = parseFloat(a.lpa)||0, vpaC = parseFloat(a.vpa)||0;
-                    const ptGrahamC = (lpaC > 0 && vpaC > 0) ? Math.sqrt(22.5 * lpaC * vpaC) : 0;
-                    const msGrahamC = calcMSeg(ptGrahamC, a.cotacao);
+                    const lpaC = parseFloat(a.lpa)||0;
+                    const plHistC = parseFloat(a.plHistorico)||0;
+                    const ptC = lpaC > 0 && plHistC > 0 ? lpaC * plHistC : 0;
+                    const msC = calcMSeg(ptC, a.cotacao);
+                    const isFirst = i === 0;
+                    const isLast = i === rows.length - 1;
                     html += `<tr style="border-bottom:1px solid #1a1a1a;">
                         ${td(txtInput(setor,i,'ticker',a.ticker,'#ff8a65','ABEV3'))}
                         <td style="padding:10px 8px;"><select class="custom-input" style="width:90px; background:#111; border:1px solid var(--border-color); border-radius:4px; color:var(--text-muted); padding:4px;" onchange="updateAcaoSetor('${setor}',${i},'tipo',this.value)">${tipoOpts}</select></td>
@@ -2275,12 +2296,16 @@
                         ${td(numInput(setor,i,'divEbitda',a.divEbitda))}
                         ${td(numInput(setor,i,'roic',a.roic))}
                         <td style="padding:10px 8px;"><input type="number" step="0.01" class="custom-input" style="width:60px; text-align:center; color:${evColC}; font-weight:700;" value="${a.evEbitda||''}" onchange="updateAcaoSetor('${setor}',${i},'evEbitda',this.value)" placeholder="0.0"></td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'#80cbc4')}</td>
-                        <td style="padding:10px 8px;">${numInput(setor,i,'vpa',a.vpa,'#80cbc4')}</td>
+                        <td style="padding:10px 8px;">${numInput(setor,i,'lpa',a.lpa,'var(--text-main)')}</td>
+                        <td style="padding:10px 8px;"><input type="number" step="0.01" class="custom-input" style="width:70px; text-align:center; color:var(--color-highlight); font-weight:700;" value="${a.plHistorico||''}" onchange="updateAcaoSetor('${setor}',${i},'plHistorico',this.value)" placeholder="0.00"></td>
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
-                        <td style="padding:10px 8px; font-weight:700; color:#80cbc4;">${ptGrahamC > 0 ? 'R$ '+ptGrahamC.toFixed(2).replace('.',',') : '—'}</td>
-                        ${msegCell(msGrahamC)}
-                        ${btnDel(setor,i)}
+                        ${precoTetoCell(ptC)}
+                        ${msegCell(msC)}
+                        <td style="padding:10px 6px; text-align:right; white-space:nowrap;">
+                            <button class="btn-move" onclick="moveAcaoSetor('${setor}',${i},-1)" ${isFirst?'disabled':''} style="opacity:${isFirst?0.3:1}">↑</button>
+                            <button class="btn-move" onclick="moveAcaoSetor('${setor}',${i},1)" ${isLast?'disabled':''} style="opacity:${isLast?0.3:1}">↓</button>
+                            <button class="btn-remove" onclick="removeAcaoSetor('${setor}',${i})">✕</button>
+                        </td>
                     </tr>`;
                 } else if (setor === 'industrial') {
                     const eb = parseFloat(a.ebitda)||0, dl = parseFloat(a.divLiq)||0;
@@ -2301,7 +2326,7 @@
                         ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
                         ${msegCell(ms)}
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 } else if (setor === 'tecnologia') {
                     const pl = parseFloat(a.pl)||0, cagr = parseFloat(a.cagr)||0;
@@ -2319,7 +2344,7 @@
                         ${td(numInput(setor,i,'plAlvo',a.plAlvo,'var(--color-highlight)'))}
                         ${precoTetoCell(pt)}
                         ${msegCell(ms)}
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 } else if (setor === 'commodities') {
                     const pvp = parseFloat(a.pvp)||0, pvpM = parseFloat(a.pvpMedio)||0;
@@ -2338,7 +2363,7 @@
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
                         <td style="padding:10px 8px;"><select class="custom-input" style="width:90px; background:#111; border:1px solid var(--border-color); border-radius:4px; color:#ffcc80; padding:4px;" onchange="updateAcaoSetor('${setor}',${i},'ciclo',this.value)">${cicloOpts}</select></td>
                         <td style="padding:10px 8px; font-weight:700; color:${vsCol};">${vsMedio!==null ? (vsMedio>0?'+':'')+vsMedio.toFixed(1)+'%' : '—'}</td>
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 } else if (setor === 'graham') {
                     const vpa = parseFloat(a.vpa)||0, lpa = parseFloat(a.lpa)||0;
@@ -2355,7 +2380,7 @@
                         ${td(numInput(setor,i,'cotacao',a.cotacao,'var(--text-main)'))}
                         ${precoTetoCell(vGraham)}
                         ${msegCell(msGraham)}
-                        ${btnDel(setor,i)}
+                        ${btnActions(setor,i)}
                     </tr>`;
                 }
             }); } catch(err) { console.error('Erro renderSetorTable', setor, err); }
