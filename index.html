@@ -117,6 +117,11 @@
         .btn-move { background: transparent; border: none; color: var(--text-main); cursor: pointer; font-size: 16px; transition: 0.2s; margin: 0 4px; opacity: 0.5; }
         .btn-move:hover { opacity: 1; color: var(--color-highlight); }
 
+        /* ROTINA */
+        #rotina-table input { transition: background 0.15s, border-color 0.15s; }
+        #rotina-table tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+        #rotina-table td { vertical-align: middle; }
+
         /* ================= LAYER DE INVESTIMENTOS ================= */
         #invest-container { 
             display: none; width: 100vw; height: 100vh; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; 
@@ -264,6 +269,11 @@
                     <h3>Minha Carteira</h3>
                 </div>
             </a>
+
+            <div class="invest-menu-card" onclick="openRotina()">
+                <div class="icon">📅</div>
+                <h3>Rotina</h3>
+            </div>
             
             <div class="invest-menu-card card-carteira" onclick="openCarteiraResumo()">
                 <div class="icon">💰</div>
@@ -290,6 +300,35 @@
             <div class="invest-menu-card card-rf" onclick="openRendaFixaTable()">
                 <div class="icon" style="color: #00bcd4;">🏦</div>
                 <h3>Planilha Renda Fixa</h3>
+            </div>
+        </div>
+
+        <!-- ======= ROTINA SEMANAL ======= -->
+        <div id="invest-rotina-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+                <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">📅 Rotina Semanal</div>
+                <button onclick="addHorarioRotina()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Linha</button>
+            </div>
+            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color);">
+                <table id="rotina-table" style="width:100%; border-collapse:collapse; min-width:900px;">
+                    <thead>
+                        <tr style="background:#0d0d0d;">
+                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); width:80px; font-size:13px;">Horário</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Segunda</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Terça</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quarta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quinta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Sexta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Sábado</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Domingo</th>
+                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-rotina"></tbody>
+                </table>
+            </div>
+            <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
+                💡 Clique em qualquer célula para editar · + Linha adiciona novo horário · ✕ remove a linha
             </div>
         </div>
 
@@ -1307,6 +1346,7 @@
             document.getElementById('invest-rendafixa-view').style.display = 'none';
             document.getElementById('invest-carteira-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -1320,6 +1360,109 @@
                 const home = document.getElementById('home-screen');
                 home.style.display = 'flex'; home.offsetHeight; home.style.opacity = '1';
             }, 500);
+        }
+
+        // ======= ROTINA SEMANAL =======
+        const DIAS = ['seg','ter','qua','qui','sex','sab','dom'];
+        const ROTINA_DEFAULT = [
+            { h:'06:30', seg:'Acordar / Café / Ir p/ Aula', ter:'Acordar / Café / Ir p/ Aula', qua:'Acordar / Café / Ir p/ Aula', qui:'Acordar / Café / Ir p/ Aula', sex:'Acordar / Café / Ir p/ Aula', sab:'Dormindo', dom:'Dormindo' },
+            { h:'08:00', seg:'MBI 103', ter:'ZOO 210', qua:'ENG 210', qui:'EST 220', sex:'SOL 250', sab:'Acordar 08h00 / Café calmo', dom:'Acordar 08h00 / Café' },
+            { h:'09:00', seg:'MBI 103', ter:'ZOO 210', qua:'ENG 210', qui:'EST 220', sex:'SOL 250', sab:'Estudo / Listas (09h–11h30)', dom:'Lazer / Descanso' },
+            { h:'10:00', seg:'EST 220', ter:'SOL 250', qua:'EAM 300P', qui:'ZOO 210', sex:'ENG 210', sab:'Estudo / Listas', dom:'Lazer / Descanso' },
+            { h:'11:00', seg:'EST 220', ter:'Transição / RU', qua:'EAM 300P', qui:'ZOO 210', sex:'ENG 210', sab:'Fim do Estudo / Almoço', dom:'Almoço Livre' },
+            { h:'12:00', seg:'Almoço (RU)', ter:'Almoço (RU)', qua:'Almoço (RU)', qui:'Almoço (RU)', sex:'Almoço (RU)', sab:'Livre', dom:'Livre' },
+            { h:'13:00', seg:'Descanso no Apê', ter:'Descanso no Apê', qua:'Descanso no Apê', qui:'Descanso no Apê', sex:'Descanso no Apê', sab:'Livre / Projetos', dom:'Livre' },
+            { h:'14:00', seg:'Estudo Individual', ter:'MBI 104P', qua:'EAM 300', qui:'SOL 250P', sex:'Estudo (Revisão)', sab:'Tarde Livre', dom:'Livre' },
+            { h:'15:00', seg:'Estudo Individual', ter:'MBI 104P', qua:'EAM 300', qui:'SOL 250P', sex:'Estudo (Revisão)', sab:'Tarde Livre', dom:'Livre' },
+            { h:'16:00', seg:'EAM 300', ter:'Apê (Banho/Café)', qua:'Apê (Banho/Café)', qui:'Apê (Banho/Café)', sex:'Leitura Finanças', sab:'Tarde Livre', dom:'Livre' },
+            { h:'17:00', seg:'Leitura Finanças', ter:'Leitura Finanças', qua:'Leitura Finanças', qui:'Leitura Finanças', sex:'Tempo Livre / Café', sab:'Rolê / Cerveja com amigos', dom:'Organizar a semana' },
+            { h:'18:00', seg:'Jantar (RU 18h30)', ter:'Jantar (RU 18h30)', qua:'Jantar (RU 18h30)', qui:'Jantar (RU 18h30)', sex:'Jantar (RU 18h30)', sab:'Rolê / Lazer', dom:'Jantar Tranquilo' },
+            { h:'19:00', seg:'Estudo / Revisão', ter:'Estudo / Revisão', qua:'Estudo / Revisão', qui:'Estudo / Revisão', sex:'Cerveja / Rolê leve', sab:'Rolê / Lazer', dom:"Grey's Anatomy" },
+            { h:'20:00', seg:'Estudo / Revisão', ter:'Estudo / Revisão', qua:'Estudo / Revisão', qui:'Estudo / Revisão', sex:'Cerveja / Rolê leve', sab:'Rolê / Lazer', dom:'Desconectar' },
+            { h:'21:00', seg:"Grey's Anatomy", ter:"Grey's Anatomy", qua:"Grey's Anatomy", qui:"Grey's Anatomy", sex:'Cerveja / Rolê', sab:'Rolê (até ~00h30)', dom:'Dormir cedo p/ 06h30' },
+            { h:'22:00', seg:'Preparar p/ Dormir', ter:'Preparar p/ Dormir', qua:'Preparar p/ Dormir', qui:'Preparar p/ Dormir', sex:'Livre / Sair', sab:'Rolê (até ~00h30)', dom:'Dormir' },
+            { h:'23:00', seg:'Dormir', ter:'Dormir', qua:'Dormir', qui:'Dormir', sex:'Livre / Sair', sab:'Rolê / Dormir', dom:'Dormindo' },
+        ];
+
+        function ensureRotinaData() {
+            if (!db.rotina || !Array.isArray(db.rotina) || db.rotina.length === 0) {
+                db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+            }
+        }
+
+        function openRotina() {
+            document.getElementById('invest-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'ROTINA SEMANAL';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'rotina';
+            ensureRotinaData();
+            renderRotinaTable();
+        }
+
+        function renderRotinaTable() {
+            ensureRotinaData();
+            const tbody = document.getElementById('tbody-rotina');
+            if (!tbody) return;
+            let html = '';
+            db.rotina.forEach((row, ri) => {
+                const isWeekend = false; // color logic per cell
+                html += `<tr style="border-bottom:1px solid #161616; transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">`;
+                // Horário
+                html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
+                    <input type="text" value="${row.h||''}" 
+                        style="width:58px; background:transparent; border:none; border-bottom:1px solid #333; color:var(--color-blue); font-weight:700; font-size:13px; text-align:center; outline:none;"
+                        onchange="updateRotinaCell(${ri},'h',this.value)"
+                        onfocus="this.style.borderBottomColor='var(--color-blue)'"
+                        onblur="this.style.borderBottomColor='#333'">
+                </td>`;
+                // Dias
+                DIAS.forEach((d, di) => {
+                    const isSab = d === 'sab', isDom = d === 'dom';
+                    const col = isSab||isDom ? 'var(--color-highlight)' : 'var(--text-main)';
+                    const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
+                    html += `<td style="padding:4px 6px; ${borderR}">
+                        <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
+                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; text-align:center; outline:none; padding:4px 2px; cursor:text;"
+                            onchange="updateRotinaCell(${ri},'${d}',this.value)"
+                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.05)'"
+                            onblur="this.style.borderBottomColor='transparent'; this.style.background=''">
+                    </td>`;
+                });
+                // Botão remover
+                html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
+                    <button onclick="removeRotinaRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
+                </td>`;
+                html += `</tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function updateRotinaCell(ri, field, value) {
+            ensureRotinaData();
+            db.rotina[ri][field] = value;
+            scheduleSave();
+        }
+
+        function addHorarioRotina() {
+            ensureRotinaData();
+            const last = db.rotina[db.rotina.length - 1];
+            let nextH = '';
+            if (last && last.h) {
+                const parts = last.h.split(':');
+                const h = (parseInt(parts[0]) + 1) % 24;
+                nextH = String(h).padStart(2,'0') + ':00';
+            }
+            db.rotina.push({ h: nextH, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:'' });
+            renderRotinaTable();
+            scheduleSave();
+        }
+
+        function removeRotinaRow(ri) {
+            ensureRotinaData();
+            db.rotina.splice(ri, 1);
+            renderRotinaTable();
+            scheduleSave();
         }
 
         function openCarteiraResumo() {
@@ -1482,6 +1625,7 @@
                     if(!db.acoes) db.acoes = [];
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                     // Migrar dados salvos na chave antiga 'commodity' para 'commodities'
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -1495,6 +1639,7 @@
                         db = JSON.parse(backup);
                         if(!db.acoesSetor) db.acoesSetor = {};
                         ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
                     } else {
@@ -1547,7 +1692,7 @@
                 } else {
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
