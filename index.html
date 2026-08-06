@@ -2688,6 +2688,7 @@
             destroyChart('chartBarAnual'); charts['chartBarAnual'] = new Chart(document.getElementById('chartBarAnual'), { type: 'bar', data: { labels: MONTHS.map(m => m.substring(0,3)), datasets: [ { label: 'Entradas', data: ganhosAno, backgroundColor: '#00e676', borderRadius: 2 }, { label: 'Saídas', data: despesasAno, backgroundColor: '#ff5252', borderRadius: 2 } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {display: false}, legend: { position: 'top', labels: { color: '#888888', usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [2, 4] } } } } });
         }
 
+
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
         window.onload = loadData;
     </script>
