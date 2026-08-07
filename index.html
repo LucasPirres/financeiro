@@ -580,13 +580,25 @@
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA+</th>
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Bruto</th>
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Líquido</th>
-                                <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equivalente a IPCA+</th>
+                                <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-calc-ipca">
                         </tbody>
                     </table>
                 </div>
+                <!-- Link IBGE -->
+                <a href="https://www.ibge.gov.br/explica/inflacao.php" target="_blank" rel="noopener noreferrer"
+                   style="display:flex; align-items:center; gap:16px; margin-top:18px; background:linear-gradient(135deg,#0d1a0e 0%,#0f2010 100%); border:1px solid var(--color-gain); border-radius:10px; padding:16px 22px; text-decoration:none; cursor:pointer; transition:box-shadow 0.25s, transform 0.2s;"
+                   onmouseover="this.style.boxShadow='0 6px 28px rgba(0,230,118,0.25)'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="font-size:30px; line-height:1;">📊</div>
+                    <div style="flex:1;">
+                        <div style="color:var(--color-gain); font-weight:700; font-size:14px; letter-spacing:0.5px; margin-bottom:3px;">Inflação (IPCA) — IBGE</div>
+                        <div style="color:var(--text-muted); font-size:12px;">Consulte o IPCA atual e histórico oficial divulgado pelo IBGE.</div>
+                    </div>
+                    <div style="color:var(--color-gain); font-size:20px; opacity:0.7;">→</div>
+                </a>
             </div>
 
             <div class="fii-card" style="border-top-color: var(--color-purple);">
@@ -1425,8 +1437,8 @@
                         <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
                             style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; text-align:center; outline:none; padding:4px 2px; cursor:text;"
                             onchange="updateRotinaCell(${ri},'${d}',this.value)"
-                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.05)'"
-                            onblur="this.style.borderBottomColor='transparent'; this.style.background=''">
+                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
+                            onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
                     </td>`;
                 });
                 // Botão remover
@@ -1506,11 +1518,12 @@
             document.getElementById('invest-header-title').innerText = 'PLANILHA DE AÇÕES BR';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
             currentInvestView = 'acoes-table';
-            renderAcoesTable();
             ensureSetorData();
+            renderAcoesTable();
             renderAllSetorTables();
-            // Garante render após o browser aplicar display:flex
-            setTimeout(renderAllSetorTables, 50);
+            // Duplo timeout para garantir que o browser aplicou o display antes de renderizar
+            setTimeout(() => { ensureSetorData(); renderAllSetorTables(); }, 80);
+            setTimeout(() => { renderAllSetorTables(); }, 250);
         }
 
         function openRendaFixaTable() {
@@ -1586,9 +1599,10 @@
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
-            } else if (currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view') {
+            } else if (currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view' || currentInvestView === 'rotina') {
                 document.getElementById('invest-planilhas-menu-view').style.display = 'none';
                 document.getElementById('invest-carteira-view').style.display = 'none';
+                document.getElementById('invest-rotina-view').style.display = 'none';
                 document.getElementById('invest-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -1679,7 +1693,7 @@
                     try {
                         db = JSON.parse(backup);
                         if(!db.acoesSetor) db.acoesSetor = {};
-                        ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Offline — backup local carregado ✓";
                         if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -1692,7 +1706,7 @@
                 } else {
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
-                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
@@ -2277,7 +2291,7 @@
             graham:      { defaultPlAlvo: 0,  tbody: 'tbody-setor-graham' }
         };
 
-        const ALL_SETORES = ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'];
+        const ALL_SETORES = ['financeiro','utilidade','consumo','industrial','tecnologia','commodities','graham'];
         function ensureSetorData() {
             if (!db.acoesSetor) db.acoesSetor = {};
             ALL_SETORES.forEach(s => { if (!db.acoesSetor[s]) db.acoesSetor[s] = []; });
