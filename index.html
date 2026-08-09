@@ -1638,7 +1638,7 @@
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     // Atualiza backup local com dados da nuvem
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
-                } else {
+                    _lastSavedHash = JSON.stringify(db);                } else {
                     // Supabase não tem dados — tenta carregar do backup local
                     const backup = localStorage.getItem('financeiro_backup');
                     if (backup) {
@@ -1691,6 +1691,7 @@
                         if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                         if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                         renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+                        startRealtimeSync(); startPollingSync();
                         return;
                     } catch(e2) {
                         document.getElementById('sync-status').innerText = "Erro ao carregar backup";
@@ -1703,10 +1704,14 @@
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                 renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+                startRealtimeSync(); startPollingSync();
                 return;
             }
             // Renders fora do try/catch — erros de UI não mascaram erros de dados
             renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+            // Inicia sync em tempo real após carregar dados
+            startRealtimeSync();
+            startPollingSync(); // polling como fallback paralelo
         }
 
         function scheduleSave() {
@@ -1721,8 +1726,8 @@
             try {
                 const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
                 if (!error) {
-                    // Atualiza backup local após salvar na nuvem com sucesso
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
+                    _lastSavedHash = JSON.stringify(db);
                     document.getElementById('sync-status').innerText = "Sincronizado ✓";
                 } else {
                     document.getElementById('sync-status').innerText = "Erro (backup local salvo)";
@@ -1730,6 +1735,86 @@
             } catch (e) { 
                 document.getElementById('sync-status').innerText = "Offline (backup local salvo)";
             }
+        }
+
+        // ── SYNC EM TEMPO REAL ──────────────────────────────────────────────
+        // 1) Supabase Realtime: recebe push instantâneo quando outro PC salva
+        function startRealtimeSync() {
+            try {
+                _supabase
+                    .channel('financeiro-sync')
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'financeiro',
+                        filter: 'id=eq.1'
+                    }, (payload) => {
+                        if (!payload.new || !payload.new.dados) return;
+                        // Só aplica se os dados forem diferentes do que já temos
+                        const incoming = JSON.stringify(payload.new.dados);
+                        if (incoming === JSON.stringify(db)) return;
+                        db = payload.new.dados;
+                        // Sanitiza estruturas críticas
+                        if(!db.fiis) db.fiis = [];
+                        if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
+                        if(!db.acoes) db.acoes = [];
+                        if(!db.acoesSetor) db.acoesSetor = {};
+                        ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                        if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                        try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e2) {}
+                        // Re-renderiza tudo silenciosamente
+                        renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
+                        renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
+                        renderSetores(); renderAllSetorTables(); renderRotinaTable();
+                        document.getElementById('sync-status').innerText = "Atualizado de outro dispositivo ✓";
+                        setTimeout(() => { document.getElementById('sync-status').innerText = "Online ✓"; }, 3000);
+                    })
+                    .subscribe((status) => {
+                        if (status === 'SUBSCRIBED') {
+                            console.log('[Realtime] Conectado ao canal financeiro-sync');
+                        }
+                    });
+            } catch(e) {
+                console.warn('[Realtime] Não disponível, usando polling:', e);
+                startPollingSync();
+            }
+        }
+
+        // 2) Polling de fallback: verifica a cada 15s se há dados novos no Supabase
+        let _lastSavedHash = '';
+        let _pollInterval = null;
+        function startPollingSync() {
+            if (_pollInterval) return;
+            _pollInterval = setInterval(async () => {
+                // Não faz polling se o usuário acabou de salvar (evita loop)
+                if (document.getElementById('sync-status').innerText === 'Salvando...') return;
+                try {
+                    const { data, error } = await _supabase
+                        .from('financeiro').select('dados').eq('id', 1).single();
+                    if (error || !data || !data.dados) return;
+                    const hash = JSON.stringify(data.dados);
+                    if (hash === _lastSavedHash || hash === JSON.stringify(db)) {
+                        _lastSavedHash = hash;
+                        return;
+                    }
+                    _lastSavedHash = hash;
+                    db = data.dados;
+                    if(!db.fiis) db.fiis = [];
+                    if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
+                    if(!db.acoes) db.acoes = [];
+                    if(!db.acoesSetor) db.acoesSetor = {};
+                    ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e2) {}
+                    renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
+                    renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
+                    renderSetores(); renderAllSetorTables(); renderRotinaTable();
+                    document.getElementById('sync-status').innerText = "Atualizado de outro dispositivo ✓";
+                    setTimeout(() => { document.getElementById('sync-status').innerText = "Online ✓"; }, 3000);
+                } catch(e) { /* silencioso */ }
+            }, 15000); // verifica a cada 15 segundos
         }
 
         function createYearStructure() {
