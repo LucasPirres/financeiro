@@ -1124,6 +1124,55 @@
 
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
+    <!-- PAINEL EXPORTAR / IMPORTAR -->
+    <div id="backup-panel" style="position:fixed; bottom:32px; right:10px; z-index:10001; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+
+        <!-- Botão flutuante principal -->
+        <button onclick="toggleBackupMenu()" 
+            style="background:#1a1a1a; border:1px solid #333; color:var(--text-muted); padding:6px 12px; border-radius:20px; font-size:11px; cursor:pointer; letter-spacing:0.5px; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='var(--color-blue)'; this.style.color='var(--color-blue)'"
+            onmouseout="this.style.borderColor='#333'; this.style.color='var(--text-muted)'">
+            💾 Backup
+        </button>
+
+        <!-- Menu expandido -->
+        <div id="backup-menu" style="display:none; background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:16px; width:240px; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+            <div style="color:var(--color-blue); font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:12px;">💾 BACKUP DE DADOS</div>
+
+            <!-- EXPORTAR -->
+            <div style="margin-bottom:14px;">
+                <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px;">📤 Exportar todos os dados:</div>
+                <button onclick="exportarDados()" 
+                    style="width:100%; background:transparent; border:1px solid var(--color-gain); color:var(--color-gain); padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;"
+                    onmouseover="this.style.background='rgba(0,230,118,0.1)'"
+                    onmouseout="this.style.background='transparent'">
+                    ⬇ Baixar meus-dados.json
+                </button>
+            </div>
+
+            <div style="border-top:1px solid #222; margin-bottom:14px;"></div>
+
+            <!-- IMPORTAR -->
+            <div>
+                <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px;">📥 Importar de arquivo:</div>
+                <label for="import-file" 
+                    style="display:block; width:100%; background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; text-align:center; box-sizing:border-box; transition:all 0.2s;"
+                    onmouseover="this.style.background='rgba(77,166,255,0.1)'"
+                    onmouseout="this.style.background='transparent'">
+                    ⬆ Selecionar arquivo .json
+                </label>
+                <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importarDados(this)">
+                <div id="import-status" style="margin-top:6px; font-size:11px; color:var(--text-muted); text-align:center; min-height:16px;"></div>
+            </div>
+
+            <div style="border-top:1px solid #222; margin-top:10px; padding-top:10px;">
+                <div style="color:#444; font-size:10px; line-height:1.5;">
+                    O arquivo .json contém todos os seus dados: FIIs, ações, renda fixa, rotina e configurações.
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ======= MÉTODO ARCA =======
 
@@ -1380,7 +1429,7 @@
             { h:'19:00', seg:'Estudo / Revisão', ter:'Estudo / Revisão', qua:'Estudo / Revisão', qui:'Estudo / Revisão', sex:'Cerveja / Rolê leve', sab:'Rolê / Lazer', dom:"Grey's Anatomy" },
             { h:'20:00', seg:'Estudo / Revisão', ter:'Estudo / Revisão', qua:'Estudo / Revisão', qui:'Estudo / Revisão', sex:'Cerveja / Rolê leve', sab:'Rolê / Lazer', dom:'Desconectar' },
             { h:'21:00', seg:"Grey's Anatomy", ter:"Grey's Anatomy", qua:"Grey's Anatomy", qui:"Grey's Anatomy", sex:'Cerveja / Rolê', sab:'Rolê (até ~00h30)', dom:'Dormir cedo p/ 06h30' },
-            { h:'22:00', seg:'Preparar p/ Dormir', ter:'Preparar p/ Dormir', qua:'Preparar p/ Dormir', qui:'Preparar p/ Dormir', sex:'Livre / Sair', sab:'Rolê (até ~00h30)', dom:'Dormir' },
+            { h:'22:30', seg:'Preparar p/ Dormir', ter:'Preparar p/ Dormir', qua:'Preparar p/ Dormir', qui:'Preparar p/ Dormir', sex:'Livre / Sair', sab:'Rolê (até ~00h30)', dom:'Dormir' },
             { h:'23:00', seg:'Dormir', ter:'Dormir', qua:'Dormir', qui:'Dormir', sex:'Livre / Sair', sab:'Rolê / Dormir', dom:'Dormindo' },
         ];
 
@@ -1404,7 +1453,7 @@
             ensureRotinaData();
             const tbody = document.getElementById('tbody-rotina');
             if (!tbody) return;
-            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:30'];
+            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:00','22:30'];
             let html = '';
             db.rotina.forEach((row, ri) => {
                 const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
@@ -2698,6 +2747,123 @@
         }
 
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
+
+        // ======= EXPORTAR / IMPORTAR DADOS =======
+
+        function toggleBackupMenu() {
+            const menu = document.getElementById('backup-menu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Fecha o menu se clicar fora
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('backup-panel');
+            if (panel && !panel.contains(e.target)) {
+                const menu = document.getElementById('backup-menu');
+                if (menu) menu.style.display = 'none';
+            }
+        });
+
+        function exportarDados() {
+            try {
+                // Garante que tem os dados mais recentes
+                const dadosExportar = JSON.parse(JSON.stringify(db));
+                dadosExportar._exportadoEm = new Date().toLocaleString('pt-BR');
+                dadosExportar._versao = '1.0';
+
+                const blob = new Blob([JSON.stringify(dadosExportar, null, 2)], { type: 'application/json' });
+                const url  = URL.createObjectURL(blob);
+                const a    = document.createElement('a');
+                const data = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+                a.href     = url;
+                a.download = `meus-dados-${data}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                document.getElementById('import-status').style.color = 'var(--color-gain)';
+                document.getElementById('import-status').innerText = '✓ Arquivo baixado com sucesso!';
+                setTimeout(() => { document.getElementById('import-status').innerText = ''; }, 3000);
+            } catch(e) {
+                document.getElementById('import-status').style.color = 'var(--color-expense)';
+                document.getElementById('import-status').innerText = 'Erro ao exportar: ' + e.message;
+            }
+        }
+
+        function importarDados(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('import-status');
+            statusEl.style.color = 'var(--text-muted)';
+            statusEl.innerText = 'Lendo arquivo...';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dadosImportados = JSON.parse(e.target.result);
+
+                    // Validação básica — garante que é um arquivo do site
+                    if (!dadosImportados.years && !dadosImportados.fiis && !dadosImportados.acoesSetor) {
+                        throw new Error('Arquivo inválido — não parece ser um backup deste site.');
+                    }
+
+                    // Confirmação antes de sobrescrever
+                    const exportadoEm = dadosImportados._exportadoEm || 'data desconhecida';
+                    const confirmar = confirm(
+                        `⚠ Importar dados do backup de ${exportadoEm}?\n\n` +
+                        `Isso VAI SUBSTITUIR todos os dados atuais do site.\n\n` +
+                        `Clique OK para confirmar.`
+                    );
+                    if (!confirmar) {
+                        statusEl.innerText = 'Cancelado.';
+                        input.value = '';
+                        return;
+                    }
+
+                    // Remove campos de metadados antes de aplicar
+                    delete dadosImportados._exportadoEm;
+                    delete dadosImportados._versao;
+
+                    // Aplica os dados
+                    db = dadosImportados;
+
+                    // Sanitiza estruturas críticas
+                    if(!db.fiis) db.fiis = [];
+                    if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
+                    if(!db.acoes) db.acoes = [];
+                    if(!db.acoesSetor) db.acoesSetor = {};
+                    ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+
+                    // Salva no localStorage imediatamente
+                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(err) {}
+
+                    // Salva no Supabase
+                    saveDataNow();
+
+                    // Re-renderiza tudo
+                    renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
+                    renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
+                    renderSetores(); renderAllSetorTables(); renderRotinaTable();
+
+                    statusEl.style.color = 'var(--color-gain)';
+                    statusEl.innerText = '✓ Dados importados com sucesso!';
+                    document.getElementById('sync-status').innerText = 'Dados importados ✓';
+
+                    setTimeout(() => { statusEl.innerText = ''; }, 4000);
+                } catch(err) {
+                    statusEl.style.color = 'var(--color-expense)';
+                    statusEl.innerText = '✗ Erro: ' + err.message;
+                }
+                // Reseta o input para permitir importar o mesmo arquivo novamente
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+
         window.onload = loadData;
     </script>
 </body>
