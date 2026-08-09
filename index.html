@@ -576,7 +576,7 @@
                     <table style="width: 100%; text-align: center; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equivalente a IPCA+</th>
+                                <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA</th>
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA+</th>
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Bruto</th>
                                 <th style="padding: 12px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Líquido</th>
@@ -609,7 +609,7 @@
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">P/VP</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Preço</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Dividendo 12M</th>
-                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA</th>
+                                <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-gain); color: var(--color-gain); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Equiv. IPCA</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">IPCA+</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Prêmio</th>
                                 <th style="padding: 10px 15px; border-bottom: 2px solid var(--color-highlight); color: var(--color-highlight); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Rendimento</th>
@@ -1407,15 +1407,16 @@
             const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:30'];
             let html = '';
             db.rotina.forEach((row, ri) => {
-                const isHighlight = HIGHLIGHT_HOURS.includes((row.h||'').trim());
-                const rowBg = isHighlight ? 'rgba(0,230,118,0.06)' : '';
-                const rowBorder = isHighlight ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
-                html += `<tr style="border-bottom:${rowBorder}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${isHighlight?'rgba(0,230,118,0.11)':'rgba(255,255,255,0.03)'}'" onmouseout="this.style.background='${rowBg}'">`;
+                const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
+                const rowBg   = isHL ? 'rgba(0,230,118,0.06)' : '';
+                const rowBord = isHL ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
+                const hoverBg = isHL ? 'rgba(0,230,118,0.11)' : 'rgba(255,255,255,0.03)';
+                html += `<tr style="border-bottom:${rowBord}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${rowBg}'">`;
                 // Horário
-                const hColor = isHighlight ? 'var(--color-gain)' : 'var(--color-blue)';
-                const hBorder = isHighlight ? 'rgba(0,230,118,0.4)' : '#333';
+                const hColor  = isHL ? 'var(--color-gain)' : 'var(--color-blue)';
+                const hBorder = isHL ? 'rgba(0,230,118,0.4)' : '#333';
                 html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
-                    <input type="text" value="${row.h||''}" 
+                    <input type="text" value="${row.h||''}"
                         style="width:58px; background:transparent; border:none; border-bottom:1px solid ${hBorder}; color:${hColor}; font-weight:700; font-size:13px; text-align:center; outline:none;"
                         onchange="updateRotinaCell(${ri},'h',this.value)"
                         onfocus="this.style.borderBottomColor='var(--color-blue)'"
@@ -1424,18 +1425,17 @@
                 // Dias
                 DIAS.forEach((d, di) => {
                     const isSab = d === 'sab', isDom = d === 'dom';
-                    const col = (isSab||isDom) ? 'var(--color-highlight)' : isHighlight ? 'var(--color-gain)' : 'var(--text-main)';
-                    const fontW = (isHighlight && !isSab && !isDom) ? '700' : '400';
+                    const col   = (isSab||isDom) ? 'var(--color-highlight)' : isHL ? 'var(--color-gain)' : 'var(--text-main)';
+                    const fw    = (isHL && !isSab && !isDom) ? '700' : '400';
                     const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
                     html += `<td style="padding:4px 6px; ${borderR}">
                         <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
-                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fontW}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
+                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fw}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
                             onchange="updateRotinaCell(${ri},'${d}',this.value)"
                             onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
                             onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
                     </td>`;
                 });
-                // Botão remover
                 html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
                     <button onclick="removeRotinaRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
                 </td>`;
@@ -1638,7 +1638,7 @@
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     // Atualiza backup local com dados da nuvem
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
-                    _lastSavedHash = JSON.stringify(db);                } else {
+                } else {
                     // Supabase não tem dados — tenta carregar do backup local
                     const backup = localStorage.getItem('financeiro_backup');
                     if (backup) {
@@ -1691,7 +1691,6 @@
                         if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                         if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                         renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
-                        startRealtimeSync(); startPollingSync();
                         return;
                     } catch(e2) {
                         document.getElementById('sync-status').innerText = "Erro ao carregar backup";
@@ -1704,14 +1703,10 @@
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                 renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
-                startRealtimeSync(); startPollingSync();
                 return;
             }
             // Renders fora do try/catch — erros de UI não mascaram erros de dados
             renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
-            // Inicia sync em tempo real após carregar dados
-            startRealtimeSync();
-            startPollingSync(); // polling como fallback paralelo
         }
 
         function scheduleSave() {
@@ -1724,97 +1719,34 @@
 
         async function saveDataNow() {
             try {
-                const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
+                // Tenta upsert primeiro
+                let { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
+                
+                // Se upsert falhar por RLS/policy, tenta update direto
+                if (error) {
+                    console.warn('[Save] upsert falhou, tentando update:', error.message);
+                    const res2 = await _supabase.from('financeiro').update({ dados: db }).eq('id', 1);
+                    error = res2.error;
+                }
+
                 if (!error) {
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
                     _lastSavedHash = JSON.stringify(db);
                     document.getElementById('sync-status').innerText = "Sincronizado ✓";
                 } else {
-                    document.getElementById('sync-status').innerText = "Erro (backup local salvo)";
+                    console.error('[Save] Erro Supabase:', error.message, error.code);
+                    // Salva local e mostra mensagem mais clara
+                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
+                    document.getElementById('sync-status').innerText = "⚠ Erro nuvem — salvo local";
+                    // Tenta de novo em 10s
+                    setTimeout(saveDataNow, 10000);
                 }
             } catch (e) { 
-                document.getElementById('sync-status').innerText = "Offline (backup local salvo)";
+                console.error('[Save] Exceção:', e);
+                try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e2) {}
+                document.getElementById('sync-status').innerText = "Offline — salvo localmente";
+                setTimeout(saveDataNow, 15000);
             }
-        }
-
-        // ── SYNC EM TEMPO REAL ──────────────────────────────────────────────
-        // 1) Supabase Realtime: recebe push instantâneo quando outro PC salva
-        function startRealtimeSync() {
-            try {
-                _supabase
-                    .channel('financeiro-sync')
-                    .on('postgres_changes', {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'financeiro',
-                        filter: 'id=eq.1'
-                    }, (payload) => {
-                        if (!payload.new || !payload.new.dados) return;
-                        // Só aplica se os dados forem diferentes do que já temos
-                        const incoming = JSON.stringify(payload.new.dados);
-                        if (incoming === JSON.stringify(db)) return;
-                        db = payload.new.dados;
-                        // Sanitiza estruturas críticas
-                        if(!db.fiis) db.fiis = [];
-                        if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
-                        if(!db.acoes) db.acoes = [];
-                        if(!db.acoesSetor) db.acoesSetor = {};
-                        ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
-                        if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                        if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
-                        try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e2) {}
-                        // Re-renderiza tudo silenciosamente
-                        renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
-                        renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
-                        renderSetores(); renderAllSetorTables(); renderRotinaTable();
-                        document.getElementById('sync-status').innerText = "Atualizado de outro dispositivo ✓";
-                        setTimeout(() => { document.getElementById('sync-status').innerText = "Online ✓"; }, 3000);
-                    })
-                    .subscribe((status) => {
-                        if (status === 'SUBSCRIBED') {
-                            console.log('[Realtime] Conectado ao canal financeiro-sync');
-                        }
-                    });
-            } catch(e) {
-                console.warn('[Realtime] Não disponível, usando polling:', e);
-                startPollingSync();
-            }
-        }
-
-        // 2) Polling de fallback: verifica a cada 15s se há dados novos no Supabase
-        let _lastSavedHash = '';
-        let _pollInterval = null;
-        function startPollingSync() {
-            if (_pollInterval) return;
-            _pollInterval = setInterval(async () => {
-                // Não faz polling se o usuário acabou de salvar (evita loop)
-                if (document.getElementById('sync-status').innerText === 'Salvando...') return;
-                try {
-                    const { data, error } = await _supabase
-                        .from('financeiro').select('dados').eq('id', 1).single();
-                    if (error || !data || !data.dados) return;
-                    const hash = JSON.stringify(data.dados);
-                    if (hash === _lastSavedHash || hash === JSON.stringify(db)) {
-                        _lastSavedHash = hash;
-                        return;
-                    }
-                    _lastSavedHash = hash;
-                    db = data.dados;
-                    if(!db.fiis) db.fiis = [];
-                    if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
-                    if(!db.acoes) db.acoes = [];
-                    if(!db.acoesSetor) db.acoesSetor = {};
-                    ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
-                    if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                    if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
-                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e2) {}
-                    renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
-                    renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
-                    renderSetores(); renderAllSetorTables(); renderRotinaTable();
-                    document.getElementById('sync-status').innerText = "Atualizado de outro dispositivo ✓";
-                    setTimeout(() => { document.getElementById('sync-status').innerText = "Online ✓"; }, 3000);
-                } catch(e) { /* silencioso */ }
-            }, 15000); // verifica a cada 15 segundos
         }
 
         function createYearStructure() {
