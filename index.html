@@ -1404,32 +1404,38 @@
             ensureRotinaData();
             const tbody = document.getElementById('tbody-rotina');
             if (!tbody) return;
+            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:30'];
             let html = '';
             db.rotina.forEach((row, ri) => {
-                const isWeekend = false; // color logic per cell
-                html += `<tr style="border-bottom:1px solid #161616; transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">`;
+                const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
+                const rowBg   = isHL ? 'rgba(0,230,118,0.06)' : '';
+                const rowBord = isHL ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
+                const hoverBg = isHL ? 'rgba(0,230,118,0.11)' : 'rgba(255,255,255,0.03)';
+                html += `<tr style="border-bottom:${rowBord}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${rowBg}'">`;
                 // Horário
+                const hColor  = isHL ? 'var(--color-gain)' : 'var(--color-blue)';
+                const hBorder = isHL ? 'rgba(0,230,118,0.4)' : '#333';
                 html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
-                    <input type="text" value="${row.h||''}" 
-                        style="width:58px; background:transparent; border:none; border-bottom:1px solid #333; color:var(--color-blue); font-weight:700; font-size:13px; text-align:center; outline:none;"
+                    <input type="text" value="${row.h||''}"
+                        style="width:58px; background:transparent; border:none; border-bottom:1px solid ${hBorder}; color:${hColor}; font-weight:700; font-size:13px; text-align:center; outline:none;"
                         onchange="updateRotinaCell(${ri},'h',this.value)"
                         onfocus="this.style.borderBottomColor='var(--color-blue)'"
-                        onblur="this.style.borderBottomColor='#333'">
+                        onblur="this.style.borderBottomColor='${hBorder}'">
                 </td>`;
                 // Dias
                 DIAS.forEach((d, di) => {
                     const isSab = d === 'sab', isDom = d === 'dom';
-                    const col = isSab||isDom ? 'var(--color-highlight)' : 'var(--text-main)';
+                    const col  = (isSab||isDom) ? 'var(--color-highlight)' : isHL ? 'var(--color-gain)' : 'var(--text-main)';
+                    const fw   = (isHL && !isSab && !isDom) ? '700' : '400';
                     const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
                     html += `<td style="padding:4px 6px; ${borderR}">
                         <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
-                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; text-align:center; outline:none; padding:4px 2px; cursor:text;"
+                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fw}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
                             onchange="updateRotinaCell(${ri},'${d}',this.value)"
-                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.05)'"
-                            onblur="this.style.borderBottomColor='transparent'; this.style.background=''">
+                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
+                            onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
                     </td>`;
                 });
-                // Botão remover
                 html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
                     <button onclick="removeRotinaRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
                 </td>`;
