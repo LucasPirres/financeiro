@@ -2859,13 +2859,33 @@
                     db = dadosImportados;
 
                     // Sanitiza estruturas críticas
+                    if(!db.years) db.years = {};
+                    if(Object.keys(db.years).length === 0) { db.years[selectedYear] = createYearStructure(); }
                     if(!db.fiis) db.fiis = [];
                     if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
                     if(!db.acoes) db.acoes = [];
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && (!db.acoesSetor['commodities'] || db.acoesSetor['commodities'].length === 0)) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                    if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
+                    if (!db.meuPatrimonio) {
+                        db.meuPatrimonio = {
+                            atual: 0, aporte: 0,
+                            categorias: [
+                                { nome: 'Ações', percIdeal: 20, percAtual: 0, ativos: [] },
+                                { nome: 'Exterior', percIdeal: 20, percAtual: 0, ativos: [] },
+                                { nome: 'ETFs', percIdeal: 5, percAtual: 0, ativos: [] },
+                                { nome: 'FIIs', percIdeal: 25, percAtual: 0, ativos: [] },
+                                { nome: 'Renda Fixa', percIdeal: 25, percAtual: 0, ativos: [] },
+                                { nome: 'Criptomoedas', percIdeal: 5, percAtual: 0, ativos: [] }
+                            ]
+                        };
+                    }
+                    if (!db.setores) {
+                        db.setores = { acoes: [], fiis: [], exterior: [] };
+                    }
 
                     // Salva no localStorage imediatamente
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(err) {}
