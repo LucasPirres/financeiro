@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano Financeiro e Investimentos</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <style>
@@ -1656,10 +1655,34 @@
             }
         }
 
-        // ======= BANCO DE DADOS E INFRA =======
-        const SUPABASE_URL = 'https://cvpnshopavdgmtnyetgd.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cG5zaG9wYXZkZ210bnlldGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA5MjAsImV4cCI6MjA5NDE4NjkyMH0.rz9JRc3RRQGI0ePqV4xwN6g0zwwXT1vfiAH3eZpHWOY';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ======= BANCO DE DADOS E INFRA (JSONBin.io) =======
+        const JSONBIN_BIN_ID = '6a77dec3f5f4af5e29fd334c';
+        const JSONBIN_API_KEY = '$2a$10$84pzex9fOVmFmdlclKUApuQ/MsKufchztS1oYwx/X4/7Nh9CwSnAy';
+        const JSONBIN_BASE_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+
+        async function jsonbinLoad() {
+            const resp = await fetch(JSONBIN_BASE_URL + '/latest', {
+                method: 'GET',
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            if (!resp.ok) throw new Error('JSONBin GET falhou: ' + resp.status);
+            const json = await resp.json();
+            return json.record;
+        }
+
+        async function jsonbinSave(dados) {
+            const resp = await fetch(JSONBIN_BASE_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(dados)
+            });
+            if (!resp.ok) throw new Error('JSONBin PUT falhou: ' + resp.status);
+            return resp.json();
+        }
+
         Chart.register(ChartDataLabels);
 
         const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -1675,9 +1698,9 @@
 
         async function loadData() {
             try {
-                const { data, error } = await _supabase.from('financeiro').select('dados').eq('id', 1).single();
-                if (data && data.dados) { 
-                    db = data.dados;
+                const dados = await jsonbinLoad();
+                if (dados && Object.keys(dados).length > 0) { 
+                    db = dados;
                     if(!db.fiis) db.fiis = [];
                     if(!db.fiisAvaliacao) db.fiisAvaliacao = [];
                     if(!db.acoes) db.acoes = [];
@@ -1691,7 +1714,7 @@
                     // Atualiza backup local com dados da nuvem
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
                 } else {
-                    // Supabase não tem dados — tenta carregar do backup local
+                    // JSONBin não tem dados — tenta carregar do backup local
                     const backup = localStorage.getItem('financeiro_backup');
                     if (backup) {
                         db = JSON.parse(backup);
@@ -1731,7 +1754,7 @@
 
                 document.getElementById('sync-status').innerText = "Online ✓";
             } catch (e) { 
-                // Supabase inacessível — tenta carregar do backup local
+                // JSONBin inacessível — tenta carregar do backup local
                 const backup = localStorage.getItem('financeiro_backup');
                 if (backup) {
                     try {
@@ -1771,14 +1794,10 @@
 
         async function saveDataNow() {
             try {
-                const { error } = await _supabase.from('financeiro').upsert({ id: 1, dados: db });
-                if (!error) {
-                    // Atualiza backup local após salvar na nuvem com sucesso
-                    try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
-                    document.getElementById('sync-status').innerText = "Sincronizado ✓";
-                } else {
-                    document.getElementById('sync-status').innerText = "Erro (backup local salvo)";
-                }
+                await jsonbinSave(db);
+                // Atualiza backup local após salvar na nuvem com sucesso
+                try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
+                document.getElementById('sync-status').innerText = "Sincronizado ✓";
             } catch (e) { 
                 document.getElementById('sync-status').innerText = "Offline (backup local salvo)";
             }
@@ -2841,7 +2860,7 @@
                     // Salva no localStorage imediatamente
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(err) {}
 
-                    // Salva no Supabase
+                    // Salva no JSONBin
                     saveDataNow();
 
                     // Re-renderiza tudo
