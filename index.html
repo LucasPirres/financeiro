@@ -1774,7 +1774,7 @@
                         document.getElementById('sync-status').innerText = "Offline — backup local carregado ✓";
                         if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                         if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
-                        renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+                        renderTudo();
                         return;
                     } catch(e2) {
                         document.getElementById('sync-status').innerText = "Erro ao carregar backup";
@@ -1786,11 +1786,11 @@
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
-                renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+                renderTudo();
                 return;
             }
-            // Renders fora do try/catch — erros de UI não mascaram erros de dados
-            renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable(); renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio(); renderSetores(); renderAllSetorTables();
+            // Render fora do try/catch — erros de UI não mascaram erros de dados
+            renderTudo();
         }
 
         function scheduleSave() {
@@ -1815,6 +1815,19 @@
 
         function createYearStructure() {
             let struct = {}; MONTHS.forEach(m => { struct[m] = { inc: [], fix: [], exp: [] }; }); return struct;
+        }
+
+        // Chama todas as renderizações principais, isolando erros individualmente
+        // para que uma falha em uma tabela não impeça as demais de aparecer.
+        function renderTudo() {
+            const renders = [
+                renderSidebar, updateUI, renderFIITable, renderFIIAvaliacaoTable,
+                renderAcoesTable, renderCalcIpca, renderMeuPatrimonio,
+                renderSetores, renderAllSetorTables, renderRotinaTable
+            ];
+            renders.forEach(fn => {
+                try { fn(); } catch (e) { console.error('Erro em ' + fn.name + '():', e); }
+            });
         }
 
         // ======= LÓGICA: MEU PATRIMÔNIO (REBALANCEAMENTO) =======
@@ -2652,6 +2665,8 @@
         }
 
         function renderAcoesTable() {
+            const tbody = document.getElementById('tbody-acoes');
+            if (!tbody) return; // Tabela legada — não existe mais nesta versão da interface
             const html = db.acoes.map((acao, i) => {
                 return `
                 <tr>
@@ -2672,7 +2687,7 @@
                 `;
             }).join('');
 
-            document.getElementById('tbody-acoes').innerHTML = html;
+            tbody.innerHTML = html;
         }
 
         // ======= PLANO FINANCEIRO ORIGINAL =======
@@ -2894,9 +2909,7 @@
                     saveDataNow();
 
                     // Re-renderiza tudo
-                    renderSidebar(); updateUI(); renderFIITable(); renderFIIAvaliacaoTable();
-                    renderAcoesTable(); renderCalcIpca(); renderMeuPatrimonio();
-                    renderSetores(); renderAllSetorTables(); renderRotinaTable();
+                    renderTudo();
 
                     statusEl.style.color = 'var(--color-gain)';
                     statusEl.innerText = '✓ Dados importados com sucesso!';
