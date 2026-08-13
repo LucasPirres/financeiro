@@ -262,17 +262,17 @@
         </header>
 
         <div id="invest-menu-view" class="invest-menu-screen">
+            <div class="invest-menu-card" onclick="openUFV()">
+                <div class="icon">🎓</div>
+                <h3>UFV</h3>
+            </div>
+
             <a href="https://investidor10.com.br/wallet/my-wallet/free" target="_blank" style="text-decoration: none;">
                 <div class="invest-menu-card">
                     <div class="icon">💼</div>
                     <h3>Minha Carteira</h3>
                 </div>
             </a>
-
-            <div class="invest-menu-card" onclick="openRotina()">
-                <div class="icon">📅</div>
-                <h3>Rotina</h3>
-            </div>
             
             <div class="invest-menu-card card-carteira" onclick="openCarteiraResumo()">
                 <div class="icon">💰</div>
@@ -282,6 +282,19 @@
             <div class="invest-menu-card card-planilhas" onclick="openInvestPlanilhas()">
                 <div class="icon">📊</div>
                 <h3>Planilhas de Ativos</h3>
+            </div>
+        </div>
+
+        <!-- ======= SUBMENU UFV ======= -->
+        <div id="invest-ufv-menu-view" class="invest-menu-screen" style="display: none;">
+            <div class="invest-menu-card" onclick="openRotina()">
+                <div class="icon">📅</div>
+                <h3>Rotina</h3>
+            </div>
+
+            <div class="invest-menu-card" onclick="openFaltas()">
+                <div class="icon">📋</div>
+                <h3>Faltas</h3>
             </div>
         </div>
 
@@ -328,6 +341,44 @@
             </div>
             <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
                 💡 Clique em qualquer célula para editar · + Linha adiciona novo horário · ✕ remove a linha
+            </div>
+        </div>
+
+        <!-- ======= FALTAS ======= -->
+        <div id="invest-faltas-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+                <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">📋 Faltas</div>
+                <button onclick="addMateriaFaltas()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Matéria</button>
+            </div>
+
+            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color);">
+                <table style="width:100%; border-collapse:collapse; min-width:400px;">
+                    <thead>
+                        <tr style="background:#0d0d0d;">
+                            <th style="padding:10px 14px; text-align:left; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:13px;">Matéria</th>
+                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:13px; width:220px;">Faltas</th>
+                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-faltas"></tbody>
+                </table>
+            </div>
+
+            <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:18px 20px;">
+                <div style="color: var(--color-blue); font-weight:700; letter-spacing:1px; font-size:14px; margin-bottom:12px;">ℹ RELAÇÃO DE FALTAS PERMITIDAS</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:8px 24px; font-size:13.5px; color:var(--text-main); margin-bottom:14px;">
+                    <div>• <b style="color:var(--color-gain);">2 Créditos</b> — 7 aulas (3 dias e 1/2)</div>
+                    <div>• <b style="color:var(--color-gain);">3 Créditos</b> — 11 aulas (5 dias e 1/2)</div>
+                    <div>• <b style="color:var(--color-gain);">4 Créditos</b> — 14 aulas (7 dias)</div>
+                    <div>• <b style="color:var(--color-gain);">5 Créditos</b> — 18 aulas (9 dias)</div>
+                    <div>• <b style="color:var(--color-gain);">6 Créditos</b> — 22 aulas (11 dias)</div>
+                    <div>• <b style="color:var(--color-gain);">7 Créditos</b> — 25 aulas (12 dias e 1/2)</div>
+                    <div>• <b style="color:var(--color-gain);">8 Créditos</b> — 28 aulas (14 dias)</div>
+                </div>
+                <div style="border-top:1px solid var(--border-color); padding-top:12px; font-size:12.5px; color:#999; font-style:italic; line-height:1.6;">
+                    Obs: 1 aula faltada, o que equivale a meio dia (1/2 dia).<br>
+                    Obs: 2 aulas faltadas, o que equivale a 1 dia faltado.
+                </div>
             </div>
         </div>
 
@@ -1395,6 +1446,8 @@
             document.getElementById('invest-carteira-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-view').style.display = 'none';
+            document.getElementById('invest-faltas-view').style.display = 'none';
+            document.getElementById('invest-ufv-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -1438,8 +1491,16 @@
             }
         }
 
-        function openRotina() {
+        function openUFV() {
             document.getElementById('invest-menu-view').style.display = 'none';
+            document.getElementById('invest-ufv-menu-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'UFV';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'ufv-menu';
+        }
+
+        function openRotina() {
+            document.getElementById('invest-ufv-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'ROTINA SEMANAL';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
@@ -1516,6 +1577,93 @@
             ensureRotinaData();
             db.rotina.splice(ri, 1);
             renderRotinaTable();
+            scheduleSave();
+        }
+
+        // ======= FALTAS (UFV) =======
+        const FALTAS_DEFAULT = [
+            { materia: 'MBI 103', faltas: 0 },
+            { materia: 'ZOO 210', faltas: 0 },
+            { materia: 'ENG 210', faltas: 0 },
+            { materia: 'EST 220', faltas: 0 },
+            { materia: 'SOL 250', faltas: 0 },
+            { materia: 'EAM 300', faltas: 0 },
+        ];
+
+        function ensureFaltasData() {
+            if (!db.faltas || !Array.isArray(db.faltas)) {
+                db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+            }
+        }
+
+        function openFaltas() {
+            document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-faltas-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'FALTAS';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'faltas';
+            ensureFaltasData();
+            renderFaltasTable();
+        }
+
+        function renderFaltasTable() {
+            const tbody = document.getElementById('tbody-faltas');
+            if (!tbody) return;
+            ensureFaltasData();
+            const html = db.faltas.map((item, i) => {
+                const corFaltas = item.faltas >= 4 ? 'var(--color-expense)' : (item.faltas >= 2 ? 'var(--color-highlight)' : 'var(--color-gain)');
+                return `
+                <tr>
+                    <td style="padding:8px 14px; border-bottom:1px solid var(--border-color);">
+                        <input type="text" class="custom-input" style="font-weight:600; color:var(--text-main);" value="${item.materia || ''}" onchange="updateMateriaFaltas(${i}, this.value)" placeholder="Nome da matéria">
+                    </td>
+                    <td style="padding:8px 14px; border-bottom:1px solid var(--border-color); text-align:center;">
+                        <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+                            <button onclick="decFalta(${i})" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-expense); font-weight:700; cursor:pointer; font-size:15px; line-height:1;">−</button>
+                            <span style="min-width:22px; text-align:center; font-weight:700; color:${corFaltas}; font-size:15px;">${item.faltas}</span>
+                            <button onclick="incFalta(${i})" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-gain); font-weight:700; cursor:pointer; font-size:15px; line-height:1;">+</button>
+                        </div>
+                    </td>
+                    <td style="padding:6px; border-bottom:1px solid var(--border-color); text-align:center;">
+                        <button class="btn-remove" onclick="removeMateriaFaltas(${i})">✕</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+            tbody.innerHTML = html;
+        }
+
+        function addMateriaFaltas() {
+            ensureFaltasData();
+            db.faltas.push({ materia: '', faltas: 0 });
+            renderFaltasTable();
+            scheduleSave();
+        }
+
+        function removeMateriaFaltas(i) {
+            ensureFaltasData();
+            db.faltas.splice(i, 1);
+            renderFaltasTable();
+            scheduleSave();
+        }
+
+        function updateMateriaFaltas(i, value) {
+            ensureFaltasData();
+            db.faltas[i].materia = value;
+            scheduleSave();
+        }
+
+        function incFalta(i) {
+            ensureFaltasData();
+            db.faltas[i].faltas = (db.faltas[i].faltas || 0) + 1;
+            renderFaltasTable();
+            scheduleSave();
+        }
+
+        function decFalta(i) {
+            ensureFaltasData();
+            db.faltas[i].faltas = Math.max(0, (db.faltas[i].faltas || 0) - 1);
+            renderFaltasTable();
             scheduleSave();
         }
 
@@ -1642,10 +1790,17 @@
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
-            } else if (currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view' || currentInvestView === 'rotina') {
+            } else if (currentInvestView === 'rotina' || currentInvestView === 'faltas') {
+                document.getElementById('invest-rotina-view').style.display = 'none';
+                document.getElementById('invest-faltas-view').style.display = 'none';
+                document.getElementById('invest-ufv-menu-view').style.display = 'flex';
+                document.getElementById('invest-header-title').innerText = 'UFV';
+                document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+                currentInvestView = 'ufv-menu';
+            } else if (currentInvestView === 'ufv-menu' || currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view') {
+                document.getElementById('invest-ufv-menu-view').style.display = 'none';
                 document.getElementById('invest-planilhas-menu-view').style.display = 'none';
                 document.getElementById('invest-carteira-view').style.display = 'none';
-                document.getElementById('invest-rotina-view').style.display = 'none';
                 document.getElementById('invest-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -1713,6 +1868,7 @@
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
                     // Migrar dados salvos na chave antiga 'commodity' para 'commodities'
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -1727,6 +1883,7 @@
                         if(!db.acoesSetor) db.acoesSetor = {};
                         ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                         if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                        if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
                         // Reenvia para o JSONBin, já que o bin estava vazio
@@ -1783,6 +1940,7 @@
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                     if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
@@ -1823,7 +1981,7 @@
             const renders = [
                 renderSidebar, updateUI, renderFIITable, renderFIIAvaliacaoTable,
                 renderAcoesTable, renderCalcIpca, renderMeuPatrimonio,
-                renderSetores, renderAllSetorTables, renderRotinaTable
+                renderSetores, renderAllSetorTables, renderRotinaTable, renderFaltasTable
             ];
             renders.forEach(fn => {
                 try { fn(); } catch (e) { console.error('Erro em ' + fn.name + '():', e); }
@@ -2883,6 +3041,7 @@
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && (!db.acoesSetor['commodities'] || db.acoesSetor['commodities'].length === 0)) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     if (!db.meuPatrimonio) {
