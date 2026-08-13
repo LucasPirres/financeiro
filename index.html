@@ -348,21 +348,10 @@
         <div id="invest-faltas-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
                 <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">📋 Faltas</div>
-                <button onclick="addMateriaFaltas()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Matéria</button>
+                <button onclick="addPlanilhaFaltas()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Planilha</button>
             </div>
 
-            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color);">
-                <table style="width:100%; border-collapse:collapse; min-width:400px;">
-                    <thead>
-                        <tr style="background:#0d0d0d;">
-                            <th style="padding:10px 14px; text-align:left; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:13px;">Matéria</th>
-                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:13px; width:220px;">Faltas</th>
-                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-faltas"></tbody>
-                </table>
-            </div>
+            <div id="faltas-planilhas-list"></div>
 
             <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:18px 20px;">
                 <div style="color: var(--color-blue); font-weight:700; letter-spacing:1px; font-size:14px; margin-bottom:12px;">ℹ RELAÇÃO DE FALTAS PERMITIDAS</div>
@@ -1581,18 +1570,33 @@
         }
 
         // ======= FALTAS (UFV) =======
-        const FALTAS_DEFAULT = [
-            { materia: 'MBI 103', faltas: 0 },
-            { materia: 'ZOO 210', faltas: 0 },
-            { materia: 'ENG 210', faltas: 0 },
-            { materia: 'EST 220', faltas: 0 },
-            { materia: 'SOL 250', faltas: 0 },
-            { materia: 'EAM 300', faltas: 0 },
-        ];
+        // Relação oficial de créditos -> máximo de aulas permitidas
+        const RELACAO_CREDITOS_AULAS = { 2: 7, 3: 11, 4: 14, 5: 18, 6: 22, 7: 25, 8: 28 };
+
+        function maxAulasPermitidas(creditos) {
+            if (RELACAO_CREDITOS_AULAS[creditos] !== undefined) return RELACAO_CREDITOS_AULAS[creditos];
+            // Créditos fora da tabela oficial (1, 9, 10...): aproximação de ~3,5 aulas por crédito
+            return Math.round(creditos * 3.5);
+        }
+
+        // Converte um número de aulas em texto "X dias (e 1/2)", já que 2 aulas = 1 dia
+        function formatDiasFaltas(aulas) {
+            const abs = Math.abs(aulas);
+            const dias = Math.floor(abs / 2);
+            const meio = abs % 2 === 1;
+            if (dias === 0) return meio ? '1/2 dia' : '0 dias';
+            if (meio) return dias + ' dias e 1/2';
+            return dias + (dias === 1 ? ' dia' : ' dias');
+        }
 
         function ensureFaltasData() {
-            if (!db.faltas || !Array.isArray(db.faltas)) {
-                db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+            if (!db.faltasPlanilhas || !Array.isArray(db.faltasPlanilhas)) {
+                if (db.faltas && Array.isArray(db.faltas) && db.faltas.length > 0) {
+                    // Migra o modelo antigo (uma única tabela) para uma planilha sem créditos definidos ainda
+                    db.faltasPlanilhas = [{ creditos: null, materias: db.faltas }];
+                } else {
+                    db.faltasPlanilhas = [];
+                }
             }
         }
 
@@ -1603,67 +1607,148 @@
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
             currentInvestView = 'faltas';
             ensureFaltasData();
-            renderFaltasTable();
+            renderFaltasPlanilhas();
         }
 
-        function renderFaltasTable() {
-            const tbody = document.getElementById('tbody-faltas');
-            if (!tbody) return;
+        function renderFaltasPlanilhas() {
+            const container = document.getElementById('faltas-planilhas-list');
+            if (!container) return;
             ensureFaltasData();
-            const html = db.faltas.map((item, i) => {
-                const corFaltas = item.faltas >= 4 ? 'var(--color-expense)' : (item.faltas >= 2 ? 'var(--color-highlight)' : 'var(--color-gain)');
+
+            if (db.faltasPlanilhas.length === 0) {
+                container.innerHTML = '<div style="color:#666; font-size:13px; font-style:italic; padding:24px; text-align:center; border:1px dashed var(--border-color); border-radius:10px;">Nenhuma planilha ainda. Clique em "+ Planilha" e informe o número de créditos da matéria.</div>';
+                return;
+            }
+
+            container.innerHTML = db.faltasPlanilhas.map((p, pi) => {
+                const creditos = parseInt(p.creditos);
+                const temCreditos = !isNaN(creditos) && creditos > 0;
+                const max = temCreditos ? maxAulasPermitidas(creditos) : null;
+                const maxInfo = temCreditos
+                    ? `Máximo permitido: <b style="color:var(--color-gain);">${max} aulas</b> (${formatDiasFaltas(max)})`
+                    : '<span style="color:var(--color-highlight);">Informe os créditos ao lado</span>';
+
+                const materias = p.materias || [];
+                const rowsHtml = materias.length > 0 ? materias.map((item, mi) => {
+                    const faltasAtual = item.faltas || 0;
+                    let situacaoHtml = '<span style="color:#666;">—</span>';
+                    let corFaltas = 'var(--text-main)';
+                    if (temCreditos) {
+                        const restante = max - faltasAtual;
+                        if (restante >= 0) {
+                            corFaltas = restante <= 2 ? 'var(--color-highlight)' : 'var(--color-gain)';
+                            situacaoHtml = `<span style="color:${corFaltas};">Pode faltar +${restante} aula${restante === 1 ? '' : 's'} (${formatDiasFaltas(restante)})</span>`;
+                        } else {
+                            corFaltas = 'var(--color-expense)';
+                            situacaoHtml = `<span style="color:var(--color-expense); font-weight:700;">Excedeu em ${Math.abs(restante)} aula${Math.abs(restante) === 1 ? '' : 's'} (${formatDiasFaltas(restante)})!</span>`;
+                        }
+                    }
+                    return `
+                    <tr>
+                        <td style="padding:8px 12px; border-bottom:1px solid var(--border-color);">
+                            <input type="text" class="custom-input" style="font-weight:600; color:var(--text-main);" value="${item.materia || ''}" onchange="updateMateriaFaltas(${pi}, ${mi}, this.value)" placeholder="Nome da matéria">
+                        </td>
+                        <td style="padding:8px 12px; border-bottom:1px solid var(--border-color); text-align:center;">
+                            <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+                                <button onclick="decFalta(${pi}, ${mi})" style="width:26px; height:26px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-expense); font-weight:700; cursor:pointer; font-size:14px; line-height:1;">−</button>
+                                <span style="min-width:20px; text-align:center; font-weight:700; color:${corFaltas}; font-size:14px;">${faltasAtual}</span>
+                                <button onclick="incFalta(${pi}, ${mi})" style="width:26px; height:26px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-gain); font-weight:700; cursor:pointer; font-size:14px; line-height:1;">+</button>
+                            </div>
+                        </td>
+                        <td style="padding:8px 12px; border-bottom:1px solid var(--border-color); font-size:12.5px; white-space:nowrap;">${situacaoHtml}</td>
+                        <td style="padding:6px; border-bottom:1px solid var(--border-color); text-align:center;">
+                            <button class="btn-remove" onclick="removeMateriaFaltas(${pi}, ${mi})">✕</button>
+                        </td>
+                    </tr>`;
+                }).join('') : `<tr><td colspan="4" style="padding:14px; text-align:center; color:#666; font-size:12.5px; font-style:italic;">Nenhuma matéria nesta planilha ainda.</td></tr>`;
+
                 return `
-                <tr>
-                    <td style="padding:8px 14px; border-bottom:1px solid var(--border-color);">
-                        <input type="text" class="custom-input" style="font-weight:600; color:var(--text-main);" value="${item.materia || ''}" onchange="updateMateriaFaltas(${i}, this.value)" placeholder="Nome da matéria">
-                    </td>
-                    <td style="padding:8px 14px; border-bottom:1px solid var(--border-color); text-align:center;">
-                        <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
-                            <button onclick="decFalta(${i})" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-expense); font-weight:700; cursor:pointer; font-size:15px; line-height:1;">−</button>
-                            <span style="min-width:22px; text-align:center; font-weight:700; color:${corFaltas}; font-size:15px;">${item.faltas}</span>
-                            <button onclick="incFalta(${i})" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-gain); font-weight:700; cursor:pointer; font-size:15px; line-height:1;">+</button>
+                <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:16px 18px; margin-bottom:16px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <span style="color:var(--color-blue); font-weight:700; font-size:14px;">📚 Planilha</span>
+                            <label style="font-size:12px; color:#999;">Créditos:</label>
+                            <input type="number" min="1" max="20" class="custom-input" style="width:60px; text-align:center; font-weight:700; color:var(--color-blue);" value="${temCreditos ? creditos : ''}" onchange="updateCreditosPlanilha(${pi}, this.value)" placeholder="—">
+                            <span style="font-size:12px; color:#999;">${maxInfo}</span>
                         </div>
-                    </td>
-                    <td style="padding:6px; border-bottom:1px solid var(--border-color); text-align:center;">
-                        <button class="btn-remove" onclick="removeMateriaFaltas(${i})">✕</button>
-                    </td>
-                </tr>
-                `;
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="addMateriaFaltas(${pi})" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">+ Matéria</button>
+                            <button onclick="removePlanilhaFaltas(${pi})" style="background:transparent; border:1px solid var(--color-expense); color:var(--color-expense); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">✕ Planilha</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%; border-collapse:collapse; min-width:480px;">
+                            <thead>
+                                <tr style="background:#0d0d0d;">
+                                    <th style="padding:8px 12px; text-align:left; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:12.5px;">Matéria</th>
+                                    <th style="padding:8px 12px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:12.5px; width:150px;">Faltas</th>
+                                    <th style="padding:8px 12px; text-align:left; color:var(--color-blue); border-bottom:2px solid var(--border-color); font-size:12.5px;">Situação</th>
+                                    <th style="padding:6px; border-bottom:2px solid var(--border-color); width:32px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                    </div>
+                </div>`;
             }).join('');
-            tbody.innerHTML = html;
         }
 
-        function addMateriaFaltas() {
+        function addPlanilhaFaltas() {
             ensureFaltasData();
-            db.faltas.push({ materia: '', faltas: 0 });
-            renderFaltasTable();
+            db.faltasPlanilhas.push({ creditos: null, materias: [] });
+            renderFaltasPlanilhas();
             scheduleSave();
         }
 
-        function removeMateriaFaltas(i) {
+        function removePlanilhaFaltas(pi) {
             ensureFaltasData();
-            db.faltas.splice(i, 1);
-            renderFaltasTable();
+            if (!confirm('Remover esta planilha e todas as matérias dela?')) return;
+            db.faltasPlanilhas.splice(pi, 1);
+            renderFaltasPlanilhas();
             scheduleSave();
         }
 
-        function updateMateriaFaltas(i, value) {
+        function updateCreditosPlanilha(pi, value) {
             ensureFaltasData();
-            db.faltas[i].materia = value;
+            const v = parseInt(value);
+            db.faltasPlanilhas[pi].creditos = isNaN(v) || v <= 0 ? null : v;
+            renderFaltasPlanilhas();
             scheduleSave();
         }
 
-        function incFalta(i) {
+        function addMateriaFaltas(pi) {
             ensureFaltasData();
-            db.faltas[i].faltas = (db.faltas[i].faltas || 0) + 1;
-            renderFaltasTable();
+            db.faltasPlanilhas[pi].materias.push({ materia: '', faltas: 0 });
+            renderFaltasPlanilhas();
             scheduleSave();
         }
 
-        function decFalta(i) {
+        function removeMateriaFaltas(pi, mi) {
             ensureFaltasData();
-            db.faltas[i].faltas = Math.max(0, (db.faltas[i].faltas || 0) - 1);
-            renderFaltasTable();
+            db.faltasPlanilhas[pi].materias.splice(mi, 1);
+            renderFaltasPlanilhas();
+            scheduleSave();
+        }
+
+        function updateMateriaFaltas(pi, mi, value) {
+            ensureFaltasData();
+            db.faltasPlanilhas[pi].materias[mi].materia = value;
+            scheduleSave();
+        }
+
+        function incFalta(pi, mi) {
+            ensureFaltasData();
+            const item = db.faltasPlanilhas[pi].materias[mi];
+            item.faltas = (item.faltas || 0) + 1;
+            renderFaltasPlanilhas();
+            scheduleSave();
+        }
+
+        function decFalta(pi, mi) {
+            ensureFaltasData();
+            const item = db.faltasPlanilhas[pi].materias[mi];
+            item.faltas = Math.max(0, (item.faltas || 0) - 1);
+            renderFaltasPlanilhas();
             scheduleSave();
         }
 
@@ -1868,7 +1953,7 @@
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+                    ensureFaltasData();
                     // Migrar dados salvos na chave antiga 'commodity' para 'commodities'
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -1883,7 +1968,7 @@
                         if(!db.acoesSetor) db.acoesSetor = {};
                         ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                         if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                        if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+                        ensureFaltasData();
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
                         // Reenvia para o JSONBin, já que o bin estava vazio
@@ -1940,7 +2025,7 @@
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                     if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+                    ensureFaltasData();
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                 if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
@@ -1981,7 +2066,7 @@
             const renders = [
                 renderSidebar, updateUI, renderFIITable, renderFIIAvaliacaoTable,
                 renderAcoesTable, renderCalcIpca, renderMeuPatrimonio,
-                renderSetores, renderAllSetorTables, renderRotinaTable, renderFaltasTable
+                renderSetores, renderAllSetorTables, renderRotinaTable, renderFaltasPlanilhas
             ];
             renders.forEach(fn => {
                 try { fn(); } catch (e) { console.error('Erro em ' + fn.name + '():', e); }
@@ -3041,7 +3126,7 @@
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && (!db.acoesSetor['commodities'] || db.acoesSetor['commodities'].length === 0)) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                    if(!db.faltas || !Array.isArray(db.faltas)) db.faltas = JSON.parse(JSON.stringify(FALTAS_DEFAULT));
+                    ensureFaltasData();
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
                     if (!db.meuPatrimonio) {
