@@ -351,7 +351,7 @@
                 <button onclick="addPlanilhaFaltas()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Planilha</button>
             </div>
 
-            <div id="faltas-planilhas-list"></div>
+            <div id="faltas-planilhas-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:16px; align-items:start;"></div>
 
             <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:18px 20px;">
                 <div style="color: var(--color-blue); font-weight:700; letter-spacing:1px; font-size:14px; margin-bottom:12px;">ℹ RELAÇÃO DE FALTAS PERMITIDAS</div>
@@ -366,7 +366,9 @@
                 </div>
                 <div style="border-top:1px solid var(--border-color); padding-top:12px; font-size:12.5px; color:#999; font-style:italic; line-height:1.6;">
                     Obs: 1 aula faltada, o que equivale a meio dia (1/2 dia).<br>
-                    Obs: 2 aulas faltadas, o que equivale a 1 dia faltado.
+                    Obs: 2 aulas faltadas, o que equivale a 1 dia faltado.<br>
+                    Obs: Se faltar na aula dupla, coloca 2 faltas.<br>
+                    Obs: Se faltar na aula solteira, coloca 1 falta.
                 </div>
             </div>
         </div>
@@ -1663,12 +1665,12 @@
                 }).join('') : `<tr><td colspan="4" style="padding:14px; text-align:center; color:#666; font-size:12.5px; font-style:italic;">Nenhuma matéria nesta planilha ainda.</td></tr>`;
 
                 return `
-                <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:16px 18px; margin-bottom:16px;">
+                <div style="background:rgba(20,20,20,0.85); border:1px solid var(--border-color); border-radius:10px; padding:16px 18px;">
                     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
                         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                             <span style="color:var(--color-blue); font-weight:700; font-size:14px;">📚 Planilha</span>
                             <label style="font-size:12px; color:#999;">Créditos:</label>
-                            <input type="number" min="1" max="20" class="custom-input" style="width:60px; text-align:center; font-weight:700; color:var(--color-blue);" value="${temCreditos ? creditos : ''}" onchange="updateCreditosPlanilha(${pi}, this.value)" placeholder="—">
+                            <input type="number" min="1" max="8" class="custom-input" style="width:60px; text-align:center; font-weight:700; color:var(--color-blue);" value="${temCreditos ? creditos : ''}" onchange="updateCreditosPlanilha(${pi}, this.value)" placeholder="—">
                             <span style="font-size:12px; color:#999;">${maxInfo}</span>
                         </div>
                         <div style="display:flex; gap:8px;">
@@ -1710,8 +1712,14 @@
 
         function updateCreditosPlanilha(pi, value) {
             ensureFaltasData();
-            const v = parseInt(value);
-            db.faltasPlanilhas[pi].creditos = isNaN(v) || v <= 0 ? null : v;
+            let v = parseInt(value);
+            if (isNaN(v) || v <= 0) {
+                v = null;
+            } else if (v > 8) {
+                alert('O limite máximo é de 8 créditos por planilha.');
+                v = 8;
+            }
+            db.faltasPlanilhas[pi].creditos = v;
             renderFaltasPlanilhas();
             scheduleSave();
         }
