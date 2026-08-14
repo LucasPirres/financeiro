@@ -292,6 +292,11 @@
                 <h3>Rotina</h3>
             </div>
 
+            <div class="invest-menu-card" onclick="openRotinaAlimentacao()">
+                <div class="icon">🍽️</div>
+                <h3>Rotina (Alimentação)</h3>
+            </div>
+
             <div class="invest-menu-card" onclick="openFaltas()">
                 <div class="icon">📋</div>
                 <h3>Faltas</h3>
@@ -337,6 +342,35 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-rotina"></tbody>
+                </table>
+            </div>
+            <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
+                💡 Clique em qualquer célula para editar · + Linha adiciona novo horário · ✕ remove a linha
+            </div>
+        </div>
+
+        <!-- ======= ROTINA (ALIMENTAÇÃO) ======= -->
+        <div id="invest-rotina-alimentacao-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+                <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">🍽️ Rotina (Alimentação)</div>
+                <button onclick="addHorarioRotinaAlimentacao()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Linha</button>
+            </div>
+            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color); width:100%; align-self:stretch; box-sizing:border-box;">
+                <table id="rotina-alimentacao-table" style="width:100%; border-collapse:collapse; min-width:900px;">
+                    <thead>
+                        <tr style="background:#0d0d0d;">
+                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); width:80px; font-size:13px;">Horário</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Segunda</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Terça</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quarta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quinta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Sexta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Sábado</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Domingo</th>
+                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-rotina-alimentacao"></tbody>
                 </table>
             </div>
             <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
@@ -1437,6 +1471,7 @@
             document.getElementById('invest-carteira-view').style.display = 'none';
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-view').style.display = 'none';
+            document.getElementById('invest-rotina-alimentacao-view').style.display = 'none';
             document.getElementById('invest-faltas-view').style.display = 'none';
             document.getElementById('invest-ufv-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
@@ -1568,6 +1603,98 @@
             ensureRotinaData();
             db.rotina.splice(ri, 1);
             renderRotinaTable();
+            scheduleSave();
+        }
+
+        // ======= ROTINA (ALIMENTAÇÃO) — mesma estrutura de horários da Rotina, porém em branco =======
+        const ROTINA_ALIMENTACAO_DEFAULT = ROTINA_DEFAULT.map(row => ({
+            h: row.h, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:''
+        }));
+
+        function ensureRotinaAlimentacaoData() {
+            if (!db.rotinaAlimentacao || !Array.isArray(db.rotinaAlimentacao) || db.rotinaAlimentacao.length === 0) {
+                db.rotinaAlimentacao = JSON.parse(JSON.stringify(ROTINA_ALIMENTACAO_DEFAULT));
+            }
+        }
+
+        function openRotinaAlimentacao() {
+            document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-alimentacao-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'ROTINA (ALIMENTAÇÃO)';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'rotina-alimentacao';
+            ensureRotinaAlimentacaoData();
+            renderRotinaAlimentacaoTable();
+        }
+
+        function renderRotinaAlimentacaoTable() {
+            ensureRotinaAlimentacaoData();
+            const tbody = document.getElementById('tbody-rotina-alimentacao');
+            if (!tbody) return;
+            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:00','22:30'];
+            let html = '';
+            db.rotinaAlimentacao.forEach((row, ri) => {
+                const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
+                const rowBg   = isHL ? 'rgba(0,230,118,0.06)' : '';
+                const rowBord = isHL ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
+                const hoverBg = isHL ? 'rgba(0,230,118,0.11)' : 'rgba(255,255,255,0.03)';
+                html += `<tr style="border-bottom:${rowBord}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${rowBg}'">`;
+                // Horário
+                const hColor  = isHL ? 'var(--color-gain)' : 'var(--color-blue)';
+                const hBorder = isHL ? 'rgba(0,230,118,0.4)' : '#333';
+                html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
+                    <input type="text" value="${row.h||''}"
+                        style="width:58px; background:transparent; border:none; border-bottom:1px solid ${hBorder}; color:${hColor}; font-weight:700; font-size:13px; text-align:center; outline:none;"
+                        onchange="updateRotinaAlimentacaoCell(${ri},'h',this.value)"
+                        onfocus="this.style.borderBottomColor='var(--color-blue)'"
+                        onblur="this.style.borderBottomColor='${hBorder}'">
+                </td>`;
+                // Dias
+                DIAS.forEach((d, di) => {
+                    const isSab = d === 'sab', isDom = d === 'dom';
+                    const col  = (isSab||isDom) ? 'var(--color-highlight)' : isHL ? 'var(--color-gain)' : 'var(--text-main)';
+                    const fw   = (isHL && !isSab && !isDom) ? '700' : '400';
+                    const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
+                    html += `<td style="padding:4px 6px; ${borderR}">
+                        <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
+                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fw}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
+                            onchange="updateRotinaAlimentacaoCell(${ri},'${d}',this.value)"
+                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
+                            onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
+                    </td>`;
+                });
+                html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
+                    <button onclick="removeRotinaAlimentacaoRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
+                </td>`;
+                html += `</tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function updateRotinaAlimentacaoCell(ri, field, value) {
+            ensureRotinaAlimentacaoData();
+            db.rotinaAlimentacao[ri][field] = value;
+            scheduleSave();
+        }
+
+        function addHorarioRotinaAlimentacao() {
+            ensureRotinaAlimentacaoData();
+            const last = db.rotinaAlimentacao[db.rotinaAlimentacao.length - 1];
+            let nextH = '';
+            if (last && last.h) {
+                const parts = last.h.split(':');
+                const h = (parseInt(parts[0]) + 1) % 24;
+                nextH = String(h).padStart(2,'0') + ':00';
+            }
+            db.rotinaAlimentacao.push({ h: nextH, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:'' });
+            renderRotinaAlimentacaoTable();
+            scheduleSave();
+        }
+
+        function removeRotinaAlimentacaoRow(ri) {
+            ensureRotinaAlimentacaoData();
+            db.rotinaAlimentacao.splice(ri, 1);
+            renderRotinaAlimentacaoTable();
             scheduleSave();
         }
 
@@ -1883,8 +2010,9 @@
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
-            } else if (currentInvestView === 'rotina' || currentInvestView === 'faltas') {
+            } else if (currentInvestView === 'rotina' || currentInvestView === 'rotina-alimentacao' || currentInvestView === 'faltas') {
                 document.getElementById('invest-rotina-view').style.display = 'none';
+                document.getElementById('invest-rotina-alimentacao-view').style.display = 'none';
                 document.getElementById('invest-faltas-view').style.display = 'none';
                 document.getElementById('invest-ufv-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'UFV';
@@ -1961,6 +2089,7 @@
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    ensureRotinaAlimentacaoData();
                     ensureFaltasData();
                     // Migrar dados salvos na chave antiga 'commodity' para 'commodities'
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
@@ -1976,6 +2105,7 @@
                         if(!db.acoesSetor) db.acoesSetor = {};
                         ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                         if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                        ensureRotinaAlimentacaoData();
                         ensureFaltasData();
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
@@ -2033,6 +2163,7 @@
                     document.getElementById('sync-status').innerText = "Offline — sem backup local";
                     if(!db.years[selectedYear]) db.years[selectedYear] = createYearStructure();
                     if(!db.fiis) db.fiis = []; if(!db.fiisAvaliacao) db.fiisAvaliacao = []; if(!db.acoes) db.acoes = []; if(!db.acoesSetor) db.acoesSetor = {}; ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; }); if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    ensureRotinaAlimentacaoData();
                     ensureFaltasData();
                 }
                 if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -2074,7 +2205,7 @@
             const renders = [
                 renderSidebar, updateUI, renderFIITable, renderFIIAvaliacaoTable,
                 renderAcoesTable, renderCalcIpca, renderMeuPatrimonio,
-                renderSetores, renderAllSetorTables, renderRotinaTable, renderFaltasPlanilhas
+                renderSetores, renderAllSetorTables, renderRotinaTable, renderRotinaAlimentacaoTable, renderFaltasPlanilhas
             ];
             renders.forEach(fn => {
                 try { fn(); } catch (e) { console.error('Erro em ' + fn.name + '():', e); }
@@ -3134,6 +3265,7 @@
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && (!db.acoesSetor['commodities'] || db.acoesSetor['commodities'].length === 0)) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                    ensureRotinaAlimentacaoData();
                     ensureFaltasData();
                     if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
                     if(db.calcIpca && db.calcIpca.ipcaMais === undefined) db.calcIpca.ipcaMais = 7.00;
