@@ -138,6 +138,9 @@
         .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; overflow-y: auto;}
         
         .invest-menu-card { width: 350px; height: 260px; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
+        #invest-menu-view { gap: 20px; }
+        #invest-menu-view .invest-menu-card { width: 215px; height: 215px; }
+        #invest-menu-view .invest-menu-card h3 { font-size: 1.15rem; }
         .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.25); background: rgba(25, 25, 25, 0.9); }
         .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
         .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
@@ -283,10 +286,28 @@
                 <div class="icon">📊</div>
                 <h3>Planilhas de Ativos</h3>
             </div>
+
+            <div class="invest-menu-card" onclick="openRendaFixa()">
+                <div class="icon">🏦</div>
+                <h3>Renda Fixa</h3>
+            </div>
         </div>
 
         <!-- ======= SUBMENU UFV ======= -->
         <div id="invest-ufv-menu-view" class="invest-menu-screen" style="display: none;">
+            <div class="invest-menu-card" onclick="openRotinaMenu()">
+                <div class="icon">📅</div>
+                <h3>Rotina</h3>
+            </div>
+
+            <div class="invest-menu-card" onclick="openFaltas()">
+                <div class="icon">📋</div>
+                <h3>Faltas</h3>
+            </div>
+        </div>
+
+        <!-- ======= SUBMENU ROTINA ======= -->
+        <div id="invest-rotina-menu-view" class="invest-menu-screen" style="display: none;">
             <div class="invest-menu-card" onclick="openRotina()">
                 <div class="icon">📅</div>
                 <h3>Rotina</h3>
@@ -297,9 +318,9 @@
                 <h3>Rotina (Alimentação)</h3>
             </div>
 
-            <div class="invest-menu-card" onclick="openFaltas()">
-                <div class="icon">📋</div>
-                <h3>Faltas</h3>
+            <div class="invest-menu-card" onclick="openRotinaTreino()">
+                <div class="icon">🏋️</div>
+                <h3>Rotina Treino</h3>
             </div>
         </div>
 
@@ -371,6 +392,35 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-rotina-alimentacao"></tbody>
+                </table>
+            </div>
+            <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
+                💡 Clique em qualquer célula para editar · + Linha adiciona novo horário · ✕ remove a linha
+            </div>
+        </div>
+
+        <!-- ======= ROTINA TREINO ======= -->
+        <div id="invest-rotina-treino-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+                <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">🏋️ Rotina Treino</div>
+                <button onclick="addHorarioRotinaTreino()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Linha</button>
+            </div>
+            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color); width:100%; align-self:stretch; box-sizing:border-box;">
+                <table id="rotina-treino-table" style="width:100%; border-collapse:collapse; min-width:900px;">
+                    <thead>
+                        <tr style="background:#0d0d0d;">
+                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); width:80px; font-size:13px;">Horário</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Segunda</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Terça</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quarta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quinta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Sexta</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Sábado</th>
+                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Domingo</th>
+                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-rotina-treino"></tbody>
                 </table>
             </div>
             <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
@@ -1472,8 +1522,10 @@
             document.getElementById('invest-planilhas-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-view').style.display = 'none';
             document.getElementById('invest-rotina-alimentacao-view').style.display = 'none';
+            document.getElementById('invest-rotina-treino-view').style.display = 'none';
             document.getElementById('invest-faltas-view').style.display = 'none';
             document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-menu-view').style.display = 'none';
             document.getElementById('invest-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
@@ -1525,8 +1577,16 @@
             currentInvestView = 'ufv-menu';
         }
 
-        function openRotina() {
+        function openRotinaMenu() {
             document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-menu-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'ROTINA';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'rotina-menu';
+        }
+
+        function openRotina() {
+            document.getElementById('invest-rotina-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'ROTINA SEMANAL';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
@@ -1618,7 +1678,7 @@
         }
 
         function openRotinaAlimentacao() {
-            document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-alimentacao-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'ROTINA (ALIMENTAÇÃO)';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
@@ -1695,6 +1755,96 @@
             ensureRotinaAlimentacaoData();
             db.rotinaAlimentacao.splice(ri, 1);
             renderRotinaAlimentacaoTable();
+            scheduleSave();
+        }
+
+        // ======= ROTINA TREINO =======
+        const ROTINA_TREINO_DEFAULT = ROTINA_DEFAULT.map(row => ({
+            h: row.h, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:''
+        }));
+
+        function ensureRotinaTreinoData() {
+            if (!db.rotinaTreino || !Array.isArray(db.rotinaTreino) || db.rotinaTreino.length === 0) {
+                db.rotinaTreino = JSON.parse(JSON.stringify(ROTINA_TREINO_DEFAULT));
+            }
+        }
+
+        function openRotinaTreino() {
+            document.getElementById('invest-rotina-menu-view').style.display = 'none';
+            document.getElementById('invest-rotina-treino-view').style.display = 'flex';
+            document.getElementById('invest-header-title').innerText = 'ROTINA TREINO';
+            document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+            currentInvestView = 'rotina-treino';
+            ensureRotinaTreinoData();
+            renderRotinaTreinoTable();
+        }
+
+        function renderRotinaTreinoTable() {
+            ensureRotinaTreinoData();
+            const tbody = document.getElementById('tbody-rotina-treino');
+            if (!tbody) return;
+            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:00','22:30'];
+            let html = '';
+            db.rotinaTreino.forEach((row, ri) => {
+                const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
+                const rowBg   = isHL ? 'rgba(0,230,118,0.06)' : '';
+                const rowBord = isHL ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
+                const hoverBg = isHL ? 'rgba(0,230,118,0.11)' : 'rgba(255,255,255,0.03)';
+                html += `<tr style="border-bottom:${rowBord}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${rowBg}'">`;
+                const hColor  = isHL ? 'var(--color-gain)' : 'var(--color-blue)';
+                const hBorder = isHL ? 'rgba(0,230,118,0.4)' : '#333';
+                html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
+                    <input type="text" value="${row.h||''}"
+                        style="width:58px; background:transparent; border:none; border-bottom:1px solid ${hBorder}; color:${hColor}; font-weight:700; font-size:13px; text-align:center; outline:none;"
+                        onchange="updateRotinaTreinoCell(${ri},'h',this.value)"
+                        onfocus="this.style.borderBottomColor='var(--color-blue)'"
+                        onblur="this.style.borderBottomColor='${hBorder}'">
+                </td>`;
+                DIAS.forEach((d, di) => {
+                    const isSab = d === 'sab', isDom = d === 'dom';
+                    const col  = (isSab||isDom) ? 'var(--color-highlight)' : isHL ? 'var(--color-gain)' : 'var(--text-main)';
+                    const fw   = (isHL && !isSab && !isDom) ? '700' : '400';
+                    const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
+                    html += `<td style="padding:4px 6px; ${borderR}">
+                        <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
+                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fw}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
+                            onchange="updateRotinaTreinoCell(${ri},'${d}',this.value)"
+                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
+                            onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
+                    </td>`;
+                });
+                html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
+                    <button onclick="removeRotinaTreinoRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
+                </td>`;
+                html += `</tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function updateRotinaTreinoCell(ri, field, value) {
+            ensureRotinaTreinoData();
+            db.rotinaTreino[ri][field] = value;
+            scheduleSave();
+        }
+
+        function addHorarioRotinaTreino() {
+            ensureRotinaTreinoData();
+            const last = db.rotinaTreino[db.rotinaTreino.length - 1];
+            let nextH = '';
+            if (last && last.h) {
+                const parts = last.h.split(':');
+                const h = (parseInt(parts[0]) + 1) % 24;
+                nextH = String(h).padStart(2,'0') + ':00';
+            }
+            db.rotinaTreino.push({ h: nextH, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:'' });
+            renderRotinaTreinoTable();
+            scheduleSave();
+        }
+
+        function removeRotinaTreinoRow(ri) {
+            ensureRotinaTreinoData();
+            db.rotinaTreino.splice(ri, 1);
+            renderRotinaTreinoTable();
             scheduleSave();
         }
 
@@ -2010,9 +2160,16 @@
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
-            } else if (currentInvestView === 'rotina' || currentInvestView === 'rotina-alimentacao' || currentInvestView === 'faltas') {
+            } else if (currentInvestView === 'rotina' || currentInvestView === 'rotina-alimentacao' || currentInvestView === 'rotina-treino') {
                 document.getElementById('invest-rotina-view').style.display = 'none';
                 document.getElementById('invest-rotina-alimentacao-view').style.display = 'none';
+                document.getElementById('invest-rotina-treino-view').style.display = 'none';
+                document.getElementById('invest-rotina-menu-view').style.display = 'flex';
+                document.getElementById('invest-header-title').innerText = 'ROTINA';
+                document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
+                currentInvestView = 'rotina-menu';
+            } else if (currentInvestView === 'rotina-menu' || currentInvestView === 'faltas') {
+                document.getElementById('invest-rotina-menu-view').style.display = 'none';
                 document.getElementById('invest-faltas-view').style.display = 'none';
                 document.getElementById('invest-ufv-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'UFV';
