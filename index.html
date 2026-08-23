@@ -1804,8 +1804,9 @@
                                         onchange="updateTreinoBloco(${bi},'grupo',this.value)"
                                         placeholder="Grupo Muscular">
                                 </th>
-                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:20%;">Séries</th>
-                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:20%;">Rep.</th>
+                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:15%;">Séries</th>
+                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:25%;">Rep.</th>
+                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:18%;">Descanso</th>
                                 <th style="width:40px; border-bottom:1px solid #2a2a2a;"></th>
                             </tr>
                         </thead>
@@ -1840,6 +1841,14 @@
                                         onfocus="this.style.borderBottomColor='#aaff00'; this.style.background='rgba(170,255,0,0.04)'"
                                         onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'"
                                         placeholder="8 a 12">
+                                </td>
+                                <td style="padding:8px 16px; text-align:center;">
+                                    <input type="text" value="${(ex.descanso||'').replace(/"/g,'&quot;')}"
+                                        style="background:transparent; border:none; border-bottom:1px solid transparent; outline:none; color:var(--text-main); font-size:13px; width:100%; text-align:center;"
+                                        onchange="updateTreinoExercicio(${bi},${ei},'descanso',this.value)"
+                                        onfocus="this.style.borderBottomColor='#aaff00'; this.style.background='rgba(170,255,0,0.04)'"
+                                        onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'"
+                                        placeholder="ex: 90s">
                                 </td>
                                 <td style="padding:8px; text-align:center;">
                                     <button onclick="removeTreinoExercicio(${bi},${ei})" class="btn-remove" title="Remover exercício">✕</button>
@@ -1893,7 +1902,7 @@
 
         function addTreinoExercicio(bi) {
             ensureTreinoData();
-            db.treinoBlocos[bi].exercicios.push({ nome: '', series: '', reps: '' });
+            db.treinoBlocos[bi].exercicios.push({ nome: '', series: '', reps: '', descanso: '' });
             renderTreino();
             scheduleSave();
         }
