@@ -392,31 +392,14 @@
         </div>
 
         <!-- ======= ROTINA TREINO ======= -->
-        <div id="invest-rotina-treino-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
-                <div style="color: var(--color-blue); font-size:1.4rem; font-weight:700; letter-spacing:1px;">🏋️ Rotina Treino</div>
-                <button onclick="addHorarioRotinaTreino()" style="background:transparent; border:1px solid var(--color-blue); color:var(--color-blue); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:1px;">+ Linha</button>
+        <div id="invest-rotina-treino-view" class="invest-scroll-area" style="display:none; flex-direction: column; padding: 24px; gap: 20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:4px;">
+                <div style="color:#aaff00; font-size:1.4rem; font-weight:700; letter-spacing:1px;">🏋️ Plano de Treino</div>
+                <button onclick="addTreinoBloco()" style="background:transparent; border:1px solid #aaff00; color:#aaff00; padding:8px 20px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:700; letter-spacing:1px;">+ Treino</button>
             </div>
-            <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border-color); width:100%; align-self:stretch; box-sizing:border-box;">
-                <table id="rotina-treino-table" style="width:100%; border-collapse:collapse; min-width:900px;">
-                    <thead>
-                        <tr style="background:#0d0d0d;">
-                            <th style="padding:10px 14px; text-align:center; color:var(--color-blue); border-bottom:2px solid var(--border-color); width:80px; font-size:13px;">Horário</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Segunda</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Terça</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quarta</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Quinta</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-gain); border-bottom:2px solid var(--border-color); font-size:13px;">Sexta</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Sábado</th>
-                            <th style="padding:10px 8px; text-align:center; color:var(--color-highlight); border-bottom:2px solid var(--border-color); font-size:13px;">Domingo</th>
-                            <th style="padding:6px; border-bottom:2px solid var(--border-color); width:36px;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-rotina-treino"></tbody>
-                </table>
-            </div>
+            <div id="container-treino" style="display:flex; flex-direction:column; gap:24px;"></div>
             <div style="font-size:11px; color:#555; font-style:italic; margin-top:4px;">
-                💡 Clique em qualquer célula para editar · + Linha adiciona novo horário · ✕ remove a linha
+                💡 Clique em qualquer célula para editar · + Exercício adiciona linha · + Treino adiciona bloco · ✕ remove
             </div>
         </div>
 
@@ -1750,93 +1733,180 @@
             scheduleSave();
         }
 
-        // ======= ROTINA TREINO =======
-        const ROTINA_TREINO_DEFAULT = ROTINA_DEFAULT.map(row => ({
-            h: row.h, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:''
-        }));
+        // ======= ROTINA TREINO (Plano de Treino por Blocos) =======
+        const TREINO_DEFAULT = [
+            {
+                nome: 'TREINO A',
+                grupo: 'Perna',
+                exercicios: [
+                    { nome: 'Leg Press',           series: '4x', reps: '10 a 12' },
+                    { nome: 'Extensor de Pernas',  series: '4x', reps: '10 a 12' },
+                    { nome: 'Adutora',             series: '4x', reps: '10 a 12' },
+                    { nome: 'Abdutora',            series: '4x', reps: '10 a 12' },
+                ]
+            },
+            {
+                nome: 'TREINO B',
+                grupo: 'Peito',
+                exercicios: [
+                    { nome: 'Supino reto',         series: '3x', reps: '8 a 12' },
+                    { nome: 'Voador',              series: '4x', reps: '8 a 12' },
+                    { nome: 'Crucifixo reto',      series: '4x', reps: '8 a 12' },
+                    { nome: 'Supino inclinado',    series: '3x', reps: '8 a 12' },
+                ]
+            },
+            {
+                nome: 'TREINO C',
+                grupo: 'Bíceps e Costas',
+                exercicios: [
+                    { nome: 'Remada baixa',        series: '4x', reps: '8 a 12' },
+                    { nome: 'Levantamento terra',  series: '4x', reps: '8 a 12' },
+                    { nome: 'Martelo',             series: '4x', reps: '8 a 12' },
+                    { nome: 'Rosca',               series: '4x', reps: '8 a 12' },
+                ]
+            }
+        ];
 
-        function ensureRotinaTreinoData() {
-            if (!db.rotinaTreino || !Array.isArray(db.rotinaTreino) || db.rotinaTreino.length === 0) {
-                db.rotinaTreino = JSON.parse(JSON.stringify(ROTINA_TREINO_DEFAULT));
+        function ensureTreinoData() {
+            if (!db.treinoBlocos || !Array.isArray(db.treinoBlocos) || db.treinoBlocos.length === 0) {
+                db.treinoBlocos = JSON.parse(JSON.stringify(TREINO_DEFAULT));
             }
         }
 
         function openRotinaTreino() {
             document.getElementById('invest-rotina-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-treino-view').style.display = 'flex';
-            document.getElementById('invest-header-title').innerText = 'ROTINA TREINO';
+            document.getElementById('invest-header-title').innerText = 'PLANO DE TREINO';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
             currentInvestView = 'rotina-treino';
-            ensureRotinaTreinoData();
-            renderRotinaTreinoTable();
+            ensureTreinoData();
+            renderTreino();
         }
 
-        function renderRotinaTreinoTable() {
-            ensureRotinaTreinoData();
-            const tbody = document.getElementById('tbody-rotina-treino');
-            if (!tbody) return;
-            const HIGHLIGHT_HOURS = ['06:30','12:00','18:00','22:00','22:30'];
+        function renderTreino() {
+            ensureTreinoData();
+            const container = document.getElementById('container-treino');
+            if (!container) return;
             let html = '';
-            db.rotinaTreino.forEach((row, ri) => {
-                const isHL = HIGHLIGHT_HOURS.includes((row.h||'').trim());
-                const rowBg   = isHL ? 'rgba(0,230,118,0.06)' : '';
-                const rowBord = isHL ? '1px solid rgba(0,230,118,0.15)' : '1px solid #161616';
-                const hoverBg = isHL ? 'rgba(0,230,118,0.11)' : 'rgba(255,255,255,0.03)';
-                html += `<tr style="border-bottom:${rowBord}; background:${rowBg}; transition:background 0.15s;" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${rowBg}'">`;
-                const hColor  = isHL ? 'var(--color-gain)' : 'var(--color-blue)';
-                const hBorder = isHL ? 'rgba(0,230,118,0.4)' : '#333';
-                html += `<td style="padding:6px 8px; text-align:center; border-right:1px solid var(--border-color);">
-                    <input type="text" value="${row.h||''}"
-                        style="width:58px; background:transparent; border:none; border-bottom:1px solid ${hBorder}; color:${hColor}; font-weight:700; font-size:13px; text-align:center; outline:none;"
-                        onchange="updateRotinaTreinoCell(${ri},'h',this.value)"
-                        onfocus="this.style.borderBottomColor='var(--color-blue)'"
-                        onblur="this.style.borderBottomColor='${hBorder}'">
-                </td>`;
-                DIAS.forEach((d, di) => {
-                    const isSab = d === 'sab', isDom = d === 'dom';
-                    const col  = (isSab||isDom) ? 'var(--color-highlight)' : isHL ? 'var(--color-gain)' : 'var(--text-main)';
-                    const fw   = (isHL && !isSab && !isDom) ? '700' : '400';
-                    const borderR = di < DIAS.length - 1 ? 'border-right:1px solid #1a1a1a;' : '';
-                    html += `<td style="padding:4px 6px; ${borderR}">
-                        <input type="text" value="${(row[d]||'').replace(/"/g,'&quot;')}"
-                            style="width:100%; background:transparent; border:none; border-bottom:1px solid transparent; color:${col}; font-size:12px; font-weight:${fw}; text-align:center; outline:none; padding:4px 2px; cursor:text;"
-                            onchange="updateRotinaTreinoCell(${ri},'${d}',this.value)"
-                            onfocus="this.style.borderBottomColor='var(--color-blue)'; this.style.background='rgba(77,166,255,0.07)'; this.style.color='var(--text-main)'"
-                            onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'; this.style.color='${col}'">
-                    </td>`;
+            db.treinoBlocos.forEach((bloco, bi) => {
+                html += `
+                <div style="border-radius:12px; border:1px solid #2a2a2a; overflow:hidden; background:#0d0d0d;">
+                    <!-- Cabeçalho do bloco -->
+                    <div style="background:#aaff00; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                        <input type="text" value="${bloco.nome||''}"
+                            style="background:transparent; border:none; outline:none; color:#000; font-weight:900; font-size:15px; letter-spacing:2px; text-transform:uppercase; flex:1; min-width:80px;"
+                            onchange="updateTreinoBloco(${bi},'nome',this.value)"
+                            title="Nome do treino">
+                        <button onclick="removeTreinoBloco(${bi})" style="background:rgba(0,0,0,0.15); border:none; color:#000; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center;" title="Remover treino">✕</button>
+                    </div>
+                    <!-- Tabela de exercícios -->
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#1a1a00;">
+                                <th style="padding:10px 16px; text-align:left; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:40%;">
+                                    <input type="text" value="${bloco.grupo||''}"
+                                        style="background:transparent; border:none; outline:none; color:#aaff00; font-weight:700; font-size:12px; width:100%;"
+                                        onchange="updateTreinoBloco(${bi},'grupo',this.value)"
+                                        placeholder="Grupo Muscular">
+                                </th>
+                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:20%;">Séries</th>
+                                <th style="padding:10px 16px; text-align:center; color:#aaff00; font-size:12px; font-weight:700; border-bottom:1px solid #2a2a2a; width:20%;">Rep.</th>
+                                <th style="width:40px; border-bottom:1px solid #2a2a2a;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                bloco.exercicios.forEach((ex, ei) => {
+                    const isEven = ei % 2 === 0;
+                    const rowBg = isEven ? '#111' : '#0d0d0d';
+                    html += `
+                            <tr style="background:${rowBg}; border-bottom:1px solid #1a1a1a; transition:background 0.15s;"
+                                onmouseover="this.style.background='#1a1a0a'"
+                                onmouseout="this.style.background='${rowBg}'">
+                                <td style="padding:8px 16px;">
+                                    <input type="text" value="${(ex.nome||'').replace(/"/g,'&quot;')}"
+                                        style="background:transparent; border:none; border-bottom:1px solid transparent; outline:none; color:var(--text-main); font-size:13px; width:100%; text-align:left;"
+                                        onchange="updateTreinoExercicio(${bi},${ei},'nome',this.value)"
+                                        onfocus="this.style.borderBottomColor='#aaff00'; this.style.background='rgba(170,255,0,0.04)'"
+                                        onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'"
+                                        placeholder="Exercício">
+                                </td>
+                                <td style="padding:8px 16px; text-align:center;">
+                                    <input type="text" value="${(ex.series||'').replace(/"/g,'&quot;')}"
+                                        style="background:transparent; border:none; border-bottom:1px solid transparent; outline:none; color:var(--text-main); font-size:13px; width:100%; text-align:center;"
+                                        onchange="updateTreinoExercicio(${bi},${ei},'series',this.value)"
+                                        onfocus="this.style.borderBottomColor='#aaff00'; this.style.background='rgba(170,255,0,0.04)'"
+                                        onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'"
+                                        placeholder="3x">
+                                </td>
+                                <td style="padding:8px 16px; text-align:center;">
+                                    <input type="text" value="${(ex.reps||'').replace(/"/g,'&quot;')}"
+                                        style="background:transparent; border:none; border-bottom:1px solid transparent; outline:none; color:var(--text-main); font-size:13px; width:100%; text-align:center;"
+                                        onchange="updateTreinoExercicio(${bi},${ei},'reps',this.value)"
+                                        onfocus="this.style.borderBottomColor='#aaff00'; this.style.background='rgba(170,255,0,0.04)'"
+                                        onblur="this.style.borderBottomColor='transparent'; this.style.background='transparent'"
+                                        placeholder="8 a 12">
+                                </td>
+                                <td style="padding:8px; text-align:center;">
+                                    <button onclick="removeTreinoExercicio(${bi},${ei})" class="btn-remove" title="Remover exercício">✕</button>
+                                </td>
+                            </tr>`;
                 });
-                html += `<td style="padding:4px; text-align:center; border-left:1px solid #1a1a1a;">
-                    <button onclick="removeRotinaTreinoRow(${ri})" class="btn-remove" title="Remover linha">✕</button>
-                </td>`;
-                html += `</tr>`;
+                html += `
+                        </tbody>
+                    </table>
+                    <!-- Botão adicionar exercício -->
+                    <div style="padding:10px 16px; border-top:1px solid #1a1a1a;">
+                        <button onclick="addTreinoExercicio(${bi})"
+                            style="background:transparent; border:1px dashed #aaff00; color:#aaff00; padding:6px 16px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; width:100%; transition:background 0.2s;"
+                            onmouseover="this.style.background='rgba(170,255,0,0.08)'"
+                            onmouseout="this.style.background='transparent'">
+                            + Exercício
+                        </button>
+                    </div>
+                </div>`;
             });
-            tbody.innerHTML = html;
+            container.innerHTML = html;
         }
 
-        function updateRotinaTreinoCell(ri, field, value) {
-            ensureRotinaTreinoData();
-            db.rotinaTreino[ri][field] = value;
+        function updateTreinoBloco(bi, field, value) {
+            ensureTreinoData();
+            db.treinoBlocos[bi][field] = value;
             scheduleSave();
         }
 
-        function addHorarioRotinaTreino() {
-            ensureRotinaTreinoData();
-            const last = db.rotinaTreino[db.rotinaTreino.length - 1];
-            let nextH = '';
-            if (last && last.h) {
-                const parts = last.h.split(':');
-                const h = (parseInt(parts[0]) + 1) % 24;
-                nextH = String(h).padStart(2,'0') + ':00';
-            }
-            db.rotinaTreino.push({ h: nextH, seg:'', ter:'', qua:'', qui:'', sex:'', sab:'', dom:'' });
-            renderRotinaTreinoTable();
+        function updateTreinoExercicio(bi, ei, field, value) {
+            ensureTreinoData();
+            db.treinoBlocos[bi].exercicios[ei][field] = value;
             scheduleSave();
         }
 
-        function removeRotinaTreinoRow(ri) {
-            ensureRotinaTreinoData();
-            db.rotinaTreino.splice(ri, 1);
-            renderRotinaTreinoTable();
+        function addTreinoBloco() {
+            ensureTreinoData();
+            const n = db.treinoBlocos.length + 1;
+            db.treinoBlocos.push({ nome: 'TREINO ' + String.fromCharCode(64 + n), grupo: '', exercicios: [] });
+            renderTreino();
+            scheduleSave();
+        }
+
+        function removeTreinoBloco(bi) {
+            ensureTreinoData();
+            if (!confirm('Remover este bloco de treino?')) return;
+            db.treinoBlocos.splice(bi, 1);
+            renderTreino();
+            scheduleSave();
+        }
+
+        function addTreinoExercicio(bi) {
+            ensureTreinoData();
+            db.treinoBlocos[bi].exercicios.push({ nome: '', series: '', reps: '' });
+            renderTreino();
+            scheduleSave();
+        }
+
+        function removeTreinoExercicio(bi, ei) {
+            ensureTreinoData();
+            db.treinoBlocos[bi].exercicios.splice(ei, 1);
+            renderTreino();
             scheduleSave();
         }
         // Relação oficial de créditos -> máximo de aulas permitidas
