@@ -138,9 +138,6 @@
         .invest-menu-screen { display: flex; flex: 1; align-items: center; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; overflow-y: auto;}
         
         .invest-menu-card { width: 350px; height: 260px; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 2px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); gap: 15px; }
-        #invest-menu-view { gap: 20px; }
-        #invest-menu-view .invest-menu-card { width: 215px; height: 215px; }
-        #invest-menu-view .invest-menu-card h3 { font-size: 1.15rem; }
         .invest-menu-card:hover { transform: translateY(-5px); border-color: var(--color-gain); box-shadow: 0 20px 40px rgba(0, 230, 118, 0.25); background: rgba(25, 25, 25, 0.9); }
         .invest-menu-card .icon { font-size: 45px; color: var(--color-gain); }
         .invest-menu-card h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
@@ -276,10 +273,10 @@
                     <h3>Minha Carteira</h3>
                 </div>
             </a>
-            
-            <div class="invest-menu-card card-carteira" onclick="openCarteiraResumo()">
-                <div class="icon">💰</div>
-                <h3>Resumo da Carteira</h3>
+
+            <div class="invest-menu-card" onclick="openRotinaMenu()">
+                <div class="icon">📅</div>
+                <h3>Rotina</h3>
             </div>
 
             <div class="invest-menu-card card-planilhas" onclick="openInvestPlanilhas()">
@@ -295,11 +292,6 @@
 
         <!-- ======= SUBMENU UFV ======= -->
         <div id="invest-ufv-menu-view" class="invest-menu-screen" style="display: none;">
-            <div class="invest-menu-card" onclick="openRotinaMenu()">
-                <div class="icon">📅</div>
-                <h3>Rotina</h3>
-            </div>
-
             <div class="invest-menu-card" onclick="openFaltas()">
                 <div class="icon">📋</div>
                 <h3>Faltas</h3>
@@ -1578,7 +1570,7 @@
         }
 
         function openRotinaMenu() {
-            document.getElementById('invest-ufv-menu-view').style.display = 'none';
+            document.getElementById('invest-menu-view').style.display = 'none';
             document.getElementById('invest-rotina-menu-view').style.display = 'flex';
             document.getElementById('invest-header-title').innerText = 'ROTINA';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
@@ -1847,8 +1839,6 @@
             renderRotinaTreinoTable();
             scheduleSave();
         }
-
-        // ======= FALTAS (UFV) =======
         // Relação oficial de créditos -> máximo de aulas permitidas
         const RELACAO_CREDITOS_AULAS = { 2: 7, 3: 11, 4: 14, 5: 18, 6: 22, 7: 25, 8: 28 };
 
@@ -2157,7 +2147,7 @@
                 document.getElementById('invest-acoes-view').style.display = 'none';
                 document.getElementById('invest-rendafixa-view').style.display = 'none';
                 document.getElementById('invest-planilhas-menu-view').style.display = 'flex';
-                document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
+                document.getElementById('invest-header-title').innerText = 'PLANILHAS DE ATIVOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'planilhas-menu';
             } else if (currentInvestView === 'rotina' || currentInvestView === 'rotina-alimentacao' || currentInvestView === 'rotina-treino') {
@@ -2168,17 +2158,16 @@
                 document.getElementById('invest-header-title').innerText = 'ROTINA';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'rotina-menu';
-            } else if (currentInvestView === 'rotina-menu' || currentInvestView === 'faltas') {
-                document.getElementById('invest-rotina-menu-view').style.display = 'none';
+            } else if (currentInvestView === 'faltas') {
                 document.getElementById('invest-faltas-view').style.display = 'none';
                 document.getElementById('invest-ufv-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'UFV';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
                 currentInvestView = 'ufv-menu';
-            } else if (currentInvestView === 'ufv-menu' || currentInvestView === 'planilhas-menu' || currentInvestView === 'carteira-view') {
+            } else if (currentInvestView === 'ufv-menu' || currentInvestView === 'planilhas-menu' || currentInvestView === 'rotina-menu') {
                 document.getElementById('invest-ufv-menu-view').style.display = 'none';
                 document.getElementById('invest-planilhas-menu-view').style.display = 'none';
-                document.getElementById('invest-carteira-view').style.display = 'none';
+                document.getElementById('invest-rotina-menu-view').style.display = 'none';
                 document.getElementById('invest-menu-view').style.display = 'flex';
                 document.getElementById('invest-header-title').innerText = 'INVESTIMENTOS';
                 document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar ao Menu';
