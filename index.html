@@ -1822,7 +1822,8 @@
             scheduleSave();
             renderSessaoPanel(blocoNome);
             // Feedback visual
-            const btn = document.getElementById('btn-salvar-sessao-' + CSS.escape(blocoNome));
+            const bi3 = db.treinoBlocos.findIndex(b => b.nome === blocoNome);
+            const btn = document.getElementById('btn-salvar-sessao-' + bi3);
             if (btn) { btn.textContent = '✓ Salvo!'; btn.style.background = '#aaff00'; btn.style.color = '#000';
                 setTimeout(() => { btn.textContent = '💾 Salvar Sessão'; btn.style.background = 'transparent'; btn.style.color = '#aaff00'; }, 2000); }
         }
@@ -1843,7 +1844,9 @@
         }
 
         function renderSessaoPanel(blocoNome) {
-            const el = document.getElementById('sessao-panel-' + CSS.escape(blocoNome));
+            ensureTreinoData();
+            const bi2 = db.treinoBlocos.findIndex(b => b.nome === blocoNome);
+            const el = document.getElementById('sessao-panel-' + bi2);
             if (!el) return;
             ensureTreinoData();
             ensureSessionData();
@@ -1937,7 +1940,7 @@
 
             htmlRegistro += `</tbody></table></div>
             <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
-                <button id="btn-salvar-sessao-${blocoNome}" onclick="salvarSessao('${blocoNome.replace(/'/g,"\\'")}')
+                <button id="btn-salvar-sessao-${bi2}" onclick="salvarSessao('${blocoNome.replace(/'/g,"\\'")}')
                 " style="background:transparent; border:1px solid #aaff00; color:#aaff00; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; transition:all 0.2s;"
                     onmouseover="this.style.background='rgba(170,255,0,0.1)'" onmouseout="this.style.background='transparent'">💾 Salvar Sessão</button>
                 <button onclick="limparSessaoAtiva('${blocoNome.replace(/'/g,"\\'")}')
@@ -2128,13 +2131,15 @@
                 </div>
 
                 <!-- ── PAINEL DE SESSÃO ── -->
-                <div id="sessao-panel-${bloco.nome}" style="width:420px; min-width:300px; border-radius:12px; border:1px solid #1e1e1e; background:#0a0a0a; padding:14px; flex-shrink:0;">
+                <div id="sessao-panel-${bi}" style="width:420px; min-width:300px; border-radius:12px; border:1px solid #1e1e1e; background:#0a0a0a; padding:14px; flex-shrink:0;">
                 </div>
                 </div>`;
             });
             container.innerHTML = html;
-            // Renderiza painéis de sessão após montar o DOM
-            db.treinoBlocos.forEach(bloco => renderSessaoPanel(bloco.nome));
+            // Renderiza painéis de sessão após o innerHTML ser pintado
+            setTimeout(() => {
+                db.treinoBlocos.forEach(bloco => renderSessaoPanel(bloco.nome));
+            }, 0);
         }
 
         function updateTreinoBloco(bi, field, value) {
