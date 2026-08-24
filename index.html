@@ -1778,14 +1778,272 @@
             renderTreino();
         }
 
+        // ── SISTEMA DE SESSÕES ──────────────────────────────────────────
+        function ensureSessionData() {
+            if (!db.treinoSessoes) db.treinoSessoes = {};
+        }
+
+        // Retorna as últimas N sessões de um bloco (ordenadas da mais recente à mais antiga)
+        function getSessoesBloco(blocoNome, n) {
+            ensureSessionData();
+            const all = (db.treinoSessoes[blocoNome] || []).slice().reverse();
+            return n ? all.slice(0, n) : all;
+        }
+
+        // Estado temporário de sessão em andamento (não salvo até confirmar)
+        let _sessaoAtiva = {}; // { "blocoNome": { data, reps: {ei: [s1,s2,...]} } }
+
+        function getSessaoAtiva(blocoNome) {
+            if (!_sessaoAtiva[blocoNome]) {
+                const hoje = new Date().toLocaleDateString('pt-BR');
+                _sessaoAtiva[blocoNome] = { data: hoje, reps: {} };
+            }
+            return _sessaoAtiva[blocoNome];
+        }
+
+        function setSessaoRep(blocoNome, ei, si, valor) {
+            const s = getSessaoAtiva(blocoNome);
+            if (!s.reps[ei]) s.reps[ei] = [];
+            s.reps[ei][si] = valor === '' ? null : Number(valor) || valor;
+            renderSessaoPanel(blocoNome);
+        }
+
+        function salvarSessao(blocoNome) {
+            ensureSessionData();
+            const s = getSessaoAtiva(blocoNome);
+            // Valida se tem algum dado
+            const temDado = Object.values(s.reps).some(arr => arr && arr.some(v => v !== null && v !== undefined && v !== ''));
+            if (!temDado) { alert('Preencha ao menos uma repetição antes de salvar.'); return; }
+            if (!db.treinoSessoes[blocoNome]) db.treinoSessoes[blocoNome] = [];
+            db.treinoSessoes[blocoNome].push({ data: s.data, reps: JSON.parse(JSON.stringify(s.reps)) });
+            // Mantém máximo 30 sessões por bloco
+            if (db.treinoSessoes[blocoNome].length > 30) db.treinoSessoes[blocoNome].shift();
+            delete _sessaoAtiva[blocoNome];
+            scheduleSave();
+            renderSessaoPanel(blocoNome);
+            // Feedback visual
+            const btn = document.getElementById('btn-salvar-sessao-' + CSS.escape(blocoNome));
+            if (btn) { btn.textContent = '✓ Salvo!'; btn.style.background = '#aaff00'; btn.style.color = '#000';
+                setTimeout(() => { btn.textContent = '💾 Salvar Sessão'; btn.style.background = 'transparent'; btn.style.color = '#aaff00'; }, 2000); }
+        }
+
+        function limparSessaoAtiva(blocoNome) {
+            delete _sessaoAtiva[blocoNome];
+            renderSessaoPanel(blocoNome);
+        }
+
+        function deletarSessao(blocoNome, idxRev) {
+            ensureSessionData();
+            if (!db.treinoSessoes[blocoNome]) return;
+            const realIdx = db.treinoSessoes[blocoNome].length - 1 - idxRev;
+            if (!confirm('Apagar este registro de sessão?')) return;
+            db.treinoSessoes[blocoNome].splice(realIdx, 1);
+            scheduleSave();
+            renderSessaoPanel(blocoNome);
+        }
+
+        function renderSessaoPanel(blocoNome) {
+            const el = document.getElementById('sessao-panel-' + CSS.escape(blocoNome));
+            if (!el) return;
+            ensureTreinoData();
+            ensureSessionData();
+            const bi = db.treinoBlocos.findIndex(b => b.nome === blocoNome);
+            if (bi < 0) return;
+            const bloco = db.treinoBlocos[bi];
+            const exercicios = bloco.exercicios || [];
+            const sessoes = getSessoesBloco(blocoNome, 10); // últimas 10
+            const sessaoAtual = getSessaoAtiva(blocoNome);
+            const ultimaSessao = sessoes[0];
+
+            // Determina nº de séries de cada exercício
+            function numSeries(ex) {
+                const m = (ex.series || '').match(/\d+/);
+                return m ? Math.min(parseInt(m[0]), 6) : 3;
+            }
+
+            // ── Tabela de registro da sessão atual ──────────────────────
+            let htmlRegistro = `
+            <div style="font-size:11px; font-weight:700; color:#aaff00; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+                📝 Registrar Sessão
+                <span style="font-size:10px; color:#555; font-weight:400; text-transform:none;">— hoje: ${sessaoAtual.data}</span>
+            </div>
+            <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <thead>
+                    <tr style="background:#1a1a00;">
+                        <th style="padding:6px 8px; text-align:left; color:#888; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:110px;">Exercício</th>`;
+
+            const maxSeries = Math.max(...exercicios.map(numSeries), 1);
+            for (let s = 0; s < maxSeries; s++) {
+                htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:46px;">S${s+1}</th>`;
+            }
+            if (ultimaSessao) {
+                htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:52px; white-space:nowrap;">Últ.</th>`;
+                htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:38px;">Δ</th>`;
+            }
+            htmlRegistro += `</tr></thead><tbody>`;
+
+            exercicios.forEach((ex, ei) => {
+                if (!ex.nome && !ex.reps) return;
+                const ns = numSeries(ex);
+                const rowBg = ei % 2 === 0 ? '#111' : '#0d0d0d';
+                const curReps = sessaoAtual.reps[ei] || [];
+
+                // Calcula total atual e do último treino para o delta
+                const totalAtual = curReps.reduce((a, v) => a + (parseFloat(v) || 0), 0);
+                const ultReps = ultimaSessao ? (ultimaSessao.reps[ei] || []) : [];
+                const totalUlt = ultReps.reduce((a, v) => a + (parseFloat(v) || 0), 0);
+                const delta = totalAtual - totalUlt;
+
+                let deltaHtml = '';
+                if (ultimaSessao && totalAtual > 0) {
+                    if (delta > 0) deltaHtml = `<span style="color:#aaff00; font-weight:700;">▲${delta}</span>`;
+                    else if (delta < 0) deltaHtml = `<span style="color:#ff4444; font-weight:700;">▼${Math.abs(delta)}</span>`;
+                    else deltaHtml = `<span style="color:#888;">═</span>`;
+                }
+
+                // Resumo do último treino para esta linha
+                let ultResumo = '';
+                if (ultimaSessao && ultReps.length > 0) {
+                    ultResumo = ultReps.slice(0, ns).map(v => v ?? '–').join(' · ');
+                } else if (ultimaSessao) {
+                    ultResumo = '–';
+                }
+
+                htmlRegistro += `<tr style="background:${rowBg}; border-bottom:1px solid #1a1a1a;">
+                    <td style="padding:5px 8px; color:#bbb; font-size:11px; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(ex.nome||'').replace(/"/g,'&quot;')}">${ex.nome || '–'}</td>`;
+
+                for (let s = 0; s < maxSeries; s++) {
+                    const val = s < ns ? (curReps[s] !== null && curReps[s] !== undefined ? curReps[s] : '') : '';
+                    const disabled = s >= ns ? 'disabled style="opacity:0.15; pointer-events:none;"' : '';
+                    htmlRegistro += `<td style="padding:4px 4px; text-align:center;">
+                        <input type="number" min="0" max="999" value="${val}"
+                            ${disabled}
+                            style="width:40px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:4px; outline:none; color:#e0e0e0; font-size:12px; text-align:center; padding:3px 2px;"
+                            oninput="setSessaoRep('${blocoNome.replace(/'/g,"\\'")}',${ei},${s},this.value)"
+                            onfocus="this.style.borderColor='#aaff00'"
+                            onblur="this.style.borderColor='#2a2a2a'"
+                            placeholder="–">
+                    </td>`;
+                }
+
+                if (ultimaSessao) {
+                    htmlRegistro += `<td style="padding:5px 8px; text-align:center; color:#555; font-size:11px; white-space:nowrap;">${ultResumo}</td>`;
+                    htmlRegistro += `<td style="padding:5px 4px; text-align:center; font-size:11px;">${deltaHtml}</td>`;
+                }
+
+                htmlRegistro += `</tr>`;
+            });
+
+            htmlRegistro += `</tbody></table></div>
+            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                <button id="btn-salvar-sessao-${blocoNome}" onclick="salvarSessao('${blocoNome.replace(/'/g,"\\'")}')
+                " style="background:transparent; border:1px solid #aaff00; color:#aaff00; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; transition:all 0.2s;"
+                    onmouseover="this.style.background='rgba(170,255,0,0.1)'" onmouseout="this.style.background='transparent'">💾 Salvar Sessão</button>
+                <button onclick="limparSessaoAtiva('${blocoNome.replace(/'/g,"\\'")}')
+                " style="background:transparent; border:1px solid #333; color:#555; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:11px;"
+                    onmouseover="this.style.borderColor='#666'; this.style.color='#888'" onmouseout="this.style.borderColor='#333'; this.style.color='#555'">Limpar</button>
+            </div>`;
+
+            // ── Histórico ────────────────────────────────────────────────
+            let htmlHistorico = '';
+            if (sessoes.length > 0) {
+                htmlHistorico += `
+                <div style="margin-top:18px; border-top:1px solid #1a1a1a; padding-top:14px;">
+                    <div style="font-size:11px; font-weight:700; color:#555; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;">📊 Histórico (${sessoes.length} sessão${sessoes.length>1?'ões':''})</div>`;
+
+                sessoes.forEach((sessao, si) => {
+                    const prevSessao = sessoes[si + 1];
+                    // Calcula métricas gerais
+                    let totalReps = 0, totalPrev = 0, melhorou = 0, piorou = 0, manteve = 0;
+                    exercicios.forEach((ex, ei) => {
+                        const arr = sessao.reps[ei] || [];
+                        const prevArr = prevSessao ? (prevSessao.reps[ei] || []) : [];
+                        const t = arr.reduce((a,v) => a + (parseFloat(v)||0), 0);
+                        const tp = prevArr.reduce((a,v) => a + (parseFloat(v)||0), 0);
+                        totalReps += t;
+                        totalPrev += tp;
+                        if (prevSessao && t > 0 && tp > 0) { if (t > tp) melhorou++; else if (t < tp) piorou++; else manteve++; }
+                    });
+                    const evolucao = prevSessao ? (totalReps - totalPrev) : null;
+
+                    htmlHistorico += `
+                    <div style="background:#111; border-radius:8px; border:1px solid #1e1e1e; margin-bottom:8px; overflow:hidden;">
+                        <div style="padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; cursor:pointer; user-select:none;"
+                            onclick="toggleSessaoDetalhe('hist-${blocoNome}-${si}')">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span style="font-size:11px; font-weight:700; color:#aaa;">${sessao.data}</span>
+                                <span style="font-size:10px; color:#555;">${totalReps} rep total</span>
+                                ${evolucao !== null ? `<span style="font-size:10px; font-weight:700; color:${evolucao>0?'#aaff00':evolucao<0?'#ff4444':'#666'};">
+                                    ${evolucao>0?'▲ +':'▼ '}${evolucao===0?'═ =':evolucao} vs anterior</span>` : '<span style="font-size:10px; color:#444;">1ª sessão</span>'}
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${prevSessao && melhorou > 0 ? `<span style="font-size:10px; background:rgba(170,255,0,0.1); color:#aaff00; border-radius:4px; padding:2px 6px;">▲${melhorou}</span>` : ''}
+                                ${prevSessao && piorou > 0 ? `<span style="font-size:10px; background:rgba(255,68,68,0.1); color:#ff4444; border-radius:4px; padding:2px 6px;">▼${piorou}</span>` : ''}
+                                ${prevSessao && manteve > 0 ? `<span style="font-size:10px; background:#1a1a1a; color:#555; border-radius:4px; padding:2px 6px;">═${manteve}</span>` : ''}
+                                <span style="color:#333; font-size:10px;">▾</span>
+                                <button onclick="event.stopPropagation(); deletarSessao('${blocoNome.replace(/'/g,"\\'")}',${si})" style="background:none; border:none; color:#333; cursor:pointer; font-size:12px; padding:2px 4px;" title="Apagar sessão" onmouseover="this.style.color='#ff4444'" onmouseout="this.style.color='#333'">✕</button>
+                            </div>
+                        </div>
+                        <div id="hist-${blocoNome}-${si}" style="display:none; padding:0 12px 10px; border-top:1px solid #1a1a1a;">
+                            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+                                <thead><tr style="color:#555;">
+                                    <th style="padding:4px 6px; text-align:left; font-weight:600;">Exercício</th>
+                                    <th style="padding:4px 6px; text-align:center; font-weight:600;">Séries feitas</th>
+                                    <th style="padding:4px 6px; text-align:center; font-weight:600;">Total</th>
+                                    ${prevSessao ? '<th style="padding:4px 6px; text-align:center; font-weight:600;">Δ</th>' : ''}
+                                </tr></thead>
+                                <tbody>`;
+
+                    exercicios.forEach((ex, ei) => {
+                        if (!ex.nome && !ex.reps) return;
+                        const arr = sessao.reps[ei] || [];
+                        const prevArr = prevSessao ? (prevSessao.reps[ei] || []) : [];
+                        const t = arr.reduce((a,v)=>a+(parseFloat(v)||0),0);
+                        const tp = prevArr.reduce((a,v)=>a+(parseFloat(v)||0),0);
+                        const d = t - tp;
+                        const seriesStr = arr.filter(v=>v!==null&&v!==undefined&&v!=='').join(' · ') || '–';
+                        const dHtml = prevSessao
+                            ? (t===0&&tp===0 ? '<span style="color:#333;">–</span>'
+                               : d>0 ? `<span style="color:#aaff00;font-weight:700;">▲${d}</span>`
+                               : d<0 ? `<span style="color:#ff4444;font-weight:700;">▼${Math.abs(d)}</span>`
+                               : `<span style="color:#555;">═</span>`)
+                            : '';
+                        htmlHistorico += `<tr style="border-bottom:1px solid #1a1a1a;">
+                            <td style="padding:4px 6px; color:#aaa; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(ex.nome||'').replace(/"/g,'&quot;')}">${ex.nome||'–'}</td>
+                            <td style="padding:4px 6px; text-align:center; color:#777;">${seriesStr}</td>
+                            <td style="padding:4px 6px; text-align:center; color:#ccc; font-weight:700;">${t||'–'}</td>
+                            ${prevSessao ? `<td style="padding:4px 6px; text-align:center;">${dHtml}</td>` : ''}
+                        </tr>`;
+                    });
+
+                    htmlHistorico += `</tbody></table></div></div>`;
+                });
+
+                htmlHistorico += `</div>`;
+            }
+
+            el.innerHTML = htmlRegistro + htmlHistorico;
+        }
+
+        function toggleSessaoDetalhe(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+        // ── FIM SISTEMA DE SESSÕES ───────────────────────────────────────
+
         function renderTreino() {
             ensureTreinoData();
             const container = document.getElementById('container-treino');
             if (!container) return;
             let html = '';
             db.treinoBlocos.forEach((bloco, bi) => {
+                const bNome = (bloco.nome||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/'/g,"\\'");
                 html += `
-                <div style="border-radius:12px; border:1px solid #2a2a2a; overflow:hidden; background:#0d0d0d;">
+                <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+                <!-- ── BLOCO PLANO ── -->
+                <div style="flex:1; min-width:320px; border-radius:12px; border:1px solid #2a2a2a; overflow:hidden; background:#0d0d0d;">
                     <!-- Cabeçalho do bloco -->
                     <div style="background:#aaff00; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
                         <input type="text" value="${bloco.nome||''}"
@@ -1867,9 +2125,16 @@
                             + Exercício
                         </button>
                     </div>
+                </div>
+
+                <!-- ── PAINEL DE SESSÃO ── -->
+                <div id="sessao-panel-${bloco.nome}" style="width:420px; min-width:300px; border-radius:12px; border:1px solid #1e1e1e; background:#0a0a0a; padding:14px; flex-shrink:0;">
+                </div>
                 </div>`;
             });
             container.innerHTML = html;
+            // Renderiza painéis de sessão após montar o DOM
+            db.treinoBlocos.forEach(bloco => renderSessaoPanel(bloco.nome));
         }
 
         function updateTreinoBloco(bi, field, value) {
