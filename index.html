@@ -1884,6 +1884,7 @@
                 htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:52px; white-space:nowrap;">Últ.</th>`;
                 htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:38px;">Δ</th>`;
             }
+            htmlRegistro += `<th style="border-bottom:1px solid #2a2a2a; width:28px;"></th>`;
             htmlRegistro += `</tr></thead><tbody>`;
 
             exercicios.forEach((ex, ei) => {
@@ -1935,11 +1936,21 @@
                     htmlRegistro += `<td style="padding:5px 4px; text-align:center; font-size:11px;">${deltaHtml}</td>`;
                 }
 
+                htmlRegistro += `<td style="padding:4px 4px; text-align:center;">
+                    <button onclick="removeTreinoExercicio(${bi2},${ei})" title="Remover exercício"
+                        style="background:none; border:none; color:#333; cursor:pointer; font-size:12px; padding:2px 5px; border-radius:4px; transition:color 0.15s;"
+                        onmouseover="this.style.color='#ff4444'" onmouseout="this.style.color='#333'">✕</button>
+                </td>`;
+
                 htmlRegistro += `</tr>`;
             });
 
             htmlRegistro += `</tbody></table></div>
-            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+            <button onclick="addTreinoExercicio(${bi2})"
+                style="background:transparent; border:1px dashed #333; color:#555; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; width:100%; margin-top:8px; transition:all 0.2s;"
+                onmouseover="this.style.borderColor='#aaff00'; this.style.color='#aaff00'"
+                onmouseout="this.style.borderColor='#333'; this.style.color='#555'">+ Exercício</button>
+            <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
                 <button id="btn-salvar-sessao-${bi2}" onclick="salvarSessao('${blocoNome.replace(/'/g,"\\'")}')
                 " style="background:transparent; border:1px solid #aaff00; color:#aaff00; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; transition:all 0.2s;"
                     onmouseover="this.style.background='rgba(170,255,0,0.1)'" onmouseout="this.style.background='transparent'">💾 Salvar Sessão</button>
