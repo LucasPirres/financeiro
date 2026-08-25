@@ -195,6 +195,14 @@
             <div class="card-bg" style="background-image: url('image_39c485.jpg');"></div>
             <h2>Investimentos</h2>
         </div>
+
+        <!-- Botão de socorro sempre visível na tela inicial -->
+        <div id="btn-socorro-wrapper" style="position:fixed; bottom:50px; left:50%; transform:translateX(-50%); z-index:99999;">
+            <button onclick="socorroRestaurarBackup()"
+                style="background:#b84400; color:#fff; border:none; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:13px; font-weight:700; box-shadow:0 4px 20px rgba(0,0,0,0.5); letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
+                ⚠️ Recuperar dados perdidos (backup local)
+            </button>
+        </div>
     </div>
 
     <div id="app-container">
@@ -3783,6 +3791,57 @@
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
 
         // ======= EXPORTAR / IMPORTAR DADOS =======
+
+        function socorroRestaurarBackup() {
+            const backup = localStorage.getItem('financeiro_backup');
+            if (!backup) {
+                alert('❌ Nenhum backup local encontrado neste navegador.\n\nO localStorage pode ter sido limpo ou você está em outro navegador/computador.');
+                return;
+            }
+            try {
+                const parsed = JSON.parse(backup);
+                // Mostra resumo do que vai ser restaurado
+                const keys = Object.keys(parsed);
+                const temFaltas = parsed.faltasPlanilhas && parsed.faltasPlanilhas.length > 0;
+                const temRotina = parsed.rotina && parsed.rotina.length > 0;
+                const temTreino = parsed.treinoBlocos && parsed.treinoBlocos.length > 0;
+                const anos = Object.keys(parsed.years || {});
+                
+                const resumo = [
+                    `✅ Backup encontrado! Conteúdo:`,
+                    temFaltas ? `• Faltas: ${parsed.faltasPlanilhas.length} planilha(s)` : '• Faltas: sem dados',
+                    temRotina ? `• Rotina: ${parsed.rotina.length} linha(s)` : '• Rotina: sem dados',
+                    temTreino ? `• Treino: ${parsed.treinoBlocos.length} bloco(s)` : '• Treino: sem dados',
+                    anos.length > 0 ? `• Lançamentos: anos ${anos.join(', ')}` : '• Lançamentos: sem dados',
+                    ``,
+                    `Restaurar agora? Isso vai sobrescrever o que está na nuvem.`
+                ].join('\n');
+
+                if (!confirm(resumo)) return;
+
+                db = parsed;
+                if(!db.acoesSetor) db.acoesSetor = {};
+                ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                ensureRotinaAlimentacaoData();
+                ensureFaltasData();
+                if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+
+                // Salva de volta no JSONBin
+                saveDataNow().then(() => {
+                    document.getElementById('sync-status').innerText = '✅ Dados restaurados e salvos na nuvem!';
+                    // Esconde o botão de socorro
+                    const w = document.getElementById('btn-socorro-wrapper');
+                    if (w) w.style.display = 'none';
+                    alert('✅ Tudo restaurado com sucesso!\n\nSeus dados foram recuperados e salvos na nuvem.');
+                }).catch(() => {
+                    document.getElementById('sync-status').innerText = 'Restaurado localmente — erro ao salvar na nuvem';
+                    alert('⚠️ Dados carregados, mas houve erro ao salvar na nuvem. Tente entrar no app e usar o botão Backup > Exportar para salvar um arquivo.');
+                });
+            } catch(e) {
+                alert('❌ Erro ao ler o backup: ' + e.message);
+            }
+        }
 
         function mostrarBannerRestaurar() {
             const banner = document.getElementById('banner-restaurar');
