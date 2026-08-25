@@ -1217,6 +1217,27 @@
     </div>
     <!-- FIM invest-container -->
 
+    <!-- BANNER DE SOCORRO — aparece quando JSONBin está vazio mas há backup local -->
+    <div id="banner-restaurar" style="display:none; position:fixed; top:0; left:0; right:0; z-index:99999; background:#b84400; color:#fff; padding:14px 24px; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; box-shadow:0 4px 20px rgba(0,0,0,0.6);">
+        <div style="display:flex; align-items:center; gap:12px; flex:1;">
+            <span style="font-size:22px;">⚠️</span>
+            <div>
+                <div style="font-weight:700; font-size:14px; letter-spacing:0.5px;">Seus dados da nuvem estão vazios, mas encontrei um backup salvo neste navegador!</div>
+                <div style="font-size:12px; opacity:0.85; margin-top:2px;">Clique em <strong>Restaurar Agora</strong> para recuperar tudo e salvar de volta na nuvem. Não feche esta aba antes de confirmar.</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-shrink:0;">
+            <button onclick="confirmarRestaurarBackup()"
+                style="background:#fff; color:#b84400; border:none; padding:10px 22px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:800; letter-spacing:0.5px;">
+                ✅ Restaurar Agora
+            </button>
+            <button onclick="dispensarBannerRestaurar()"
+                style="background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:10px 16px; border-radius:8px; cursor:pointer; font-size:12px;">
+                Ignorar
+            </button>
+        </div>
+    </div>
+
     <div id="sync-status" style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: var(--text-muted); z-index: 10000;">Conectando...</div>
 
     <!-- PAINEL EXPORTAR / IMPORTAR -->
@@ -2644,19 +2665,24 @@
                     // Atualiza backup local com dados da nuvem
                     try { localStorage.setItem('financeiro_backup', JSON.stringify(db)); } catch(e) {}
                 } else {
-                    // JSONBin não tem dados — tenta carregar do backup local
+                    // JSONBin vazio — carrega backup local MAS NÃO salva de volta automaticamente
                     const backup = localStorage.getItem('financeiro_backup');
                     if (backup) {
-                        db = JSON.parse(backup);
-                        if(!db.acoesSetor) db.acoesSetor = {};
-                        ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
-                        if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
-                        ensureRotinaAlimentacaoData();
-                        ensureFaltasData();
-                        if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
-                        document.getElementById('sync-status').innerText = "Dados recuperados do backup local";
-                        // Reenvia para o JSONBin, já que o bin estava vazio
-                        saveDataNow();
+                        try {
+                            const parsed = JSON.parse(backup);
+                            db = parsed;
+                            if(!db.acoesSetor) db.acoesSetor = {};
+                            ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                            if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
+                            ensureRotinaAlimentacaoData();
+                            ensureFaltasData();
+                            if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
+                            if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                            // Mostra banner de socorro — usuário confirma antes de salvar no JSONBin
+                            mostrarBannerRestaurar();
+                        } catch(e2) {
+                            document.getElementById('sync-status').innerText = "Erro ao ler backup local";
+                        }
                     } else {
                         db.years[selectedYear] = createYearStructure(); 
                         db.fiis = []; db.fiisAvaliacao = []; db.acoes = [];
@@ -3757,6 +3783,27 @@
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
 
         // ======= EXPORTAR / IMPORTAR DADOS =======
+
+        function mostrarBannerRestaurar() {
+            const banner = document.getElementById('banner-restaurar');
+            if (banner) {
+                banner.style.display = 'flex';
+                document.getElementById('sync-status').innerText = "⚠ JSONBin vazio — confirme restauração abaixo";
+            }
+        }
+
+        function confirmarRestaurarBackup() {
+            saveDataNow();
+            const banner = document.getElementById('banner-restaurar');
+            if (banner) banner.style.display = 'none';
+            document.getElementById('sync-status').innerText = "✓ Dados restaurados e salvos na nuvem!";
+            renderTudo();
+        }
+
+        function dispensarBannerRestaurar() {
+            const banner = document.getElementById('banner-restaurar');
+            if (banner) banner.style.display = 'none';
+        }
 
         function restaurarBackupLocal() {
             const statusEl = document.getElementById('restore-status');
