@@ -1261,6 +1261,18 @@
             </div>
 
             <div style="border-top:1px solid #222; margin-top:10px; padding-top:10px;">
+                <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px;">🔄 Restaurar backup local:</div>
+                <button onclick="restaurarBackupLocal()"
+                    style="width:100%; background:transparent; border:1px solid #ff9800; color:#ff9800; padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;"
+                    onmouseover="this.style.background='rgba(255,152,0,0.1)'"
+                    onmouseout="this.style.background='transparent'">
+                    ⚠ Restaurar do navegador
+                </button>
+                <div id="restore-status" style="margin-top:6px; font-size:11px; color:var(--text-muted); text-align:center; min-height:16px;"></div>
+                <div style="color:#444; font-size:10px; margin-top:6px; line-height:1.4;">Restaura o último estado salvo automaticamente neste navegador. Use se perdeu dados após uma sincronização errada.</div>
+            </div>
+
+            <div style="border-top:1px solid #222; margin-top:10px; padding-top:10px;">
                 <div style="color:#444; font-size:10px; line-height:1.5;">
                     O arquivo .json contém todos os seus dados: FIIs, ações, renda fixa, rotina e configurações.
                 </div>
@@ -1759,7 +1771,6 @@
         function ensureTreinoData() {
             if (!db.treinoBlocos || !Array.isArray(db.treinoBlocos) || db.treinoBlocos.length === 0) {
                 db.treinoBlocos = JSON.parse(JSON.stringify(TREINO_DEFAULT));
-                scheduleSave();
             }
         }
 
@@ -1822,7 +1833,9 @@
 
         function removeSerieSessao(blocoNome) {
             const s = getSessaoAtiva(blocoNome);
-            if ((s.seriesCols || 0) > 0) s.seriesCols--;
+            const base = Math.max(...(db.treinoBlocos.find(b=>b.nome===blocoNome)?.exercicios||[]).map(numSeries), 1);
+            // Permite reduzir até 1 série total (sem limite mínimo artificial)
+            if ((base + (s.seriesCols || 0)) > 1) s.seriesCols = (s.seriesCols || 0) - 1;
             renderSessaoPanel(blocoNome);
         }
 
@@ -3744,6 +3757,36 @@
         function destroyChart(id) { if(charts[id]) charts[id].destroy(); }
 
         // ======= EXPORTAR / IMPORTAR DADOS =======
+
+        function restaurarBackupLocal() {
+            const statusEl = document.getElementById('restore-status');
+            try {
+                const backup = localStorage.getItem('financeiro_backup');
+                if (!backup) {
+                    statusEl.style.color = '#ff4444';
+                    statusEl.innerText = '✗ Nenhum backup local encontrado.';
+                    return;
+                }
+                const parsed = JSON.parse(backup);
+                if (!confirm('Restaurar o backup local vai substituir os dados atuais. Confirmar?')) return;
+                db = parsed;
+                // Garantias de estrutura
+                if (!db.acoesSetor) db.acoesSetor = {};
+                ALL_SETORES.forEach(s => { if (!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                if (!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
+                ensureRotinaAlimentacaoData();
+                ensureFaltasData();
+                // Envia pro JSONBin com os dados restaurados
+                saveDataNow();
+                renderTudo();
+                statusEl.style.color = '#aaff00';
+                statusEl.innerText = '✓ Dados restaurados e sincronizados!';
+                setTimeout(() => { statusEl.innerText = ''; }, 4000);
+            } catch(e) {
+                statusEl.style.color = '#ff4444';
+                statusEl.innerText = '✗ Erro ao restaurar: ' + e.message;
+            }
+        }
 
         function toggleBackupMenu() {
             const menu = document.getElementById('backup-menu');
