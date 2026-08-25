@@ -1731,40 +1731,35 @@
         // ======= ROTINA TREINO (Plano de Treino por Blocos) =======
         const TREINO_DEFAULT = [
             {
-                nome: 'TREINO A',
-                grupo: 'Perna',
+                nome: 'TREINO EMPURRAR (QUARTA)',
+                grupo: 'PEITO, TRÍCEPS E OMBRO',
                 exercicios: [
-                    { nome: 'Leg Press',           series: '4x', reps: '10 a 12' },
-                    { nome: 'Extensor de Pernas',  series: '4x', reps: '10 a 12' },
-                    { nome: 'Adutora',             series: '4x', reps: '10 a 12' },
-                    { nome: 'Abdutora',            series: '4x', reps: '10 a 12' },
+                    { nome: 'Flexão Aberta (Joelho no chão, mão afastada do ombro)', series: '2x', reps: '7',              descanso: '30s' },
+                    { nome: 'Ombro - Flexão Toque no Ombro',                         series: '3x', reps: '8',              descanso: '1min' },
+                    { nome: 'Flexão Declinada (mão um pouco aberta, controlar decida por 2s)', series: '3x', reps: 'Perto da FALHA', descanso: '1min' },
+                    { nome: 'Flexão Normal (mão aberta)',                             series: '3x', reps: 'Perto da FALHA', descanso: '2min' },
+                    { nome: 'Flexão Inclinada (mão um pouco aberta, 2 cadeiras)',    series: '3x', reps: 'Perto da FALHA', descanso: '1min' },
+                    { nome: 'Tríceps - Flexão Diamante',                             series: '3x', reps: 'Perto da FALHA', descanso: '1min30s' },
+                    { nome: 'Tríceps - Afundo no Banco (cotovelo pra trás, pernas juntas fácil)', series: '3x', reps: 'Perto da FALHA', descanso: '2min' },
                 ]
             },
             {
-                nome: 'TREINO B',
-                grupo: 'Peito',
+                nome: 'TREINO PUXAR (QUINTA)',
+                grupo: 'COSTAS, BÍCEPS E ABDOMINAL',
                 exercicios: [
-                    { nome: 'Supino reto',         series: '3x', reps: '8 a 12' },
-                    { nome: 'Voador',              series: '4x', reps: '8 a 12' },
-                    { nome: 'Crucifixo reto',      series: '4x', reps: '8 a 12' },
-                    { nome: 'Supino inclinado',    series: '3x', reps: '8 a 12' },
+                    { nome: 'Barra Escapular (braço esticado levantando apenas escápula)', series: '2x', reps: '8',              descanso: '45s' },
+                    { nome: 'Tuck Front Lever (trava costas e braço esticado, levanta perna fechada)', series: '3x', reps: 'Perto da FALHA', descanso: '2min30s' },
+                    { nome: 'Barra Explosiva',                                        series: '3x', reps: 'Puxa lá em cima', descanso: '3min' },
+                    { nome: 'Barra Supinada',                                         series: '3x', reps: 'Perto da FALHA', descanso: '2min30s' },
+                    { nome: 'Abdominal Remador',                                      series: '3x', reps: 'Até a Falha',    descanso: '40s' },
                 ]
             },
-            {
-                nome: 'TREINO C',
-                grupo: 'Bíceps e Costas',
-                exercicios: [
-                    { nome: 'Remada baixa',        series: '4x', reps: '8 a 12' },
-                    { nome: 'Levantamento terra',  series: '4x', reps: '8 a 12' },
-                    { nome: 'Martelo',             series: '4x', reps: '8 a 12' },
-                    { nome: 'Rosca',               series: '4x', reps: '8 a 12' },
-                ]
-            }
         ];
 
         function ensureTreinoData() {
             if (!db.treinoBlocos || !Array.isArray(db.treinoBlocos) || db.treinoBlocos.length === 0) {
                 db.treinoBlocos = JSON.parse(JSON.stringify(TREINO_DEFAULT));
+                scheduleSave();
             }
         }
 
@@ -1783,21 +1778,22 @@
             if (!db.treinoSessoes) db.treinoSessoes = {};
         }
 
-        // Retorna as últimas N sessões de um bloco (ordenadas da mais recente à mais antiga)
         function getSessoesBloco(blocoNome, n) {
             ensureSessionData();
             const all = (db.treinoSessoes[blocoNome] || []).slice().reverse();
             return n ? all.slice(0, n) : all;
         }
 
-        // Estado temporário de sessão em andamento (não salvo até confirmar)
-        let _sessaoAtiva = {}; // { "blocoNome": { data, reps: {ei: [s1,s2,...]} } }
+        // Estado temporário de sessão em andamento
+        let _sessaoAtiva = {};
 
         function getSessaoAtiva(blocoNome) {
             if (!_sessaoAtiva[blocoNome]) {
                 const hoje = new Date().toLocaleDateString('pt-BR');
-                _sessaoAtiva[blocoNome] = { data: hoje, reps: {} };
+                _sessaoAtiva[blocoNome] = { data: hoje, reps: {}, ocultos: [], seriesCols: 0 };
             }
+            if (!_sessaoAtiva[blocoNome].ocultos) _sessaoAtiva[blocoNome].ocultos = [];
+            if (!_sessaoAtiva[blocoNome].seriesCols) _sessaoAtiva[blocoNome].seriesCols = 0;
             return _sessaoAtiva[blocoNome];
         }
 
@@ -1808,20 +1804,39 @@
             renderSessaoPanel(blocoNome);
         }
 
+        // Oculta/mostra exercício só na sessão (não apaga do plano)
+        function toggleOcultarExercicioSessao(blocoNome, ei) {
+            const s = getSessaoAtiva(blocoNome);
+            const idx = s.ocultos.indexOf(ei);
+            if (idx >= 0) s.ocultos.splice(idx, 1);
+            else s.ocultos.push(ei);
+            renderSessaoPanel(blocoNome);
+        }
+
+        // Adiciona coluna de série extra na sessão
+        function addSerieSessao(blocoNome) {
+            const s = getSessaoAtiva(blocoNome);
+            s.seriesCols = (s.seriesCols || 0) + 1;
+            renderSessaoPanel(blocoNome);
+        }
+
+        function removeSerieSessao(blocoNome) {
+            const s = getSessaoAtiva(blocoNome);
+            if ((s.seriesCols || 0) > 0) s.seriesCols--;
+            renderSessaoPanel(blocoNome);
+        }
+
         function salvarSessao(blocoNome) {
             ensureSessionData();
             const s = getSessaoAtiva(blocoNome);
-            // Valida se tem algum dado
             const temDado = Object.values(s.reps).some(arr => arr && arr.some(v => v !== null && v !== undefined && v !== ''));
             if (!temDado) { alert('Preencha ao menos uma repetição antes de salvar.'); return; }
             if (!db.treinoSessoes[blocoNome]) db.treinoSessoes[blocoNome] = [];
             db.treinoSessoes[blocoNome].push({ data: s.data, reps: JSON.parse(JSON.stringify(s.reps)) });
-            // Mantém máximo 30 sessões por bloco
             if (db.treinoSessoes[blocoNome].length > 30) db.treinoSessoes[blocoNome].shift();
             delete _sessaoAtiva[blocoNome];
             scheduleSave();
             renderSessaoPanel(blocoNome);
-            // Feedback visual
             const bi3 = db.treinoBlocos.findIndex(b => b.nome === blocoNome);
             const btn = document.getElementById('btn-salvar-sessao-' + bi3);
             if (btn) { btn.textContent = '✓ Salvo!'; btn.style.background = '#aaff00'; btn.style.color = '#000';
@@ -1864,6 +1879,9 @@
                 return m ? Math.min(parseInt(m[0]), 6) : 3;
             }
 
+            // Colunas: máximo entre séries definidas nos exercícios + extras adicionadas pelo usuário
+            const maxSeries = Math.max(...exercicios.map(numSeries), 1) + (sessaoAtual.seriesCols || 0);
+
             // ── Tabela de registro da sessão atual ──────────────────────
             let htmlRegistro = `
             <div style="font-size:11px; font-weight:700; color:#aaff00; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
@@ -1876,7 +1894,6 @@
                     <tr style="background:#1a1a00;">
                         <th style="padding:6px 8px; text-align:left; color:#888; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:110px;">Exercício</th>`;
 
-            const maxSeries = Math.max(...exercicios.map(numSeries), 1);
             for (let s = 0; s < maxSeries; s++) {
                 htmlRegistro += `<th style="padding:6px 8px; text-align:center; color:#555; font-weight:600; border-bottom:1px solid #2a2a2a; min-width:46px;">S${s+1}</th>`;
             }
@@ -1889,11 +1906,11 @@
 
             exercicios.forEach((ex, ei) => {
                 if (!ex.nome && !ex.reps) return;
+                const oculto = sessaoAtual.ocultos.includes(ei);
                 const ns = numSeries(ex);
                 const rowBg = ei % 2 === 0 ? '#111' : '#0d0d0d';
                 const curReps = sessaoAtual.reps[ei] || [];
 
-                // Calcula total atual e do último treino para o delta
                 const totalAtual = curReps.reduce((a, v) => a + (parseFloat(v) || 0), 0);
                 const ultReps = ultimaSessao ? (ultimaSessao.reps[ei] || []) : [];
                 const totalUlt = ultReps.reduce((a, v) => a + (parseFloat(v) || 0), 0);
@@ -1906,24 +1923,23 @@
                     else deltaHtml = `<span style="color:#888;">═</span>`;
                 }
 
-                // Resumo do último treino para esta linha
                 let ultResumo = '';
                 if (ultimaSessao && ultReps.length > 0) {
-                    ultResumo = ultReps.slice(0, ns).map(v => v ?? '–').join(' · ');
+                    ultResumo = ultReps.slice(0, maxSeries).map(v => v ?? '–').join(' · ');
                 } else if (ultimaSessao) {
                     ultResumo = '–';
                 }
 
-                htmlRegistro += `<tr style="background:${rowBg}; border-bottom:1px solid #1a1a1a;">
+                const opacidade = oculto ? 'opacity:0.3;' : '';
+                htmlRegistro += `<tr style="background:${rowBg}; border-bottom:1px solid #1a1a1a; ${opacidade}">
                     <td style="padding:5px 8px; color:#bbb; font-size:11px; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(ex.nome||'').replace(/"/g,'&quot;')}">${ex.nome || '–'}</td>`;
 
                 for (let s = 0; s < maxSeries; s++) {
-                    const val = s < ns ? (curReps[s] !== null && curReps[s] !== undefined ? curReps[s] : '') : '';
-                    const disabled = s >= ns ? 'disabled style="opacity:0.15; pointer-events:none;"' : '';
+                    const val = !oculto && (curReps[s] !== null && curReps[s] !== undefined) ? curReps[s] : '';
                     htmlRegistro += `<td style="padding:4px 4px; text-align:center;">
                         <input type="number" min="0" max="999" value="${val}"
-                            ${disabled}
-                            style="width:40px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:4px; outline:none; color:#e0e0e0; font-size:12px; text-align:center; padding:3px 2px;"
+                            ${oculto ? 'disabled' : ''}
+                            style="width:40px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:4px; outline:none; color:#e0e0e0; font-size:12px; text-align:center; padding:3px 2px; ${oculto ? 'opacity:0.2;' : ''}"
                             oninput="setSessaoRep('${blocoNome.replace(/'/g,"\\'")}',${ei},${s},this.value)"
                             onfocus="this.style.borderColor='#aaff00'"
                             onblur="this.style.borderColor='#2a2a2a'"
@@ -1936,20 +1952,36 @@
                     htmlRegistro += `<td style="padding:5px 4px; text-align:center; font-size:11px;">${deltaHtml}</td>`;
                 }
 
+                // Botão ocultar/mostrar na sessão (NÃO apaga do plano)
+                const btnTitle = oculto ? 'Reincluir na sessão' : 'Ocultar nesta sessão';
+                const btnColor = oculto ? '#aaff00' : '#333';
+                const btnHover = oculto ? '#aaff00' : '#ff4444';
+                const btnIcon = oculto ? '↩' : '✕';
                 htmlRegistro += `<td style="padding:4px 4px; text-align:center;">
-                    <button onclick="removeTreinoExercicio(${bi2},${ei})" title="Remover exercício"
-                        style="background:none; border:none; color:#333; cursor:pointer; font-size:12px; padding:2px 5px; border-radius:4px; transition:color 0.15s;"
-                        onmouseover="this.style.color='#ff4444'" onmouseout="this.style.color='#333'">✕</button>
+                    <button onclick="toggleOcultarExercicioSessao('${blocoNome.replace(/'/g,"\\'")}',${ei})" title="${btnTitle}"
+                        style="background:none; border:none; color:${btnColor}; cursor:pointer; font-size:12px; padding:2px 5px; border-radius:4px; transition:color 0.15s;"
+                        onmouseover="this.style.color='${btnHover}'" onmouseout="this.style.color='${btnColor}'">${btnIcon}</button>
                 </td>`;
 
                 htmlRegistro += `</tr>`;
             });
 
             htmlRegistro += `</tbody></table></div>
-            <button onclick="addTreinoExercicio(${bi2})"
-                style="background:transparent; border:1px dashed #333; color:#555; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; width:100%; margin-top:8px; transition:all 0.2s;"
-                onmouseover="this.style.borderColor='#aaff00'; this.style.color='#aaff00'"
-                onmouseout="this.style.borderColor='#333'; this.style.color='#555'">+ Exercício</button>
+            <!-- Controles de séries + botão adicionar exercício -->
+            <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
+                <span style="font-size:10px; color:#444;">Séries:</span>
+                <button onclick="removeSerieSessao('${blocoNome.replace(/'/g,"\\'")}')
+                " style="background:#1a1a1a; border:1px solid #2a2a2a; color:#666; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:13px; line-height:1; padding:0;"
+                    onmouseover="this.style.borderColor='#555'" onmouseout="this.style.borderColor='#2a2a2a'">−</button>
+                <span style="font-size:11px; color:#666; min-width:14px; text-align:center;">${maxSeries}</span>
+                <button onclick="addSerieSessao('${blocoNome.replace(/'/g,"\\'")}')
+                " style="background:#1a1a1a; border:1px solid #2a2a2a; color:#666; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:13px; line-height:1; padding:0;"
+                    onmouseover="this.style.borderColor='#aaff00'; this.style.color='#aaff00'" onmouseout="this.style.borderColor='#2a2a2a'; this.style.color='#666'">+</button>
+                <button onclick="addTreinoExercicio(${bi2})"
+                    style="background:transparent; border:1px dashed #2a2a2a; color:#444; padding:3px 10px; border-radius:5px; cursor:pointer; font-size:11px; margin-left:4px; transition:all 0.2s;"
+                    onmouseover="this.style.borderColor='#aaff00'; this.style.color='#aaff00'"
+                    onmouseout="this.style.borderColor='#2a2a2a'; this.style.color='#444'">+ Exercício</button>
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
                 <button id="btn-salvar-sessao-${bi2}" onclick="salvarSessao('${blocoNome.replace(/'/g,"\\'")}')
                 " style="background:transparent; border:1px solid #aaff00; color:#aaff00; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; transition:all 0.2s;"
