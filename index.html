@@ -236,17 +236,17 @@
                 <div id="lancamentos" class="view">
                     <h2 style="margin-bottom: 25px; font-weight: 600; font-size: 20px; color: var(--text-main);">Lançamentos de <span id="lbl-mes-ano" style="color: var(--color-neutral);"></span></h2>
                     <div class="entry-section" style="border-left: 3px solid var(--color-gain);">
-                        <div class="entry-title" style="color: var(--color-gain);">Entradas / Receitas</div>
+                        <div class="entry-title" style="color: var(--color-gain);">Entradas / Receitas <span id="ts-inc" style="font-size:10px; font-weight:400; color:#444; letter-spacing:0; text-transform:none; margin-left:6px;"></span></div>
                         <table><thead><tr><th>Descrição</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-ganhos"></tbody></table>
                         <button class="btn-add btn-add-gain" style="margin-top: 15px;" onclick="addRow('inc')">+ Adicionar Entrada</button>
                     </div>
                     <div class="entry-section" style="border-left: 3px solid var(--text-muted);">
-                        <div class="entry-title" style="color: var(--text-muted);">Saídas Fixas (Projetado x Real)</div>
+                        <div class="entry-title" style="color: var(--text-muted);">Saídas Fixas (Projetado x Real) <span id="ts-fix" style="font-size:10px; font-weight:400; color:#444; letter-spacing:0; text-transform:none; margin-left:6px;"></span></div>
                         <table><thead><tr><th>Descrição / Categoria</th><th>Valor Base</th><th>Valor Real</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-fixos"></tbody></table>
                         <button class="btn-add" style="margin-top: 15px;" onclick="addRow('fix')">+ Adicionar Saída Fixa</button>
                     </div>
                     <div class="entry-section" style="border-left: 3px solid var(--color-expense);">
-                        <div class="entry-title" style="color: var(--color-expense);">Saídas Variáveis</div>
+                        <div class="entry-title" style="color: var(--color-expense);">Saídas Variáveis <span id="ts-exp" style="font-size:10px; font-weight:400; color:#444; letter-spacing:0; text-transform:none; margin-left:6px;"></span></div>
                         <table><thead><tr><th>Descrição / Categoria</th><th>Valor (R$)</th><th style="width: 40px;"></th></tr></thead><tbody id="tbody-variaveis"></tbody></table>
                         <button class="btn-add btn-add-exp" style="margin-top: 15px;" onclick="addRow('exp')">+ Adicionar Saída Variável</button>
                     </div>
@@ -3605,15 +3605,39 @@
             document.getElementById('months-list').innerHTML = MONTHS.map(m => `<div class="nav-item ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${m}</div>`).join('');
         }
 
+        // ── TIMESTAMPS DE ALTERAÇÃO POR SEÇÃO ───────────────────────────
+        function touchSection(type) {
+            if (!db.sectionTimestamps) db.sectionTimestamps = {};
+            const key = `${selectedYear}_${selectedMonth}_${type}`;
+            db.sectionTimestamps[key] = new Date().toISOString();
+        }
+
+        function getSectionTimestamp(type) {
+            if (!db.sectionTimestamps) return null;
+            const key = `${selectedYear}_${selectedMonth}_${type}`;
+            const iso = db.sectionTimestamps[key];
+            if (!iso) return null;
+            const d = new Date(iso);
+            const pad = n => String(n).padStart(2,'0');
+            return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        // ────────────────────────────────────────────────────────────────
+
         function addRow(type) { 
             let newItem = { d: '', v: 0 }; if(type === 'fix') newItem.vr = 0; 
-            db.years[selectedYear][selectedMonth][type].push(newItem); 
+            db.years[selectedYear][selectedMonth][type].push(newItem);
+            touchSection(type);
             renderTables(); scheduleSave(); updateDashboard(); 
         }
-        function removeRow(type, index) { db.years[selectedYear][selectedMonth][type].splice(index, 1); renderTables(); scheduleSave(); updateDashboard(); }
+        function removeRow(type, index) {
+            db.years[selectedYear][selectedMonth][type].splice(index, 1);
+            touchSection(type);
+            renderTables(); scheduleSave(); updateDashboard();
+        }
         function updateVal(type, index, field, value) { 
             let val = field === 'd' ? value : (parseFloat(value) || 0); 
-            db.years[selectedYear][selectedMonth][type][index][field] = val; 
+            db.years[selectedYear][selectedMonth][type][index][field] = val;
+            touchSection(type);
             scheduleSave(); updateDashboard(); 
         }
 
@@ -3634,6 +3658,18 @@
             document.getElementById('tbody-ganhos').innerHTML = createRows('inc', data.inc); 
             document.getElementById('tbody-fixos').innerHTML = createRows('fix', data.fix); 
             document.getElementById('tbody-variaveis').innerHTML = createRows('exp', data.exp);
+
+            // Atualiza badges de timestamp nos títulos
+            ['inc','fix','exp'].forEach(type => {
+                const el = document.getElementById('ts-' + type);
+                if (!el) return;
+                const ts = getSectionTimestamp(type);
+                if (ts) {
+                    el.innerHTML = `<span style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:4px; padding:2px 7px; font-size:10px; color:#555;">✎ ${ts}</span>`;
+                } else {
+                    el.innerHTML = '';
+                }
+            });
         }
 
         function updateUI() { renderTables(); updateDashboard(); }
