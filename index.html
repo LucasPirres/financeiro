@@ -722,7 +722,22 @@
         </div>
 
         <div id="invest-acoes-view" class="invest-scroll-area">
-            
+
+            <!-- TAB BAR -->
+            <div style="width:100%; max-width:1400px; margin: 0 auto 0 auto; display:flex; gap:0; border-bottom: 2px solid var(--border-color); background: rgba(20,20,20,0.7); border-radius: 10px 10px 0 0; overflow:hidden; flex-shrink:0;">
+                <button id="acoes-tab-btn-sofisticado" onclick="switchAcoesTab('sofisticado')"
+                    style="flex:1; padding:14px 10px; background:rgba(0,230,118,0.08); border:none; border-bottom:3px solid var(--color-blue); color:var(--color-blue); font-size:13px; font-weight:700; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition:0.2s;">
+                    🎯 Preço Teto Sofisticado
+                </button>
+                <button id="acoes-tab-btn-dividendos" onclick="switchAcoesTab('dividendos')"
+                    style="flex:1; padding:14px 10px; background:transparent; border:none; border-bottom:3px solid transparent; color:var(--text-muted); font-size:13px; font-weight:700; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition:0.2s;">
+                    💰 Preço Teto Dividendos
+                </button>
+            </div>
+
+            <!-- TAB: SOFISTICADO (conteúdo original) -->
+            <div id="acoes-sofisticado-content" style="width:100%; display:flex; flex-direction:column;">
+
             <div class="fii-card" style="padding: 25px; border-top-color: var(--color-blue);">
                 <div class="entry-title" style="color: var(--color-blue); font-size: 1.4rem; margin-bottom: 20px; width: 100%; text-align: left;">
                     📚 Referências e Ferramentas
@@ -1039,6 +1054,225 @@
                     <span style="color: var(--color-gain);">Verde = cotação abaixo do valor Graham (barato)</span>
                 </div>
             </div>
+
+            </div>
+            <!-- FIM TAB SOFISTICADO -->
+
+            <!-- TAB: DIVIDENDOS (Preço Teto Sofisticado / Dividendos Futuros) -->
+            <div id="acoes-dividendos-content" style="width:100%; display:none; flex-direction:column;">
+
+                <!-- FINANCEIRO -->
+                <div class="fii-card" style="border-top-color: #4db6ac; margin-top: 0;">
+                    <div class="entry-title" style="color: #4db6ac; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>🏦 Financeiro — Bancos, Seguradoras e Corretoras</span>
+                        <button class="btn-add" style="border-color: #4db6ac; color: #4db6ac; font-size: 12px;" onclick="addAcaoDividendos('financeiro')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;" id="table-div-financeiro">
+                            <thead><tr id="thead-div-row">
+                                <th style="padding:9px 7px; border-bottom:2px solid #4db6ac; color:#4db6ac; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;" title="LPA Atual × (1 + CAGR)^Tempo">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;" title="LPA Futuro × Payout">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;" title="Dividendo Futuro ÷ DY Desejado">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-financeiro"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:#ce93d8;">Dividendo Futuro</span> = LPA Futuro × Payout% &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY% &nbsp;|&nbsp; <span style="color:var(--color-gain);">Verde = abaixo do teto</span>
+                    </div>
+                </div>
+
+                <!-- UTILIDADE PÚBLICA -->
+                <div class="fii-card" style="border-top-color: #aed581;">
+                    <div class="entry-title" style="color: #aed581; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>⚡ Utilidade Pública — Energia e Saneamento</span>
+                        <button class="btn-add" style="border-color: #aed581; color: #aed581; font-size: 12px;" onclick="addAcaoDividendos('utilidade')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #aed581; color:#aed581; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-utilidade"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+                <!-- CONSUMO -->
+                <div class="fii-card" style="border-top-color: #ff8a65;">
+                    <div class="entry-title" style="color: #ff8a65; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>🛒 Consumo — Varejo, Alimentos e Vestuário</span>
+                        <button class="btn-add" style="border-color: #ff8a65; color: #ff8a65; font-size: 12px;" onclick="addAcaoDividendos('consumo')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ff8a65; color:#ff8a65; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-consumo"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+                <!-- BENS INDUSTRIAIS -->
+                <div class="fii-card" style="border-top-color: #b0bec5;">
+                    <div class="entry-title" style="color: #b0bec5; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>⚙️ Bens Industriais — Máquinas, Construção e Transportes</span>
+                        <button class="btn-add" style="border-color: #b0bec5; color: #b0bec5; font-size: 12px;" onclick="addAcaoDividendos('industrial')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #b0bec5; color:#b0bec5; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-industrial"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+                <!-- TECNOLOGIA -->
+                <div class="fii-card" style="border-top-color: #ce93d8;">
+                    <div class="entry-title" style="color: #ce93d8; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>💻 Tecnologia — Software e Dados</span>
+                        <button class="btn-add" style="border-color: #ce93d8; color: #ce93d8; font-size: 12px;" onclick="addAcaoDividendos('tecnologia')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-tecnologia"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+                <!-- COMMODITIES -->
+                <div class="fii-card" style="border-top-color: #ffcc80;">
+                    <div class="entry-title" style="color: #ffcc80; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>⛏️ Commodities — Mineração, Siderurgia e Petróleo</span>
+                        <button class="btn-add" style="border-color: #ffcc80; color: #ffcc80; font-size: 12px;" onclick="addAcaoDividendos('commodities')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ffcc80; color:#ffcc80; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-commodities"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+                <!-- CONSUMO NÃO CÍCLICO / GRAHAM -->
+                <div class="fii-card" style="border-top-color: #80cbc4;">
+                    <div class="entry-title" style="color: #80cbc4; font-size: 1.2rem; margin-bottom: 6px; justify-content: space-between;">
+                        <span>🏭 Consumo Não Cíclico / Indústrias Tradicionais</span>
+                        <button class="btn-add" style="border-color: #80cbc4; color: #80cbc4; font-size: 12px;" onclick="addAcaoDividendos('graham')">+ Adicionar</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="min-width: 1100px; border-collapse: collapse; text-align: center;">
+                            <thead><tr>
+                                <th style="padding:9px 7px; border-bottom:2px solid #80cbc4; color:#80cbc4; font-size:11px; text-align:left;">Ação</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Preço Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">LPA Atual</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Payout (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">CAGR Lucros (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">DY Desejado (%)</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--border-color); color:var(--text-muted); font-size:11px;">Tempo</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">LPA Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid #ce93d8; color:#ce93d8; font-size:11px;">Dividendo Futuro</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">Preço Teto</th>
+                                <th style="padding:9px 7px; border-bottom:2px solid var(--color-highlight); color:var(--color-highlight); font-size:11px;">M. Seg.</th>
+                                <th style="width:60px;"></th>
+                            </tr></thead>
+                            <tbody id="tbody-div-graham"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#555; font-style:italic;">
+                        💡 <span style="color:#ce93d8;">LPA Futuro</span> = LPA × (1 + CAGR%)^Tempo &nbsp;|&nbsp; <span style="color:var(--color-highlight);">Preço Teto</span> = Div. Futuro ÷ DY%
+                    </div>
+                </div>
+
+            </div>
+            <!-- FIM TAB DIVIDENDOS -->
 
         </div>
         <!-- FIM TABELAS POR SETOR -->
@@ -2345,7 +2579,7 @@
                                 <button onclick="incFalta(${pi}, ${mi})" style="width:26px; height:26px; border-radius:6px; border:1px solid var(--border-color); background:#111; color:var(--color-gain); font-weight:700; cursor:pointer; font-size:14px; line-height:1;">+</button>
                             </div>
                         </td>
-                        <td style="padding:8px 12px; border-bottom:1px solid var(--border-color); font-size:12.5px; white-space:nowrap;">${situacaoHtml}</td>
+                        <td style="padding:8px 12px; border-bottom:1px solid var(--border-color); font-size:12.5px; min-width:160px;">${situacaoHtml}</td>
                         <td style="padding:6px; border-bottom:1px solid var(--border-color); text-align:center;">
                             <button class="btn-remove" onclick="removeMateriaFaltas(${pi}, ${mi})">✕</button>
                         </td>
@@ -2489,8 +2723,11 @@
             document.getElementById('invest-header-title').innerText = 'PLANILHA DE AÇÕES BR';
             document.getElementById('btn-voltar-invest').innerText = '⬅ Voltar';
             currentInvestView = 'acoes-table';
+            // Always open on sofisticado tab
+            switchAcoesTab('sofisticado');
             renderAcoesTable();
             ensureSetorData();
+            ensureDividendosData();
             // Render imediato + múltiplos timeouts para garantir após browser aplicar display:flex
             renderAllSetorTables();
             setTimeout(() => { ensureSetorData(); renderAllSetorTables(); }, 80);
@@ -2655,6 +2892,8 @@
                     if(!db.acoes) db.acoes = [];
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                    if(!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+                    ALL_SETORES_DIV.forEach(s => { if(!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                     ensureRotinaAlimentacaoData();
                     ensureFaltasData();
@@ -2673,6 +2912,8 @@
                             db = parsed;
                             if(!db.acoesSetor) db.acoesSetor = {};
                             ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                            if(!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+                            ALL_SETORES_DIV.forEach(s => { if(!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
                             if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                             ensureRotinaAlimentacaoData();
                             ensureFaltasData();
@@ -2722,6 +2963,8 @@
                         db = JSON.parse(backup);
                         if(!db.acoesSetor) db.acoesSetor = {};
                         ['financeiro','utilidade','consumo','industrial','tecnologia','commodities'].forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                        if(!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+                        ALL_SETORES_DIV.forEach(s => { if(!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
                         if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && db.acoesSetor['commodities'].length === 0) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
                         document.getElementById('sync-status').innerText = "Offline — backup local carregado ✓";
                         if(!db.calcIpca) db.calcIpca = { ipca: 4.39, ipcaMais: 7.00 };
@@ -2777,7 +3020,7 @@
             const renders = [
                 renderSidebar, updateUI, renderFIITable, renderFIIAvaliacaoTable,
                 renderAcoesTable, renderCalcIpca, renderMeuPatrimonio,
-                renderSetores, renderAllSetorTables, renderRotinaTable, renderRotinaAlimentacaoTable, renderFaltasPlanilhas
+                renderSetores, renderAllSetorTables, renderAllDividendosTables, renderRotinaTable, renderRotinaAlimentacaoTable, renderFaltasPlanilhas
             ];
             renders.forEach(fn => {
                 try { fn(); } catch (e) { console.error('Erro em ' + fn.name + '():', e); }
@@ -3592,6 +3835,137 @@
             ALL_SETORES.forEach(s => { try { renderSetorTable(s); } catch(e) { console.error('Erro setor', s, e); } });
         }
 
+        // ======= PLANILHA PREÇO TETO DIVIDENDOS =======
+        const ALL_SETORES_DIV = ['financeiro','utilidade','consumo','industrial','tecnologia','commodities','graham'];
+
+        function ensureDividendosData() {
+            if (!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+            ALL_SETORES_DIV.forEach(s => { if (!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
+        }
+
+        function switchAcoesTab(tab) {
+            const sofBtn = document.getElementById('acoes-tab-btn-sofisticado');
+            const divBtn = document.getElementById('acoes-tab-btn-dividendos');
+            const sofContent = document.getElementById('acoes-sofisticado-content');
+            const divContent = document.getElementById('acoes-dividendos-content');
+            if (tab === 'sofisticado') {
+                sofContent.style.display = 'flex';
+                divContent.style.display = 'none';
+                sofBtn.style.borderBottomColor = 'var(--color-blue)';
+                sofBtn.style.color = 'var(--color-blue)';
+                sofBtn.style.background = 'rgba(77,166,255,0.08)';
+                divBtn.style.borderBottomColor = 'transparent';
+                divBtn.style.color = 'var(--text-muted)';
+                divBtn.style.background = 'transparent';
+            } else {
+                sofContent.style.display = 'none';
+                divContent.style.display = 'flex';
+                divBtn.style.borderBottomColor = 'var(--color-gain)';
+                divBtn.style.color = 'var(--color-gain)';
+                divBtn.style.background = 'rgba(0,230,118,0.08)';
+                sofBtn.style.borderBottomColor = 'transparent';
+                sofBtn.style.color = 'var(--text-muted)';
+                sofBtn.style.background = 'transparent';
+                renderAllDividendosTables();
+            }
+        }
+
+        function addAcaoDividendos(setor) {
+            ensureDividendosData();
+            db.acoesSetorDividendos[setor].push({ ticker: '', precoAtual: '', lpaAtual: '', payout: '', cagrLucros: '', dyDesejado: 8, tempo: 5 });
+            renderDividendosTable(setor);
+            scheduleSave();
+        }
+
+        function removeAcaoDividendos(setor, index) {
+            ensureDividendosData();
+            db.acoesSetorDividendos[setor].splice(index, 1);
+            renderDividendosTable(setor);
+            scheduleSave();
+        }
+
+        function moveAcaoDividendos(setor, index, direction) {
+            ensureDividendosData();
+            const arr = db.acoesSetorDividendos[setor];
+            const ni = index + direction;
+            if (ni < 0 || ni >= arr.length) return;
+            const tmp = arr[index]; arr[index] = arr[ni]; arr[ni] = tmp;
+            renderDividendosTable(setor);
+            scheduleSave();
+        }
+
+        function updateAcaoDividendos(setor, index, field, value) {
+            ensureDividendosData();
+            db.acoesSetorDividendos[setor][index][field] = value;
+            renderDividendosTable(setor);
+            scheduleSave();
+        }
+
+        function renderDividendosTable(setor) {
+            ensureDividendosData();
+            const rows = db.acoesSetorDividendos[setor] || [];
+            const setorColors = { financeiro:'#4db6ac', utilidade:'#aed581', consumo:'#ff8a65', industrial:'#b0bec5', tecnologia:'#ce93d8', commodities:'#ffcc80', graham:'#80cbc4' };
+            const color = setorColors[setor] || 'var(--color-blue)';
+
+            const numInp = (s,i,f,v,c,ph) => `<input type="number" step="0.01" class="custom-input" style="width:68px; text-align:center; color:${c||'var(--color-blue)'}; font-weight:600;" value="${v||''}" onchange="updateAcaoDividendos('${s}',${i},'${f}',this.value)" placeholder="${ph||'0'}">`;
+            const txtInp = (s,i,f,v,c) => `<input type="text" class="custom-input" style="width:72px; text-align:center; color:${c||color}; font-weight:700; text-transform:uppercase;" value="${v||''}" onchange="updateAcaoDividendos('${s}',${i},'${f}',this.value)" placeholder="TICK3">`;
+
+            let html = '';
+            rows.forEach((a, i) => {
+                const lpaAtual  = parseFloat(a.lpaAtual)  || 0;
+                const payout    = parseFloat(a.payout)    || 0;
+                const cagr      = parseFloat(a.cagrLucros)|| 0;
+                const dy        = parseFloat(a.dyDesejado)|| 8;
+                const tempo     = parseInt(a.tempo)       || 5;
+                const preco     = parseFloat(a.precoAtual)|| 0;
+
+                const lpaFuturo   = lpaAtual > 0 && cagr >= 0 ? lpaAtual * Math.pow(1 + cagr / 100, tempo) : 0;
+                const divFuturo   = lpaFuturo > 0 && payout > 0 ? lpaFuturo * (payout / 100) : 0;
+                const precoTeto   = divFuturo > 0 && dy > 0 ? divFuturo / (dy / 100) : 0;
+                const mseg        = (precoTeto > 0 && preco > 0) ? ((precoTeto / preco) - 1) * 100 : null;
+
+                const ptStr  = precoTeto > 0 ? 'R$ ' + precoTeto.toFixed(2).replace('.',',') : '—';
+                const lpaFStr= lpaFuturo > 0 ? 'R$ ' + lpaFuturo.toFixed(2).replace('.',',') : '—';
+                const divFStr= divFuturo > 0 ? 'R$ ' + divFuturo.toFixed(2).replace('.',',') : '—';
+
+                const msCell = mseg === null ? '<td style="padding:9px 7px;">—</td>'
+                    : `<td style="padding:9px 7px; font-weight:700; border-radius:6px; background:${mseg >= 0 ? 'rgba(0,230,118,0.12)' : 'rgba(255,82,82,0.12)'}; color:${mseg >= 0 ? 'var(--color-gain)' : 'var(--color-expense)'};">${mseg.toFixed(1).replace('.',',')}%</td>`;
+
+                const isF = i === 0, isL = i === rows.length - 1;
+                const actCell = `<td style="padding:9px 6px; text-align:right; white-space:nowrap;">
+                    <button class="btn-move" onclick="moveAcaoDividendos('${setor}',${i},-1)" ${isF?'disabled':''} style="opacity:${isF?0.3:1}">↑</button>
+                    <button class="btn-move" onclick="moveAcaoDividendos('${setor}',${i},1)" ${isL?'disabled':''} style="opacity:${isL?0.3:1}">↓</button>
+                    <button class="btn-remove" onclick="removeAcaoDividendos('${setor}',${i})">✕</button>
+                </td>`;
+
+                html += `<tr style="border-bottom:1px solid #1a1a1a;">
+                    <td style="padding:9px 7px; text-align:left;">${txtInp(setor,i,'ticker',a.ticker,color)}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'precoAtual',a.precoAtual,'var(--text-main)','0.00')}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'lpaAtual',a.lpaAtual,color,'0.00')}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'payout',a.payout,color,'60')}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'cagrLucros',a.cagrLucros,'var(--color-blue)','6')}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'dyDesejado',a.dyDesejado,'var(--color-blue)','8')}</td>
+                    <td style="padding:9px 7px;">${numInp(setor,i,'tempo',a.tempo,'var(--text-muted)','5')}</td>
+                    <td style="padding:9px 7px; font-weight:700; color:#ce93d8;">${lpaFStr}</td>
+                    <td style="padding:9px 7px; font-weight:700; color:#ce93d8;">${divFStr}</td>
+                    <td style="padding:9px 7px; font-weight:700; color:var(--color-highlight);">${ptStr}</td>
+                    ${msCell}
+                    ${actCell}
+                </tr>`;
+            });
+
+            if (rows.length === 0) {
+                html = `<tr><td colspan="12" style="padding:14px; text-align:center; color:#666; font-size:12px; font-style:italic;">Nenhuma ação neste setor ainda.</td></tr>`;
+            }
+
+            const el = document.getElementById('tbody-div-' + setor);
+            if (el) el.innerHTML = html;
+        }
+
+        function renderAllDividendosTables() {
+            ALL_SETORES_DIV.forEach(s => { try { renderDividendosTable(s); } catch(e) { console.error('Erro div setor', s, e); } });
+        }
+
         function addAcao() {
             db.acoes.push({ ticker: '', setor: '', pl: '', roe: '', divEbitda: '', cagr: '', roic: '', pvp: '' });
             renderAcoesTable();
@@ -3814,6 +4188,8 @@
                 db = parsed;
                 if(!db.acoesSetor) db.acoesSetor = {};
                 ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
+                if(!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+                ALL_SETORES_DIV.forEach(s => { if(!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
                 if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                 ensureRotinaAlimentacaoData();
                 ensureFaltasData();
@@ -3974,6 +4350,8 @@
                     if(!db.acoesSetor) db.acoesSetor = {};
                     ALL_SETORES.forEach(s => { if(!db.acoesSetor[s]) db.acoesSetor[s] = []; });
                     if(db.acoesSetor['commodity'] && db.acoesSetor['commodity'].length > 0 && (!db.acoesSetor['commodities'] || db.acoesSetor['commodities'].length === 0)) { db.acoesSetor['commodities'] = db.acoesSetor['commodity']; } delete db.acoesSetor['commodity'];
+                    if(!db.acoesSetorDividendos) db.acoesSetorDividendos = {};
+                    ALL_SETORES_DIV.forEach(s => { if(!db.acoesSetorDividendos[s]) db.acoesSetorDividendos[s] = []; });
                     if(!db.rotina || db.rotina.length === 0) db.rotina = JSON.parse(JSON.stringify(ROTINA_DEFAULT));
                     ensureRotinaAlimentacaoData();
                     ensureFaltasData();
